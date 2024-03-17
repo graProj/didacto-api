@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
-@Controller
-@Order(-2)
+//@Controller
+//@Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorController {
 
     private final ErrorAttributes errorAttributes;

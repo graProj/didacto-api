@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
-@RestController
+//@ControllerAdvice
+//@RestController
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ExceptionAdvice.class);

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: didacto
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/didacto-api?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 1111
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          format_sql: true #To beautify or pretty print the SQL
+          show_sql: true #show sql
+          default_batch_fetch_size: 100
