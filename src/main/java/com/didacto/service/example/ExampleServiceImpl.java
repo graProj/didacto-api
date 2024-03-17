@@ -20,6 +20,8 @@ public class ExampleServiceImpl implements ExampleService {
     private final ExampleRepository exampleRepository;
     private final ModelMapper modelMapper;
 
+
+    @Transactional
     public Long addExample(ExampleRequestDto input){
         Example exist = exampleRepository.findExampleByName(input.getName());
         if(exist != null){
@@ -31,7 +33,6 @@ public class ExampleServiceImpl implements ExampleService {
         return example.getExamId();
     }
 
-    @Override
     public List<ExampleResponseDto> searchExampleByKeyword(String keyword) {
         List<Example> example = exampleRepository.findExamplesWithKeywordContains(keyword);
         List<ExampleResponseDto> response = example.stream()
