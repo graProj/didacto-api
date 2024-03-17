@@ -1,7 +1,7 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
-import com.didacto.common.response.CommonResponse;
-import com.didacto.common.response.ErrorResponse;
+import com.didacto.config.exception.response.CommonResponse;
+import com.didacto.config.exception.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
