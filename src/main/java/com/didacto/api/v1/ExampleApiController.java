@@ -1,5 +1,6 @@
 package com.didacto.api.v1;
 
+import com.didacto.common.ExampleDefineCode;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
 import com.didacto.service.example.ExampleService;
