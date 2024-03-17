@@ -1,4 +1,4 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
 public class NotFoundException extends CommonException {
     public NotFoundException(ErrorCode errorCode) {

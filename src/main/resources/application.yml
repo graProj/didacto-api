@@ -6,11 +6,11 @@ spring:
     url: jdbc:mariadb://localhost:4001/didacto-db?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 1111
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          format_sql: true #To beautify or pretty print the SQL
-          show_sql: true #show sql
-          default_batch_fetch_size: 100
+        format_sql: true #To beautify or pretty print the SQL
+        show_sql: true #show sql
+        default_batch_fetch_size: 100

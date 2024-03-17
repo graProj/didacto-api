@@ -1,4 +1,4 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
 import java.util.List;
 

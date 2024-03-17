@@ -1,4 +1,4 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
