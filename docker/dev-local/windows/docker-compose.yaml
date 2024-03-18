@@ -9,4 +9,4 @@ services:
     ports:
       - 4001:3306
     volumes:
-      - .\volumes\mariadb:\var\lib\mysql
+      - .\volumes\mariadb:/var/lib/mysql
