@@ -1,4 +1,4 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
 public class BadRequestException extends CommonException {
     public BadRequestException() {

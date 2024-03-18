@@ -1,23 +1,21 @@
-package com.didacto.common.exception;
+package com.didacto.config.exception.exception;
 
-import com.didacto.common.response.CommonResponse;
-import com.didacto.common.response.ErrorResponse;
+import com.didacto.config.exception.response.CommonResponse;
+import com.didacto.config.exception.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
-@Controller
-@Order(-2)
+//@Controller
+//@Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorController {
 
     private final ErrorAttributes errorAttributes;

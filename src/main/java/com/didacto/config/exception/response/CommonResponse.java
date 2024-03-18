@@ -1,4 +1,4 @@
-package com.didacto.common.response;
+package com.didacto.config.exception.response;
 
 
 public class CommonResponse<T> {
