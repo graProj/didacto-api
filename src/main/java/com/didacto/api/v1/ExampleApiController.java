@@ -46,7 +46,7 @@ public class ExampleApiController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/{pathKeyword}")
+    @GetMapping("/{pathValue}")
     @Operation(summary = "EXAM_02 : 키워드 조회", description = "키워드가 포함된 Example 리스트를 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
@@ -55,16 +55,16 @@ public class ExampleApiController {
             // Path Variable 사용 예시 : /api/v1/example/blah
             @PathVariable
             @Schema(description = "Path Variable 예시", example = "blah")   //Swagger 파라미터 설명
-            String pathKeyword,
+            String pathValue,
 
             // Query Parameter 사용 예시 : /api/v1/example?paramKeyword=blah
             @RequestParam
             @Parameter(name = "paramKeyword", description = "Parameter 예시",
                     example = "blah", required = true) //Swagger 파라미터 설명
-            String paramKeyword
+            String paramValue
 
     ) {
-        List<ExampleResponseDto> result = this.exampleService.searchExampleByKeyword(pathKeyword);
+        List<ExampleResponseDto> result = this.exampleService.searchExampleByKeyword(pathValue);
 
         //TODO : 공통 Response Model 정의하여 응답 형식을 통일시킨다.
         return ResponseEntity.status(HttpStatus.OK).body(result);
