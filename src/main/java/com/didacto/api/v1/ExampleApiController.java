@@ -1,13 +1,14 @@
 package com.didacto.api.v1;
 
-import com.didacto.common.ExampleDefineCode;
+import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
+import com.didacto.config.exception.custom.exception.AuthForbiddenException;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
+import com.didacto.dto.example.ExampleValidationRequestDto;
 import com.didacto.service.example.ExampleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +43,6 @@ public class ExampleApiController {
     ) {
         Long result = this.exampleService.addExample(request);
 
-        //TODO : 공통 Response Model 정의하여 응답 형식을 통일시킨다.
         return new CommonResponse(true, HttpStatus.OK, "Example 저장에 성공했습니다", result);
     }
 
@@ -64,7 +63,33 @@ public class ExampleApiController {
     ) {
         List<ExampleResponseDto> result = this.exampleService.searchExampleByKeyword(pathValue);
 
-        //TODO : 공통 Response Model 정의하여 응답 형식을 통일시킨다.
+
         return new CommonResponse(true, HttpStatus.OK, "리스트 조회에 성공했습니다", result);
+    }
+
+
+    @PostMapping("/error")
+    @Operation(summary = "EXAM_03 : 예외 테스트", description = "예외를 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
+    })
+    public CommonResponse<List<ExampleResponseDto>> throwExceptionApi(
+            @Valid @RequestBody ExampleValidationRequestDto request
+    ) {
+        if(request.getErrorCode() == 500){
+            // 예상치 못한 오류 발생시키기
+            int[] array = {1,2,3,4,5};
+            System.out.println(array[50]);
+        }
+
+        if(request.getErrorCode() == 403){
+            throw new AuthForbiddenException(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
+        }
+
+        if(request.getErrorCode() == 404){
+            throw new AuthForbiddenException(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
+        }
+
+        return new CommonResponse(true, HttpStatus.OK, "무언가가 성공하기 전에 예외 발생", null);
     }
 }

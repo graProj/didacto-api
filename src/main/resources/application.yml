@@ -36,3 +36,9 @@ springdoc:
   paths-to-match:
     - /api/**
     - /login
+
+# Exception handler
+
+error:
+  printStackTrace: true # Stack trace 출력 여부
+  printStackTraceLine: 10 # Stack trace 출력 줄 수
