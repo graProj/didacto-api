@@ -2,7 +2,9 @@ package com.didacto.api.v1;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
-import com.didacto.config.exception.custom.exception.AuthForbiddenException;
+import com.didacto.config.exception.custom.exception.ForbiddenException403;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
+import com.didacto.config.exception.custom.exception.UnsupportedMediaTypeException415;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
 import com.didacto.dto.example.ExampleValidationRequestDto;
@@ -83,11 +85,15 @@ public class ExampleApiController {
         }
 
         if(request.getErrorCode() == 403){
-            throw new AuthForbiddenException(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
+            throw new ForbiddenException403(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
         }
 
         if(request.getErrorCode() == 404){
-            throw new AuthForbiddenException(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
+            throw new NoSuchElementFoundException404(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
+        }
+
+        if(request.getErrorCode() == 415){
+            throw new UnsupportedMediaTypeException415(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
         }
 
         return new CommonResponse(true, HttpStatus.OK, "무언가가 성공하기 전에 예외 발생", null);

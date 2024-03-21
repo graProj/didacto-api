@@ -3,8 +3,6 @@ package com.didacto.config.exception.global;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonError;
 import com.didacto.common.response.CommonResponse;
-import com.didacto.config.exception.GlobalExceptionHandlerInterface;
-import com.didacto.config.exception.custom.exception.AuthForbiddenException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -17,7 +15,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 

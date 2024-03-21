@@ -1,13 +1,14 @@
 package com.didacto.config.exception.custom;
 
-import com.didacto.config.exception.custom.exception.AuthForbiddenException;
+import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
+import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.didacto.config.exception.global.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
@@ -15,17 +16,16 @@ import org.springframework.web.context.request.WebRequest;
 @Slf4j(topic = "EXCEPTION_HANDLER")
 @RestControllerAdvice
 public class CustomExceptionHandler extends GlobalExceptionHandler {
-    // 403 Auth Forbidden Exception
-    @ExceptionHandler(AuthForbiddenException.class)
+
+    @ExceptionHandler(BasicCustomException500.class)
     @Hidden
-    @ResponseStatus(HttpStatus.FORBIDDEN) // 403 Forbidden
-    public ResponseEntity<Object> handleAuthForbiddenException(AuthForbiddenException exception, WebRequest request) {
-        log.error("Forbidden : ", exception);
-        return buildErrorResponse(exception, exception.getCode(), HttpStatus.FORBIDDEN, request);
+    public ResponseEntity<Object> handleAlreadyExistElementException(BasicCustomException500 exception, WebRequest request) {
+        String classname = exception.getClass().getSimpleName();
+        log.error(classname + " : " + exception.getMessage());
+        int statusCode = Integer.parseInt(classname.substring(classname.length() - 3));
+        return buildErrorResponse(exception, exception.getCode(), HttpStatus.valueOf(statusCode), request);
     }
 
 
-
-    /** 필요시 ExceptionHandler 추가 - 예상가는 오류 있다면 전부 ExceptionHandler 이용해 처리. **/
 
 }
