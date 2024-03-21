@@ -1,6 +1,10 @@
 package com.didacto.config.security;
 
 
+import com.didacto.config.jwt.JwtAccessDeniedHandler;
+import com.didacto.config.jwt.JwtAuthenticationEntryPoint;
+import com.didacto.config.jwt.JwtSecurityConfig;
+import com.didacto.config.jwt.TokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +12,14 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.CorsFilter;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +37,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 public class SecurityConfig {
+
+    private final TokenProvider tokenProvider;
+    private final CorsFilter corsFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html"
@@ -38,9 +58,17 @@ public class SecurityConfig {
         //CSRF, CORS
         http.csrf((csrf) -> csrf.disable());
         http.cors(Customizer.withDefaults());
+        http.headers(
+                headersConfigurer -> headersConfigurer
+                        .frameOptions(
+                                HeadersConfigurer.FrameOptionsConfig::sameOrigin
+                        )
+        );
+       http.exceptionHandling(handler -> handler.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler))
 
         //세션 관리 상태 없음으로 구성, Spring Security가 세션 생성 or 사용 X
-        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(
+        .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
 
         //FormLogin, BasicHttp 비활성화
@@ -48,14 +76,20 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
 
+
+
         //TODO : JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
 
 
         //TODO : 권한 규칙 작성
-        http.authorizeHttpRequests(authorize -> authorize
+        http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+        .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().permitAll()
         );
+
+        // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
+        http.with(new JwtSecurityConfig(tokenProvider), customizer -> {});
 
         return http.build();
     }
