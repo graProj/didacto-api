@@ -23,10 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-//TODO : Swagger API Docs 설정 이후
-// API 문서 설명 내용(API 용도, 요청 및 응답 모델의 필드 설명, 성공 및 실패 케이스 정의 등에 대한 문서 작성 코드를 추가한다.)
-
-
 @Tag(name = "EXAM API", description = "예제와 관련된 API") // Swagger Docs : API 이름
 @RestController
 @RequiredArgsConstructor
@@ -96,6 +92,6 @@ public class ExampleApiController {
             throw new UnsupportedMediaTypeException415(ErrorDefineCode.EXAMPLE_OCCURE_ERROR);
         }
 
-        return new CommonResponse(true, HttpStatus.OK, "무언가가 성공하기 전에 예외 발생", null);
+        return new CommonResponse(true, HttpStatus.OK, "성공입니당", null);
     }
 }

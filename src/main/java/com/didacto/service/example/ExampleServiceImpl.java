@@ -1,5 +1,7 @@
 package com.didacto.service.example;
 
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
 import com.didacto.domain.Example;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
@@ -25,7 +27,7 @@ public class ExampleServiceImpl implements ExampleService {
     public Long addExample(ExampleRequestDto input){
         Example exist = exampleRepository.findFirstByName(input.getName());
         if(exist != null){
-            // TODO : Exeption Hanlder 완성 시 예외를 throw하는 코드를 추가할 예정
+            throw new AlreadyExistElementException409(ErrorDefineCode.DUPLICATE_EXAMPLE_NAME);
         }
 
         Example example = modelMapper.map(input, Example.class);

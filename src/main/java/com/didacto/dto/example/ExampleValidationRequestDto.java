@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ExampleValidationRequestDto {
 
     @NotNull(message = "발생시킬 에러 유형은 필수입니다.")
-    @Schema(description = "에러 유형 (403, 404, 500, 401) ", example = "401", required = true)
+    @Schema(description = "에러 유형 (500, 404, 403, 415), 그 외 정상 ", example = "404", required = true)
     private Integer errorCode;
 
     @NotBlank(message = "이름은 필수 입력값입니다.")
