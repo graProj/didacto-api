@@ -1,6 +1,7 @@
 package com.didacto.api.v1;
 
 import com.didacto.common.ExampleDefineCode;
+import com.didacto.common.response.CommonResponse;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
 import com.didacto.service.example.ExampleService;
@@ -37,13 +38,13 @@ public class ExampleApiController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
     })
-    public ResponseEntity<Long> saveExample(
+    public CommonResponse<Long> saveExample(
             @Valid @RequestBody ExampleRequestDto request
     ) {
-        Long response = this.exampleService.addExample(request);
+        Long result = this.exampleService.addExample(request);
 
         //TODO : 공통 Response Model 정의하여 응답 형식을 통일시킨다.
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return new CommonResponse(true, HttpStatus.OK, "Example 저장에 성공했습니다", result);
     }
 
     @GetMapping("/{pathValue}")
@@ -51,22 +52,19 @@ public class ExampleApiController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
     })
-    public ResponseEntity<List<ExampleResponseDto>> searchExampleByKey(
+    public CommonResponse<List<ExampleResponseDto>> searchExampleByKey(
             // Path Variable 사용 예시 : /api/v1/example/blah
-            @PathVariable
             @Schema(description = "Path Variable 예시", example = "blah")   //Swagger 파라미터 설명
-            String pathValue,
+            @PathVariable String pathValue,
 
             // Query Parameter 사용 예시 : /api/v1/example?paramKeyword=blah
-            @RequestParam
-            @Parameter(name = "paramKeyword", description = "Parameter 예시",
-                    example = "blah", required = true) //Swagger 파라미터 설명
-            String paramValue
+            @Parameter(description = "Parameter 예시", example = "blah") //Swagger 파라미터 설명
+            @RequestParam(required = false) String paramValue
 
     ) {
         List<ExampleResponseDto> result = this.exampleService.searchExampleByKeyword(pathValue);
 
         //TODO : 공통 Response Model 정의하여 응답 형식을 통일시킨다.
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return new CommonResponse(true, HttpStatus.OK, "리스트 조회에 성공했습니다", result);
     }
 }

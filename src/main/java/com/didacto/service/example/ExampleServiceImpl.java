@@ -23,7 +23,7 @@ public class ExampleServiceImpl implements ExampleService {
 
     @Transactional
     public Long addExample(ExampleRequestDto input){
-        Example exist = exampleRepository.findExampleByName(input.getName());
+        Example exist = exampleRepository.findFirstByName(input.getName());
         if(exist != null){
             // TODO : Exeption Hanlder 완성 시 예외를 throw하는 코드를 추가할 예정
         }
