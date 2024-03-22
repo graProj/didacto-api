@@ -32,8 +32,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // 4. PreAuthorization 어노테이션을 통해 컨트롤러 메서드 단위의 인가를 수행할 수 있도록 설정한다.
 // 5. 인가 수행 시 Role(권한)에 따라서 수행 권한을 제한하거나 분리할 수 있도록 설정해야 한다.
 // 6. 컨트롤러 단에서 현재 인증 세션 내에 있는 JWT의 User PK를 추출하여 사용할 수 있도록 하는 유틸 클래스를 작성한다.
-// 7. 인증 및 인가 실패에 대한 Exception Handler를 정의한다.
-// 8. 해당 과정이 끝난 후 변경된 코드 컨벤션에 따라서 리팩토링한다.
+// 7. access토큰 refresh 토큰 재발급
+// 8. 인증 및 인가 실패에 대한 Exception Handler를 정의한다.
+// 9. 해당 과정이 끝난 후 변경된 코드 컨벤션에 따라서 리팩토링한다.
 
 
 public class SecurityConfig {
@@ -89,7 +90,7 @@ public class SecurityConfig {
         );
 
         // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
-        http.with(new JwtSecurityConfig(tokenProvider), customizer -> {});
+//        http.with(new JwtSecurityConfig(tokenProvider), customizer -> {});
 
         return http.build();
     }
