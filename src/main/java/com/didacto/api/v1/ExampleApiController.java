@@ -2,6 +2,7 @@ package com.didacto.api.v1;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
+import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.exception.custom.exception.UnsupportedMediaTypeException415;
@@ -11,6 +12,7 @@ import com.didacto.dto.example.ExampleValidationRequestDto;
 import com.didacto.service.example.ExampleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,7 +37,8 @@ public class ExampleApiController {
     @Operation(summary = "EXAM_01 : 저장", description = "Example을 저장시킨다.")   // Swagger API 기능 설명
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"), // Swagger API : 응답 케이스 설명
-            @ApiResponse(responseCode = "409", description = "중복된 이름의 Example")
+            @ApiResponse(responseCode = "409", description = "중복된 이름의 Example",
+                    content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
     public CommonResponse<Long> saveExample(
             @Valid @RequestBody ExampleRequestDto request
@@ -70,7 +73,13 @@ public class ExampleApiController {
     @PostMapping("/error")
     @Operation(summary = "EXAM_03 : 예외 테스트", description = "예외를 반환한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
+            @ApiResponse(responseCode = "200", description = "Success"), // Swagger API : 응답 케이스 설명
+            @ApiResponse(responseCode = "403", description = "일부로 403 오류 발생 케이스",
+                    content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))}),
+            @ApiResponse(responseCode = "404", description = "일부로 404 오류 발생 케이스",
+                    content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))}),
+            @ApiResponse(responseCode = "415", description = "일부로 415 오류 발생 케이스",
+                    content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
     public CommonResponse<List<ExampleResponseDto>> throwExceptionApi(
             @Valid @RequestBody ExampleValidationRequestDto request
