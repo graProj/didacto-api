@@ -32,9 +32,9 @@ public class AuthController {
         return new CommonResponse<>(true, authService.signIn(req), null);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/reissue")
-    public CommonResponse reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return new CommonResponse<>(true, authService.reissue(tokenRequestDto), null);
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @PostMapping("/reissue")
+//    public CommonResponse reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+//        return new CommonResponse<>(true, authService.reissue(tokenRequestDto), null);
+//    }
 }

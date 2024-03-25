@@ -4,13 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+// 컨트롤러 단에서 JWT의 User Pk를 추출하여 사용할 수 있또록 하는 유틸 클래스
 @Slf4j
 public class SecurityUtil {
 
     private SecurityUtil() { }
-
-    // SecurityContext 에 유저 정보가 저장되는 시점
-    // Request 가 들어올 때 JwtFilter 의 doFilter 에서 저장
     public static Long getCurrentMemberId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

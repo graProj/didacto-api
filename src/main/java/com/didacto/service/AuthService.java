@@ -6,10 +6,9 @@ import com.didacto.config.jwt.TokenProvider;
 import com.didacto.config.security.CustomUserDto;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
-import com.didacto.domain.RefreshToken;
 import com.didacto.dto.sign.*;
 import com.didacto.repository.MemberRepository;
-import com.didacto.repository.RefreshTokenRepository;
+//import com.didacto.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,7 +24,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+//    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void signup(SignUpRequestDto req) {
@@ -55,12 +54,12 @@ public class AuthService {
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
-    private RefreshToken buildRefreshToken(String email, TokenDto tokenDto) {
-        return RefreshToken.builder()
-                .key(email)
-                .value(tokenDto.getRefreshToken())
-                .build();
-    }
+//    private RefreshToken buildRefreshToken(String email, TokenDto tokenDto) {
+//        return RefreshToken.builder()
+//                .key(email)
+//                .value(tokenDto.getRefreshToken())
+//                .build();
+//    }
 
     private Authentication getUserAuthentication(LoginRequestDto req) {
         UsernamePasswordAuthenticationToken authenticationToken = req.toAuthentication();
@@ -69,22 +68,22 @@ public class AuthService {
     }
 
 
-    @Transactional
-    public TokenResponseDto reissue(TokenRequestDto tokenRequestDto) {
-        validateRefreshToken(tokenRequestDto);
-
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
-        validateRefreshTokenOwner(refreshToken, tokenRequestDto);
-
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
-
-        TokenResponseDto tokenResponseDto = new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
-        return tokenResponseDto;
-    }
+//    @Transactional
+//    public TokenResponseDto reissue(TokenRequestDto tokenRequestDto) {
+//        validateRefreshToken(tokenRequestDto);
+//
+//        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+//        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+//                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+//        validateRefreshTokenOwner(refreshToken, tokenRequestDto);
+//
+//        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+//        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+//        refreshTokenRepository.save(newRefreshToken);
+//
+//        TokenResponseDto tokenResponseDto = new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+//        return tokenResponseDto;
+//    }
 
     private Member createSignupFormOfUser(SignUpRequestDto req) {
         Member member = Member.builder()
@@ -115,9 +114,8 @@ public class AuthService {
         }
     }
 
-    private void validateRefreshTokenOwner(RefreshToken refreshToken, TokenRequestDto tokenRequestDto) {
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-        }
+//    private void validateRefreshTokenOwner(RefreshToken refreshToken, TokenRequestDto tokenRequestDto) {
+//        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+//            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+//        }
     }
-}
