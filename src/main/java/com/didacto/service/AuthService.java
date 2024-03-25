@@ -49,8 +49,9 @@ public class AuthService {
 
         CustomUserDto customUserDto = new CustomUserDto(member.getId(), member.getEmail(), member.getPassword(), member.getAuthority());
         TokenDto tokenDto = tokenProvider.generateTokenDto(customUserDto);
-        RefreshToken refreshToken = buildRefreshToken(member.getEmail(), tokenDto);
-        refreshTokenRepository.save(refreshToken);
+
+//        RefreshToken refreshToken = buildRefreshToken(member.getEmail(), tokenDto);
+//        refreshTokenRepository.save(refreshToken);
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 

@@ -18,6 +18,8 @@ public class SecurityUtil {
             throw  new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
 
-        return Long.parseLong(authentication.getName());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userPk = userDetails.getMember().getId();
+        return userPk;
     }
 }

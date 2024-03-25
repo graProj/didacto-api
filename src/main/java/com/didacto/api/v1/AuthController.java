@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
-
-    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sign-up")
     public CommonResponse register(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {

@@ -30,11 +30,13 @@ public class TokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
-    private final Key key;
+    private final Key key1;
+    private final Key key2;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    public TokenProvider(@Value("${jwt.secret1}") String secretKey1, @Value("${jwt.secret2}") String secretKey2) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey1);
+        this.key1 = Keys.hmacShaKeyFor(keyBytes);
+        this.key2 = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public TokenDto generateTokenDto(Authentication authentication) {
@@ -51,13 +53,13 @@ public class TokenProvider {
                 .setSubject(authentication.getName())       // payload "sub": "name"
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key2, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()
@@ -80,13 +82,13 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY,dto.getRole())   // payload "auth": "ROLE_USER"
                 .claim("Id", dto.getId())             // payload "Id" : 2
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key2, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()
@@ -121,7 +123,7 @@ public class TokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -137,7 +139,7 @@ public class TokenProvider {
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
