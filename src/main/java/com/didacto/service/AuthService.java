@@ -39,7 +39,6 @@ public class AuthService {
         validatePassword(req, member);
         CustomUserDto customUserDto = new CustomUserDto(member.getId(), member.getEmail(), member.getPassword(), member.getAuthority());
         TokenDto tokenDto = tokenProvider.generateTokenDto(customUserDto);
-
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
