@@ -6,9 +6,9 @@ import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.exception.custom.exception.UnsupportedMediaTypeException415;
-import com.didacto.dto.example.ExampleRequestDto;
-import com.didacto.dto.example.ExampleResponseDto;
-import com.didacto.dto.example.ExampleValidationRequestDto;
+import com.didacto.dto.example.ExampleRequest;
+import com.didacto.dto.example.ExampleResponse;
+import com.didacto.dto.example.ExampleValidationRequest;
 import com.didacto.service.example.ExampleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,12 +36,11 @@ public class ExampleApiController {
     @PostMapping()
     @Operation(summary = "EXAM_01 : 저장", description = "Example을 저장시킨다.")   // Swagger API 기능 설명
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success"), // Swagger API : 응답 케이스 설명
-            @ApiResponse(responseCode = "409", description = "중복된 이름의 Example",
+            @ApiResponse(responseCode = "409", description = "중복된 이름의 Example", // Swagger API : 응답 케이스 설명
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
     public CommonResponse<Long> saveExample(
-            @Valid @RequestBody ExampleRequestDto request
+            @Valid @RequestBody ExampleRequest request
     ) {
         Long result = this.exampleService.addExample(request);
 
@@ -51,9 +50,8 @@ public class ExampleApiController {
     @GetMapping("/{pathValue}")
     @Operation(summary = "EXAM_02 : 키워드 조회", description = "키워드가 포함된 Example 리스트를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success") // Swagger API : 응답 케이스 설명
     })
-    public CommonResponse<List<ExampleResponseDto>> searchExampleByKey(
+    public CommonResponse<List<ExampleResponse>> queryExampleByKey(
             // Path Variable 사용 예시 : /api/v1/example/blah
             @Schema(description = "Path Variable 예시", example = "blah")   //Swagger 파라미터 설명
             @PathVariable String pathValue,
@@ -63,7 +61,7 @@ public class ExampleApiController {
             @RequestParam(required = false) String paramValue
 
     ) {
-        List<ExampleResponseDto> result = this.exampleService.searchExampleByKeyword(pathValue);
+        List<ExampleResponse> result = this.exampleService.searchExampleByKeyword(pathValue);
 
 
         return new CommonResponse(true, HttpStatus.OK, "리스트 조회에 성공했습니다", result);
@@ -73,7 +71,6 @@ public class ExampleApiController {
     @PostMapping("/error")
     @Operation(summary = "EXAM_03 : 예외 테스트", description = "예외를 반환한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success"), // Swagger API : 응답 케이스 설명
             @ApiResponse(responseCode = "403", description = "일부로 403 오류 발생 케이스",
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))}),
             @ApiResponse(responseCode = "404", description = "일부로 404 오류 발생 케이스",
@@ -81,8 +78,8 @@ public class ExampleApiController {
             @ApiResponse(responseCode = "415", description = "일부로 415 오류 발생 케이스",
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
-    public CommonResponse<List<ExampleResponseDto>> throwExceptionApi(
-            @Valid @RequestBody ExampleValidationRequestDto request
+    public CommonResponse<List<ExampleResponse>> throwExceptionApi(
+            @Valid @RequestBody ExampleValidationRequest request
     ) {
         if(request.getErrorCode() == 500){
             // 예상치 못한 오류 발생시키기

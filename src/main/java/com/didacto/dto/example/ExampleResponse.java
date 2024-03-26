@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @Schema(title = "Example : Response 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class ExampleResponseDto {
+public class ExampleResponse {
 
     @Schema(description = "PK", example = "1") //Swagger Docs 표시 : 상세 필드 설명
     private Long examId;

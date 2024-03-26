@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(title = "Example : Validation 예제 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class ExampleValidationRequestDto {
+public class ExampleValidationRequest {
 
     @NotNull(message = "발생시킬 에러 유형은 필수입니다.")
     @Schema(description = "에러 유형 (500, 404, 403, 415), 그 외 정상 ", example = "404", required = true)

@@ -3,8 +3,8 @@ package com.didacto.service.example;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
 import com.didacto.domain.Example;
-import com.didacto.dto.example.ExampleRequestDto;
-import com.didacto.dto.example.ExampleResponseDto;
+import com.didacto.dto.example.ExampleRequest;
+import com.didacto.dto.example.ExampleResponse;
 import com.didacto.repository.example.ExampleRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,7 @@ public class ExampleService {
      * @return Long - 추가된 유저의 ID
      */
     @Transactional
-    public Long addExample(ExampleRequestDto input){
+    public Long addExample(ExampleRequest input){
         Example exist = exampleRepository.findFirstByName(input.getName());
         if(exist != null){
             throw new AlreadyExistElementException409(ErrorDefineCode.DUPLICATE_EXAMPLE_NAME);
@@ -47,10 +47,10 @@ public class ExampleService {
      * @param keyword String - 예제 도메인의 검색 키워드
      * @return ExampleResponseDto - 탐색 결과 단일 도메인
      */
-    public List<ExampleResponseDto> searchExampleByKeyword(String keyword) {
+    public List<ExampleResponse> searchExampleByKeyword(String keyword) {
         List<Example> example = exampleRepository.findExamplesWithKeywordContains(keyword);
-        List<ExampleResponseDto> response = example.stream()
-                .map(e -> modelMapper.map(e, ExampleResponseDto.class))
+        List<ExampleResponse> response = example.stream()
+                .map(e -> modelMapper.map(e, ExampleResponse.class))
                 .toList();
         return response;
     }
