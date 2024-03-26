@@ -33,10 +33,12 @@ public class TokenProvider {
     private final Key key1;
     private final Key key2;
 
-    public TokenProvider(@Value("${jwt.secret1}") String secretKey1, @Value("${jwt.secret2}") String secretKey2) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey1);
-        this.key1 = Keys.hmacShaKeyFor(keyBytes);
-        this.key2 = Keys.hmacShaKeyFor(keyBytes);
+    public TokenProvider(@Value("${jwt.secret1}") String secretKey1,
+                         @Value("${jwt.secret2}") String secretKey2) {
+        byte[] keyBytes1 = Decoders.BASE64.decode(secretKey1);
+        byte[] keyBytes2 = Decoders.BASE64.decode(secretKey2);
+        this.key1 = Keys.hmacShaKeyFor(keyBytes1);
+        this.key2 = Keys.hmacShaKeyFor(keyBytes2);
     }
 
     public TokenDto generateTokenDto(Authentication authentication) {
