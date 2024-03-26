@@ -1,7 +1,6 @@
 package com.didacto.service;
 
 
-import com.didacto.domain.Example;
 import com.didacto.dto.example.ExampleRequestDto;
 import com.didacto.dto.example.ExampleResponseDto;
 import com.didacto.service.example.ExampleService;
