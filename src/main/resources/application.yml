@@ -16,6 +16,10 @@ spring:
         default_batch_fetch_size: 100
 
 
+jwt:
+  secret1: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+  secret2: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHad29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+
 # Swagger
 springdoc:
   swagger-ui:
@@ -38,7 +42,6 @@ springdoc:
     - /login
 
 # Exception handler
-
 error:
   printStackTrace: true # Stack trace 출력 여부
   printStackTraceLine: 10 # Stack trace 출력 줄 수
