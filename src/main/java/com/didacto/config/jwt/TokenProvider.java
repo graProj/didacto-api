@@ -41,37 +41,6 @@ public class TokenProvider {
         this.key2 = Keys.hmacShaKeyFor(keyBytes2);
     }
 
-    public TokenDto generateTokenDto(Authentication authentication) {
-        // 권한들 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        long now = (new Date()).getTime();
-
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       // payload "sub": "name"
-                .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
-                .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
-                .compact();
-
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key2, SignatureAlgorithm.HS512)
-                .compact();
-
-        return TokenDto.builder()
-                .grantType(BEARER_TYPE)
-                .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-                .refreshToken(refreshToken)
-                .build();
-    }
-
     public TokenDto generateTokenDto(CustomUserDto dto) {
 
 
