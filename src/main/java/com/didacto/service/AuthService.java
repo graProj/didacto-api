@@ -43,12 +43,6 @@ public class AuthService {
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
-    private Authentication getUserAuthentication(LoginRequestDto req) {
-        UsernamePasswordAuthenticationToken authenticationToken = req.toAuthentication();
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        return authentication;
-    }
-
     private Member createSignupFormOfUser(SignUpRequestDto req) {
         Member member = Member.builder()
                 .email(req.getEmail())

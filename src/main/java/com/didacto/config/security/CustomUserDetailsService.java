@@ -4,6 +4,7 @@ import com.didacto.domain.Member;
 import com.didacto.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -19,6 +20,7 @@ import java.util.Collections;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final ModelMapper mapper;
 
     @Override
     @Transactional
@@ -30,10 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
     private CustomUserDetails createUserDetails(Member member) {
-        CustomUserDto customUserDto = new CustomUserDto(member.getId(), member.getEmail(), member.getPassword(), member.getAuthority());
-
-        return new CustomUserDetails(
-                customUserDto
-        );
+        CustomUserDto Dto =  mapper.map(member, CustomUserDto.class);
+        return new CustomUserDetails(Dto);
     }
 }
