@@ -13,7 +13,7 @@ public interface ExampleRepository extends JpaRepository<Example, Long>, Example
 
     // Spring Data JPA 사용
     // 메서드 명명을 통한 기본적인 CRUD 작업은 Spring Data JPA를 사용하여 구현
-    Example findExampleByName(String name);
+    Example findFirstByName(String name);
 
 
     // QueryDSL 사용

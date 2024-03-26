@@ -1,9 +1,8 @@
 package com.didacto.service;
 
 
-import com.didacto.domain.Example;
-import com.didacto.dto.example.ExampleRequestDto;
-import com.didacto.dto.example.ExampleResponseDto;
+import com.didacto.dto.example.ExampleRequest;
+import com.didacto.dto.example.ExampleResponse;
 import com.didacto.service.example.ExampleService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +42,7 @@ public class ExampleServiceTest {
     @BeforeEach
     public void before(){
         // When Before Test, set someting
-        ExampleRequestDto example = new ExampleRequestDto("Someting example content");
+        ExampleRequest example = new ExampleRequest("Someting example content");
         Long result = exampleService.addExample(example);
     }
 
@@ -56,7 +55,7 @@ public class ExampleServiceTest {
     @DisplayName("Example : 도메인 추가 로직 성공 검증")
     public void testProcessExample_ValidInsert_Success() throws Exception {
         // Given
-        ExampleRequestDto request = new ExampleRequestDto("Some");
+        ExampleRequest request = new ExampleRequest("Some");
 
         // When
         Long id = exampleService.addExample(request);
@@ -72,7 +71,7 @@ public class ExampleServiceTest {
         String given = "Someting";
 
         // When
-        List<ExampleResponseDto> list = exampleService.searchExampleByKeyword(given);
+        List<ExampleResponse> list = exampleService.searchExampleByKeyword(given);
 
         // Then
         assertThat(list).anyMatch(element -> element.getName().equals("Someting example content"));
