@@ -1,17 +1,16 @@
 package com.didacto.service;
 
-import com.didacto.config.exception.exception.EmailAlreadyExistsException;
-import com.didacto.config.exception.exception.LoginFailureException;
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
+import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.jwt.TokenProvider;
 import com.didacto.config.security.CustomUserDto;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.sign.*;
-import com.didacto.repository.MemberRepository;
+import com.didacto.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class AuthService {
     @Transactional
     public TokenResponseDto signIn(LoginRequestDto req) {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(() -> {
-            throw new LoginFailureException();
+            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
         });
         validatePassword(req, member);
         CustomUserDto customUserDto = new CustomUserDto(member.getId(), member.getEmail(), member.getPassword(), member.getAuthority());
@@ -55,13 +54,13 @@ public class AuthService {
 
     private void validateSignUpInfo(SignUpRequestDto signUpRequestDto) {
         if (memberRepository.existsByEmail(signUpRequestDto.getEmail())) {
-            throw new EmailAlreadyExistsException(signUpRequestDto.getEmail());
+            throw new AlreadyExistElementException409(ErrorDefineCode.ALREADY_EXIST_EMAIL);
         }
     }
 
     private void validatePassword(LoginRequestDto loginRequestDto, Member member) {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
-            throw new LoginFailureException();
+            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NMATCH_PWD);
         }
     }
 

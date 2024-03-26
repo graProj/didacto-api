@@ -1,4 +1,4 @@
-package com.didacto.repository;
+package com.didacto.repository.member;
 
 import com.didacto.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
