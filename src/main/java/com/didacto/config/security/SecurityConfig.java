@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
+//EnableMethodSecurity를 통해 메소드 단위 보안 수준 설정 가능
 
 //TODO :
 //

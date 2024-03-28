@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Slf4j
 public class SecurityUtil {
 
-    private SecurityUtil() { }
     public static Long getCurrentMemberId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -19,5 +18,16 @@ public class SecurityUtil {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userPk = userDetails.getMember().getId();
         return userPk;
+    }
+
+
+
+    //로그인 유저의 이메일 정보를 얻어오는 메소드
+    public static String getCurrentMemberEmail(){
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication.getName() == null){
+            throw  new RuntimeException("Security Context 에 인증 정보가 없습니다.");
+        }
+        return authentication.getName();
     }
 }
