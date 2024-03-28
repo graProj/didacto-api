@@ -33,17 +33,20 @@ public class TokenProvider {
     private final Key key1;
     private final Key key2;
 
+
     public TokenProvider(@Value("${jwt.secret1}") String secretKey1,
-                         @Value("${jwt.secret2}") String secretKey2) {
+                         @Value("${jwt.secret2}") String secretKey2){
         byte[] keyBytes1 = Decoders.BASE64.decode(secretKey1);
         byte[] keyBytes2 = Decoders.BASE64.decode(secretKey2);
         this.key1 = Keys.hmacShaKeyFor(keyBytes1);
         this.key2 = Keys.hmacShaKeyFor(keyBytes2);
     }
 
+
+
+
+
     public TokenDto generateTokenDto(CustomUserDto dto) {
-
-
         long now = (new Date()).getTime();
 
         // Access Token 생성
@@ -62,12 +65,19 @@ public class TokenProvider {
                 .signWith(key2, SignatureAlgorithm.HS512)
                 .compact();
 
+
+
         return TokenDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    //Token에서 User Id 추출
+    public Long getUserId(String token){
+        return parseClaims(token).get("Id",Long.class);
     }
 
 
@@ -114,4 +124,6 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
+
+
 }
