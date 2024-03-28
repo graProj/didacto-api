@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
+
 @Schema(title = "회원가입 : Request 스키마")  // Swagger Docs 표시 : 스키마 설명
 public class SignUpRequestDto {
 
