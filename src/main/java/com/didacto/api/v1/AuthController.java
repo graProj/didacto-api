@@ -3,6 +3,7 @@ package com.didacto.api.v1;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.common.response.SwaggerErrorResponseType;
+import com.didacto.config.security.AuthConstant;
 import com.didacto.dto.sign.LoginRequestDto;
 import com.didacto.dto.sign.SignUpRequestDto;
 import com.didacto.dto.sign.TokenRequestDto;
@@ -32,20 +33,21 @@ public class AuthController {
 
 
     @PostMapping("/sign-up")
+//    @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "회원가입 API", description = "회원가입을 시킨다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success"),
-            @ApiResponse(responseCode = "401", description = "AuthCredientialException"),
-            @ApiResponse(responseCode = "409", description = "AlreadyExistElementException"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+            @ApiResponse(responseCode = "409", description = "중복된 이메일",
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
     public CommonResponse register(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-        return new CommonResponse<>(true, HttpStatus.CREATED, "회원 가입에 성공했습니다.", null);
+        authService.signup(signUpRequestDto);
+        return new CommonResponse<>(true, HttpStatus.CREATED, "회원 가입에 성공했습니다.",signUpRequestDto.getEmail());
     }
 
 
     @PostMapping("/sign-in")
+//    @PreAuthorize(AuthConstant.AUTH_ALL)
+    @Operation(summary = "로그인 API", description = "로그인을 시킨다.")
     public CommonResponse<TokenResponseDto> signIn(@Valid @RequestBody LoginRequestDto req) {
         TokenResponseDto token = authService.signIn(req);
         return new CommonResponse<>(true, HttpStatus.OK, "로그인에 성공했습니다", token);

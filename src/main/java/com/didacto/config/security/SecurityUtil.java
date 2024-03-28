@@ -30,5 +30,4 @@ public class SecurityUtil {
         return authentication.getName();
     }
 
-
 }
