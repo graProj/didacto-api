@@ -6,6 +6,7 @@ import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.exception.custom.exception.UnsupportedMediaTypeException415;
+import com.didacto.config.security.SecurityUtil;
 import com.didacto.dto.example.ExampleRequest;
 import com.didacto.dto.example.ExampleResponse;
 import com.didacto.dto.example.ExampleValidationRequest;
@@ -21,7 +22,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
@@ -32,6 +32,7 @@ import java.util.List;
 public class ExampleApiController {
 
     private final ExampleService exampleService;
+
 
     @PostMapping()
     @Operation(summary = "EXAM_01 : 저장", description = "Example을 저장시킨다.")   // Swagger API 기능 설명

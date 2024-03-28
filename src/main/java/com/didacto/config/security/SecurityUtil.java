@@ -21,7 +21,6 @@ public class SecurityUtil {
     }
 
 
-
     //로그인 유저의 이메일 정보를 얻어오는 메소드
     public static String getCurrentMemberEmail(){
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,4 +29,5 @@ public class SecurityUtil {
         }
         return authentication.getName();
     }
+
 }
