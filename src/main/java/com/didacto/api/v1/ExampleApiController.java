@@ -6,7 +6,7 @@ import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.exception.custom.exception.UnsupportedMediaTypeException415;
-import com.didacto.config.security.SecurityUtil;
+import com.didacto.config.security.AuthConstant;
 import com.didacto.dto.example.ExampleRequest;
 import com.didacto.dto.example.ExampleResponse;
 import com.didacto.dto.example.ExampleValidationRequest;
@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

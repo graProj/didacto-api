@@ -86,14 +86,15 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().permitAll()
         );
+//        //TODO : 권한 규칙 작성
+//        http.authorizeHttpRequests(authorize -> authorize
+//                .requestMatchers(AUTH_WHITELIST).permitAll()
+//                .anyRequest().permitAll());
 
         // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
         http.with(new JwtSecurityConfig(tokenProvider), customizer -> {});
 
-        //TODO : 권한 규칙 작성
-        http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(AUTH_WHITELIST).permitAll()
-                .anyRequest().permitAll());
+
 
         return http.build();
     }
