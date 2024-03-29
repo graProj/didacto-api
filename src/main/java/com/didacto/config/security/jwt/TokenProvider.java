@@ -1,7 +1,7 @@
-package com.didacto.config.jwt;
+package com.didacto.config.security.jwt;
 
-import com.didacto.config.security.CustomUserDto;
-import com.didacto.dto.sign.TokenDto;
+import com.didacto.config.security.custom.CustomUser;
+import com.didacto.dto.auth.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -31,8 +31,7 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
     private final Key key;
     
-    public TokenProvider(@Value("${jwt.secret1}") String secretKey
-                         ){
+    public TokenProvider(@Value("${jwt.secret1}") String secretKey){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -41,14 +40,14 @@ public class TokenProvider {
 
 
 
-    public TokenDto generateTokenDto(CustomUserDto dto) {
+    public TokenDto generateTokenDto(CustomUser dto) {
         long now = (new Date()).getTime();
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(dto.getEmail())       // payload "sub": "name"
-                .claim(AUTHORITIES_KEY,dto.getRole())   // payload "auth": "ROLE_USER"
+                .claim(AUTHORITIES_KEY, dto.getRole())   // payload "auth": "ROLE_USER"
                 .claim("Id", dto.getId())             // payload "Id" : 2
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
                 .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
@@ -104,19 +103,18 @@ public class TokenProvider {
             log.info("잘못된 JWT 서명입니다.");
         }
         catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
+            log.info("만료된 JWT 입니다.");
         }
         catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
+            log.info("지원되지 않는 JWT 입니다.");
         }
         catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            log.info("JWT가 잘못되었습니다.");
         }
 
         return false;
 
     }
-
 
     private Claims parseClaims(String accessToken) {
         try {

@@ -1,4 +1,4 @@
-package com.didacto.config.security;
+package com.didacto.config.security.custom;
 
 import com.didacto.domain.Authority;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CustomUserDto{
+public class CustomUser {
     private Long id;
 
     private String email;

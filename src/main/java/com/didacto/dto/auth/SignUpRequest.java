@@ -1,4 +1,4 @@
-package com.didacto.dto.sign;
+package com.didacto.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 
 @Schema(title = "회원가입 : Request 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class SignUpRequestDto {
+public class SignUpRequest {
 
     @NotBlank(message = "이메일 입력해주세요.")
     @Schema(description = "이메일", example = "abc123@naver.com")

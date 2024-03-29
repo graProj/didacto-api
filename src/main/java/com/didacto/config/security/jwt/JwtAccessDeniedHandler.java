@@ -1,7 +1,9 @@
-package com.didacto.config.jwt;
+package com.didacto.config.security.jwt;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonError;
+import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.config.exception.custom.exception.ForbiddenException403;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,22 +19,14 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-@Slf4j(topic = "FORBIDDEN_EXCEPTION_HANDLER")
+
 @Component
 @AllArgsConstructor
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
-
-    private final ObjectMapper objectMapper;
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("No Authorities", accessDeniedException);
-        CommonError errorResponseDto = new CommonError(ErrorDefineCode.AUTHENTICATE_FAIL.getCode(), LocalDateTime.now());
-        String responseBody = objectMapper.writeValueAsString(errorResponseDto);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(responseBody);
+        throw new ForbiddenException403(ErrorDefineCode.AUTHORIZATION_FAIL);
     }
 }

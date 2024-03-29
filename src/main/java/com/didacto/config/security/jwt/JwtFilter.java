@@ -1,4 +1,4 @@
-package com.didacto.config.jwt;
+package com.didacto.config.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.didacto.dto.sign;
+package com.didacto.dto.auth;
 
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 @Data
 @Schema(title = "로그인 : Request 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class LoginRequestDto {
+public class LoginRequest {
     @NotBlank(message = "{LoginRequestDto.email.notBlank}")
     @Schema(description = "이메일", example = "abc123@naver.com")
     private String email;
@@ -30,7 +30,7 @@ public class LoginRequestDto {
         return Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Authority.ROLE_USER)
+                .role(Authority.ROLE_USER)
                 .build();
     }
 
