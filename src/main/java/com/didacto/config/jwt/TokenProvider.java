@@ -30,16 +30,13 @@ public class TokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
-    private final Key key1;
-    private final Key key2;
+    private final Key key;
 
 
-    public TokenProvider(@Value("${jwt.secret1}") String secretKey1,
-                         @Value("${jwt.secret2}") String secretKey2){
-        byte[] keyBytes1 = Decoders.BASE64.decode(secretKey1);
-        byte[] keyBytes2 = Decoders.BASE64.decode(secretKey2);
-        this.key1 = Keys.hmacShaKeyFor(keyBytes1);
-        this.key2 = Keys.hmacShaKeyFor(keyBytes2);
+    public TokenProvider(@Value("${jwt.secret1}") String secretKey
+                         ){
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
 
@@ -56,13 +53,15 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY,dto.getRole())   // payload "auth": "ROLE_USER"
                 .claim("Id", dto.getId())             // payload "Id" : 2
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key2, SignatureAlgorithm.HS512)
+                .setSubject(dto.getEmail())
+                .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
 
@@ -75,10 +74,6 @@ public class TokenProvider {
                 .build();
     }
 
-    //Token에서 User Id 추출
-    public Long getUserId(String token){
-        return parseClaims(token).get("Id",Long.class);
-    }
 
 
 
@@ -102,24 +97,32 @@ public class TokenProvider {
     }
 
     public boolean validateToken(String token) {
+
         try {
-            Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        }
+        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
+        }
+        catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
+        }
+        catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
+
         return false;
+
     }
+
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

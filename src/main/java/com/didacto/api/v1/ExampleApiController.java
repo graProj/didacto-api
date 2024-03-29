@@ -36,7 +36,7 @@ public class ExampleApiController {
 
 
     @PostMapping()
-    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @PreAuthorize(AuthConstant.AUTH_REFRESH)
     @Operation(summary = "EXAM_01 : 저장", description = "Example을 저장시킨다.")   // Swagger API 기능 설명
     @ApiResponses(value = {
             @ApiResponse(responseCode = "409", description = "중복된 이름의 Example", // Swagger API : 응답 케이스 설명
