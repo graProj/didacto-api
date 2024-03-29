@@ -33,7 +33,6 @@ public class AuthController {
 
 
     @PostMapping("/sign-up")
-//    @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "회원가입 API", description = "회원가입을 시킨다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "409", description = "중복된 이메일",
@@ -46,7 +45,6 @@ public class AuthController {
 
 
     @PostMapping("/sign-in")
-//    @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "로그인 API", description = "로그인을 시킨다.")
     public CommonResponse<TokenResponseDto> signIn(@Valid @RequestBody LoginRequestDto req) {
         TokenResponseDto token = authService.signIn(req);

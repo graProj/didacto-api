@@ -1,10 +1,7 @@
 package com.didacto.config.security;
 
 
-import com.didacto.config.jwt.JwtAccessDeniedHandler;
-import com.didacto.config.jwt.JwtAuthenticationEntryPoint;
-import com.didacto.config.jwt.JwtSecurityConfig;
-import com.didacto.config.jwt.TokenProvider;
+import com.didacto.config.jwt.*;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -78,17 +75,13 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
 
-
-
         //TODO : JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
-        http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 //TODO : 권한 규칙 작성
         .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().permitAll()
         );
-
-
 
         // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
         http.with(new JwtSecurityConfig(tokenProvider), customizer -> {});
