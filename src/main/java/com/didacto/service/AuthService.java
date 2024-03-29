@@ -64,4 +64,14 @@ public class AuthService {
         }
     }
 
+    @Transactional
+    public String generateAccessToken(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
+            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
+        });
+        CustomUserDto customUserDto = new CustomUserDto(member.getId(), member.getEmail(), member.getPassword(), member.getAuthority());
+        String token = tokenProvider.generateTokenDto(customUserDto).getAccessToken();
+        return token;
+    }
+
 }

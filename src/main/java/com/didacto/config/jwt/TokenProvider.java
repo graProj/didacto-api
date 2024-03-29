@@ -29,10 +29,8 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
-
     private final Key key;
-
-
+    
     public TokenProvider(@Value("${jwt.secret1}") String secretKey
                          ){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

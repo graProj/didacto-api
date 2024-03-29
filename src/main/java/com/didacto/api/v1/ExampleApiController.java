@@ -36,7 +36,6 @@ public class ExampleApiController {
 
 
     @PostMapping()
-    @PreAuthorize(AuthConstant.AUTH_REFRESH)
     @Operation(summary = "EXAM_01 : 저장", description = "Example을 저장시킨다.")   // Swagger API 기능 설명
     @ApiResponses(value = {
             @ApiResponse(responseCode = "409", description = "중복된 이름의 Example", // Swagger API : 응답 케이스 설명
@@ -51,6 +50,7 @@ public class ExampleApiController {
     }
 
     @GetMapping("/{pathValue}")
+    @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "EXAM_02 : 키워드 조회", description = "키워드가 포함된 Example 리스트를 조회한다.")
     @ApiResponses(value = {
     })
