@@ -16,11 +16,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 
 @Tag(name = "AUTH API", description = "로그인, 회원가입과 관련된 API") // Swagger Docs : API 이름
@@ -38,7 +42,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "중복된 이메일",
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
-    public CommonResponse register(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
+    public CommonResponse register(@Valid @RequestBody SignUpRequestDto signUpRequestDto) throws ParseException {
         authService.signup(signUpRequestDto);
         return new CommonResponse<>(true, HttpStatus.CREATED, "회원 가입에 성공했습니다.",signUpRequestDto.getEmail());
     }
@@ -50,4 +54,6 @@ public class AuthController {
         TokenResponseDto token = authService.signIn(req);
         return new CommonResponse<>(true, HttpStatus.OK, "로그인에 성공했습니다", token);
     }
+
+
 }

@@ -15,6 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,7 +28,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public void signup(SignUpRequestDto req) {
+    public void signup(SignUpRequestDto req) throws ParseException {
         validateSignUpInfo(req);
         Member member = createSignupFormOfUser(req);
         memberRepository.save(member);
@@ -41,12 +45,17 @@ public class AuthService {
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
-    private Member createSignupFormOfUser(SignUpRequestDto req) {
+    private Member createSignupFormOfUser(SignUpRequestDto req) throws ParseException {
+        Date birthDate = req.getBirthAsDate(); // 생년월일을 Date 타입으로 변환
+        Timestamp createdDate = new Timestamp(System.currentTimeMillis()); // 현재 시간을 Timestamp로 생성
+
         Member member = Member.builder()
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .name(req.getName())
+                .birth(birthDate) // 변환된 생년월일 설정
                 .authority(Authority.ROLE_USER)
+                .created_date(createdDate) // 생성일자 설정
                 .build();
         return member;
     }

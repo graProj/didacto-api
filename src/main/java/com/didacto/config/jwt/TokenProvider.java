@@ -30,22 +30,17 @@ public class TokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
-    private final Key key1;
-    private final Key key2;
+    private final Key access_key;
+    private final Key refresh_key;
 
 
     public TokenProvider(@Value("${jwt.secret1}") String secretKey1,
                          @Value("${jwt.secret2}") String secretKey2){
         byte[] keyBytes1 = Decoders.BASE64.decode(secretKey1);
         byte[] keyBytes2 = Decoders.BASE64.decode(secretKey2);
-        this.key1 = Keys.hmacShaKeyFor(keyBytes1);
-        this.key2 = Keys.hmacShaKeyFor(keyBytes2);
+        this.access_key = Keys.hmacShaKeyFor(keyBytes1);
+        this.refresh_key = Keys.hmacShaKeyFor(keyBytes2);
     }
-
-
-
-
-
     public TokenDto generateTokenDto(CustomUserDto dto) {
         long now = (new Date()).getTime();
 
@@ -56,16 +51,15 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY,dto.getRole())   // payload "auth": "ROLE_USER"
                 .claim("Id", dto.getId())             // payload "Id" : 2
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .signWith(access_key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
+                .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key2, SignatureAlgorithm.HS512)
+                .signWith(refresh_key, SignatureAlgorithm.HS512)
                 .compact();
-
-
 
         return TokenDto.builder()
                 .grantType(BEARER_TYPE)
@@ -103,7 +97,23 @@ public class TokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(access_key).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(refresh_key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -119,7 +129,7 @@ public class TokenProvider {
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(access_key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

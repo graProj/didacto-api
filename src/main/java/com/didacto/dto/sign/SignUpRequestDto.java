@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,5 +35,20 @@ public class SignUpRequestDto {
     @Schema(description = "이름", example = "홍길동")
     @Size(min = 2, message = "사용자 이름이 너무 짧습니다.")
     private String name;
+
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "생년월일은 yyyyMMdd 형식으로 입력해야 합니다.")
+    private String birth;
+
+    @NotBlank(message = "계정 타입은 필수 입력 값입니다.")
+    @Pattern(regexp = "^(USER|ADMIN)$", message = "계정 타입은 USER, ADMIN 중 하나여야 합니다.")
+    private String authority;
+
+
+    public Date getBirthAsDate() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.parse(this.birth);
+    }
+
+
 
 }
