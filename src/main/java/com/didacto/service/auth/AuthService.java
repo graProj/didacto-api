@@ -3,6 +3,7 @@ package com.didacto.service.auth;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.config.security.jwt.TokenProvider;
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.domain.Authority;
@@ -14,13 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -67,8 +66,7 @@ public class AuthService {
             role = Authority.ROLE_ADMIN;
         } else {
             // 유효하지 않은 역할 값에 대한 처리
-            throw new IllegalArgumentException("유효하지 않은 역할 값입니다.");
-        }
+            throw new PreconditionFailException412(ErrorDefineCode.AUTH_AUTHORITY_FAIL);        }
 
         Member member = Member.builder()
                 .email(req.getEmail())
