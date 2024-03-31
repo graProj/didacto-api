@@ -1,4 +1,4 @@
-package com.didacto.dto.sign;
+package com.didacto.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,7 @@ import java.util.Date;
 
 
 @Schema(title = "회원가입 : Request 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class SignUpRequestDto {
+public class SignUpRequest {
 
     @NotBlank(message = "이메일 입력해주세요.")
     @Schema(description = "이메일", example = "abc123@naver.com")
@@ -42,13 +43,5 @@ public class SignUpRequestDto {
     @NotBlank(message = "계정 타입은 필수 입력 값입니다.")
     @Pattern(regexp = "^(USER|ADMIN)$", message = "계정 타입은 USER, ADMIN 중 하나여야 합니다.")
     private String authority;
-
-
-    public Date getBirthAsDate() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        return sdf.parse(this.birth);
-    }
-
-
 
 }

@@ -3,9 +3,10 @@ package com.didacto.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.OffsetDateTime;
+
 
 @Getter
 @NoArgsConstructor
@@ -27,22 +28,32 @@ public class Member {
     private String name;
 
     @Column
-    private Date birth;
+    private OffsetDateTime birth;
 
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Authority role;
 
+    @CreatedDate
     @Column(nullable = false)
-    private Timestamp created_date;
+    private OffsetDateTime created_date;
+
+
+    /**
+     * 생성일, 수정일 값 세팅
+     */
+    @PrePersist
+    public void prePersist(){
+        this.created_date = OffsetDateTime.now();
+    }
+
 
     @Builder
-    public Member(Long id, String email, String password, String name, Date birth, Authority authority, Timestamp created_date) {
+    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = role;
         this.birth = birth;
-        this.authority = authority;
-        this.created_date = created_date;
     }
 }
