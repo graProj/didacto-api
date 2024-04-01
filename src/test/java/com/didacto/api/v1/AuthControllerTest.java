@@ -24,10 +24,11 @@ import org.springframework.http.MediaType;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @Transactional
 @DisplayName("Auth Controller")
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +47,6 @@ class AuthControllerTest {
 
     @Test
     public void 회원가입_테스트() throws Exception{
-
         //given
         SignUpRequest req = new SignUpRequest("gildong@naver.com", "gildong123!!","홍길동","20000621","USER");
 
@@ -60,8 +60,4 @@ class AuthControllerTest {
         //then
         verify(authService).signup(req);
     }
-//
-//    @Test
-//    void signIn() {
-//    }
 }
