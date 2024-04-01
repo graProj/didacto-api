@@ -1,7 +1,9 @@
 package com.didacto.api.v1;
 
 import com.didacto.config.security.jwt.TokenProvider;
+import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
+import com.didacto.dto.auth.TokenResponse;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.auth.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.MediaType;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
@@ -59,5 +63,23 @@ class AuthControllerTest {
 
         //then
         verify(authService).signup(req);
+    }
+
+    @Test
+    public void 로그인_테스트() throws Exception {
+        // given
+        LoginRequest req = new LoginRequest("test123", "test");
+        given(authService.signIn(req)).willReturn(new TokenResponse("access", "refresh"));
+
+        // when, then
+        mockMvc.perform(
+                        post("/api/v1/auth/signin")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.accessToken").value("access"))
+                .andExpect(jsonPath("$.response.refreshToken").value("refresh"));
+
+        verify(authService).signIn(req);
     }
 }
