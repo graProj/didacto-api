@@ -1,6 +1,7 @@
 package com.didacto.service.auth;
 
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.config.security.jwt.TokenProvider;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
@@ -47,28 +48,24 @@ public class AuthServiceTest {
     void beforeEach() {
         authService = new AuthService(memberRepository, passwordEncoder, tokenProvider);
     }
-
-//    @Test
-//    void 회원가입_테스트() {
-//        // given
-//        SignUpRequest req = new SignUpRequest("gildong@naver.com", "gildong123!!","홍길동","20000621","USER");
-//
-//        // when
-//        authService.signup(req);
-//
-//        // then
-//        verify(passwordEncoder).encode(req.getPassword());
-//        verify(memberRepository).save(any());
-//    }
-
     @Test
-    void 로그인실패_테스트() {
+    void 로그인_테스트() {
         // given
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
 
+            // when, then
+            assertThatThrownBy(() -> authService.signIn(new LoginRequest("email", "password")))
+                    .isInstanceOf(AuthCredientialException401.class);
+        }
+
+    @Test
+    void 유효하지않은권한_테스트() {
+        // given
+        SignUpRequest req = new SignUpRequest("gildong@naver.com", "gildong123!!","홍길동","20000621","INVALID_ROLE");
+
         // when, then
-        assertThatThrownBy(() -> authService.signIn(new LoginRequest("email", "password")))
-                .isInstanceOf(AuthCredientialException401.class);
+        assertThatThrownBy(() -> authService.signup(req))
+                .isInstanceOf(PreconditionFailException412.class);
     }
 
     @Test
