@@ -1,4 +1,4 @@
-package com.didacto.config.security;
+package com.didacto.config.security.custom;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final CustomUserDto member;
+    private final CustomUser member;
 
 
     @Override

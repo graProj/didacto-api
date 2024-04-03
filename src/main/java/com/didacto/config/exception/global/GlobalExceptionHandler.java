@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -100,6 +101,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
         log.error("Internal error occurred", exception);
         return buildErrorResponse(exception, ErrorDefineCode.UNCAUGHT, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    // 403 Access Denied Exception
+    @ExceptionHandler(AccessDeniedException.class)
+    @Hidden
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403 Forbidden
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
+        log.error("Access denied", exception);
+        return buildErrorResponse(exception, ErrorDefineCode.AUTHENTICATE_FAIL, HttpStatus.FORBIDDEN, request);
     }
 
 }

@@ -1,7 +1,7 @@
-package com.didacto.config.jwt;
+package com.didacto.config.security.jwt;
 
-import com.didacto.config.security.CustomUserDto;
-import com.didacto.dto.sign.TokenDto;
+import com.didacto.config.security.custom.CustomUser;
+import com.didacto.dto.auth.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,37 +29,37 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
-
-    private final Key key1;
-    private final Key key2;
-
-    public TokenProvider(@Value("${jwt.secret1}") String secretKey1,
-                         @Value("${jwt.secret2}") String secretKey2) {
-        byte[] keyBytes1 = Decoders.BASE64.decode(secretKey1);
-        byte[] keyBytes2 = Decoders.BASE64.decode(secretKey2);
-        this.key1 = Keys.hmacShaKeyFor(keyBytes1);
-        this.key2 = Keys.hmacShaKeyFor(keyBytes2);
+    private final Key key;
+    
+    public TokenProvider(@Value("${jwt.secret1}") String secretKey){
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto generateTokenDto(CustomUserDto dto) {
 
 
+
+
+    public TokenDto generateTokenDto(CustomUser dto) {
         long now = (new Date()).getTime();
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(dto.getEmail())       // payload "sub": "name"
-                .claim(AUTHORITIES_KEY,dto.getRole())   // payload "auth": "ROLE_USER"
+                .claim(AUTHORITIES_KEY, dto.getRole())   // payload "auth": "ROLE_USER"
                 .claim("Id", dto.getId())             // payload "Id" : 2
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
-                .signWith(key1, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
+                .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key2, SignatureAlgorithm.HS512)
+                .setSubject(dto.getEmail())
+                .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()
@@ -69,6 +69,7 @@ public class TokenProvider {
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
 
 
@@ -92,8 +93,9 @@ public class TokenProvider {
     }
 
     public boolean validateToken(String token) {
+
         try {
-            Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -107,11 +109,35 @@ public class TokenProvider {
         return false;
     }
 
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        }
+        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        }
+        catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 입니다.");
+        }
+        catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 입니다.");
+        }
+        catch (IllegalArgumentException e) {
+            log.info("JWT가 잘못되었습니다.");
+        }
+
+        return false;
+
+    }
+
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key1).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
+
+
 }

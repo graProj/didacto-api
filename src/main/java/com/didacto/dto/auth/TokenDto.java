@@ -1,4 +1,4 @@
-package com.didacto.dto.sign;
+package com.didacto.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

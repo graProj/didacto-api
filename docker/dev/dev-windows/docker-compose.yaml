@@ -1,0 +1,49 @@
+# 개발 서버 전용
+version: "3.7"
+networks:
+  didacto-network-dev:
+    driver: bridge
+
+services:
+  didacto-database:
+    image: mariadb:10.11.2
+    container_name: didacto-database-dev
+    environment:
+      MYSQL_DATABASE: "didacto-database"
+      MYSQL_ROOT_PASSWORD: "1111"
+    ports:
+      - 3309:3306
+    volumes:
+      - .\volumes\mariadb:/var/lib/mysql
+    networks:
+      - didacto-network-dev
+
+  didacto-app:
+    image: sjh9708/didacto-app-dev:latest
+    restart: always
+    depends_on: #database service가 실행된 이후에 실행
+      - didacto-database
+    ports:
+      - 9081:8080
+    container_name: didacto-app-dev
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://didacto-database-dev:3306/didacto-database?characterEncoding=UTF-8&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1111
+#    volumes:
+#      - ./volumes/storage/upload:/app/didacto/storage/upload
+    networks:
+      - didacto-network-dev
+
+  didacto-phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: didacto-phpmyadmin
+    environment:
+      PMA_HOST: didacto-database-dev
+    ports:
+      - 9090:80
+    expose:
+      - 9090
+    networks:
+      - didacto-network-dev
+
