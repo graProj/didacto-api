@@ -1,4 +1,4 @@
-package com.didacto.api.lecture.v1;
+package com.didacto.api.v1.lecture;
 
 import com.didacto.domain.Lecture;
 import com.didacto.dto.lecture.LectureResponse;

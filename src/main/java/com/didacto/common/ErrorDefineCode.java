@@ -14,8 +14,8 @@ public enum ErrorDefineCode {
     DUPLICATE_EXAMPLE_NAME("ERR_03", "Example로 중복된 이름을 사용할 수 없습니다"),
     AUTH_NOT_FOUND_EMAIL("ERR_04", "해당 이메일을 찾을 수 없습니다."),
     AUTH_NMATCH_PWD("ERR_05", "비밀번호가 일치하지 않습니다."),
-    ALREADY_EXIST_EMAIL("ERR_06", "이미 존재하는 이메일입니다.")
-
+    ALREADY_EXIST_EMAIL("ERR_06", "이미 존재하는 이메일입니다."),
+    LECTURE_NOT_FOUND("ERR_07", "해당 강의를 찾을 수 없습니다.")
     ;
 
     private final String code;

@@ -1,5 +1,7 @@
 package com.didacto.service.lecture;
 
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Lecture;
 import com.didacto.repository.lecture.LectureRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,6 @@ public class LectureQueryService {
     public Lecture query(Long lectureId) {
 
         return lectureRepository.findById(lectureId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.LECTURE_NOT_FOUND));
     }
 }
