@@ -1,22 +1,26 @@
 package com.didacto.domain;
 
+import com.didacto.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
 
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor
 @Entity
-public class Lecture {
+public class Lecture extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lecture_id")
     private Long id;
 
+    @Setter
     private String title;
 
     @Column(nullable = false)
@@ -33,13 +37,6 @@ public class Lecture {
     @Column(nullable = false)
     private Boolean deleted;
 
-    @Column(nullable = false)
-    private OffsetDateTime modifiedTime;
-
-    @CreatedDate
-    @Column(nullable = false)
-    private OffsetDateTime createdTime;
-
     @Builder
     public Lecture(
             Long id,
@@ -48,9 +45,7 @@ public class Lecture {
             LectureState state,
             OffsetDateTime startTime,
             OffsetDateTime endTime,
-            Boolean deleted,
-            OffsetDateTime modifiedTime,
-            OffsetDateTime createdTime
+            Boolean deleted
     ) {
         this.id = id;
         this.title = title;
@@ -59,7 +54,5 @@ public class Lecture {
         this.startTime = startTime;
         this.endTime = endTime;
         this.deleted = deleted;
-        this.modifiedTime = modifiedTime;
-        this.createdTime = createdTime;
     }
 }
