@@ -4,6 +4,7 @@ import com.didacto.common.response.CommonResponse;
 import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
+import com.didacto.domain.Member;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
 import com.didacto.dto.auth.TokenResponse;
@@ -15,15 +16,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.ParseException;
 
 
 @Tag(name = "AUTH API", description = "로그인, 회원가입과 관련된 API") // Swagger Docs : API 이름
@@ -33,6 +33,7 @@ import java.text.ParseException;
 @RequestMapping("api/v1/auth")
 public class AuthController {
     private final AuthService authService;
+
 
 
     @PostMapping("/signup")

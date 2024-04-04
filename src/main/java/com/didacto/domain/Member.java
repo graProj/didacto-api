@@ -56,4 +56,10 @@ public class Member {
         this.role = role;
         this.birth = birth;
     }
+
+    public void modify(String password,String name) {
+        this.password = password;
+        this.name = name;
+    }
+
 }
