@@ -10,6 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -24,7 +29,14 @@ public class MemberService {
 
         member.modify(
                 passwordEncoder.encode(memberEditRequest.getPassword()),
-                memberEditRequest.getName());
+                memberEditRequest.getName(),
+                parseBirth(memberEditRequest.getBirth()));
+    }
+
+    private OffsetDateTime parseBirth(String birth) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate birthDate = LocalDate.parse(birth, formatter);
+        return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
     }
 
 

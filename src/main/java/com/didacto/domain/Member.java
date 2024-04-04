@@ -57,9 +57,10 @@ public class Member {
         this.birth = birth;
     }
 
-    public void modify(String password,String name) {
+    public void modify(String password,String name, OffsetDateTime birth) {
         this.password = password;
         this.name = name;
+        this.birth = birth;
     }
 
 }
