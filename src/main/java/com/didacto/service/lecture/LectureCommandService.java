@@ -18,7 +18,8 @@ public class LectureCommandService {
     public Lecture create(LectureCreationRequest request) {
         Lecture lecture = Lecture.builder()
                 .title(request.getTitle())
-                .ownerId(request.getOwnerId())
+                // TODO#23 : 도메인 변경에 따라 수정 필요
+//                .ownerId(request.getOwnerId())
                 .deleted(false)
                 .state(LectureState.WAITING)
                 .build();

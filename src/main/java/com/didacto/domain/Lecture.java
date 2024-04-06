@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -23,9 +26,6 @@ public class Lecture extends BaseEntity {
     @Setter
     private String title;
 
-    @Column(nullable = false)
-    private Long ownerId;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LectureState state;
@@ -37,22 +37,37 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Boolean deleted;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Member owner;
+
+    @OneToMany(mappedBy = "lecture")
+    private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "lecture")
+    private List<LectureMember> lectureMembers;
+
     @Builder
     public Lecture(
             Long id,
             String title,
-            Long ownerId,
             LectureState state,
             OffsetDateTime startTime,
             OffsetDateTime endTime,
-            Boolean deleted
+            Boolean deleted,
+            Member owner,
+            List<Enrollment> enrollments,
+            List<LectureMember> lectureMembers
     ) {
         this.id = id;
         this.title = title;
-        this.ownerId = ownerId;
         this.state = state;
         this.startTime = startTime;
         this.endTime = endTime;
         this.deleted = deleted;
+        this.owner = owner;
+        this.enrollments = enrollments;
+        this.lectureMembers = lectureMembers;
     }
+
 }
