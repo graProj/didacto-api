@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface EnrollmentCustomRepository {
 
-    boolean isHaveWaitingEnrollmentByMemberId(Long memberId);
+    boolean existWaitingEnrollmentByMemberId(Long memberId, Long lectureId);
 
-    boolean alreadyJoinedCheck(Long memberId, Long lectureId);
+    Enrollment findWaitingEnrollmentById(Long enrollId, Long memberId);
+
+//    boolean is(Long memberId);
+
+    boolean existJoinByMemberAndLecture(Long memberId, Long lectureId);
 }

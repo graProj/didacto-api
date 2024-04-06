@@ -46,4 +46,13 @@ public class Enrollment extends BaseEntity {
     private Member modified_by;
 
 
+    public void updateStatus(EnrollmentStatus status){
+        this.status = status;
+    }
+
+    public void updateModifiedMember(Member modifiedMember){
+        this.modified_by = modifiedMember;
+    }
+
+
 }

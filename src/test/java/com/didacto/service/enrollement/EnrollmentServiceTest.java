@@ -2,6 +2,7 @@ package com.didacto.service.enrollement;
 
 import com.didacto.domain.*;
 import com.didacto.dto.enrollment.EnrollmentBasicTypeResponse;
+import com.didacto.dto.enrollment.EnrollmentCancelRequest;
 import com.didacto.dto.enrollment.EnrollmentRequest;
 import com.didacto.dto.example.ExampleRequest;
 import com.didacto.service.enrollment.EnrollmentService;
@@ -88,7 +89,7 @@ public class EnrollmentServiceTest {
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
 
         //when
-        EnrollmentBasicTypeResponse enrollment = exampleService.requestEnrollment(request, studentId);
+        EnrollmentBasicTypeResponse enrollment = exampleService.requestEnrollment(request.getLectureId(), studentId);
 
         //then
         assertThat(enrollment).isNotNull();
@@ -101,6 +102,16 @@ public class EnrollmentServiceTest {
     @Test
     @DisplayName("Enrollment : (학생) 강의 등록 요청 취소")
     public void testEnrollment_Cancel_Enrollment() throws Exception {
+        //given
+        EnrollmentRequest request = new EnrollmentRequest(lectureId);
+        EnrollmentBasicTypeResponse enrollment = exampleService.requestEnrollment(request.getLectureId(), studentId);
+
+        //when
+        EnrollmentCancelRequest cancelReq = new EnrollmentCancelRequest(enrollment.getId());
+        enrollment = exampleService.cancelEnrollment(cancelReq.getEnrollmentId(), studentId);
+
+        //then
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
 
     }
 

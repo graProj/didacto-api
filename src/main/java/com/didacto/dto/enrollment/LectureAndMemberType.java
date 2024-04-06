@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnrollmentLectureAndMember {
+public class LectureAndMemberType {
     private Lecture lecture;
     private Member member;
 
