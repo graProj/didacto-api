@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -24,6 +27,11 @@ public class Enrollment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status = EnrollmentStatus.WAITING;
+
+
+    /**
+     * 연관관꼐 매핑
+     */
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)

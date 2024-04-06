@@ -27,14 +27,27 @@ public class EnrollementCommandController {
 
     @PostMapping
     @PreAuthorize(AuthConstant.AUTH_USER)
-    public CommonResponse<EnrollmentBasicTypeResponse> create(
+    public CommonResponse<EnrollmentBasicTypeResponse> createRequest(
             @RequestBody EnrollmentRequest request
     ){
         Long studentId = SecurityUtil.getCurrentMemberId();
 
         EnrollmentBasicTypeResponse enroll = enrollmentService.requestEnrollment(request, studentId);
         return new CommonResponse(
-                true, HttpStatus.OK, "교수자에게 강의 초대 요청을 보냈습니다.", enroll
+                true, HttpStatus.OK, "교수자에게 강의 참여 요청을 보냈습니다.", enroll
+        );
+    }
+
+    @DeleteMapping
+    @PreAuthorize(AuthConstant.AUTH_USER)
+    public CommonResponse<EnrollmentBasicTypeResponse> cancelRequest(
+            @RequestBody EnrollmentRequest request
+    ){
+        Long studentId = SecurityUtil.getCurrentMemberId();
+
+        EnrollmentBasicTypeResponse enroll = enrollmentService.requestEnrollment(request, studentId);
+        return new CommonResponse(
+                true, HttpStatus.OK, "교수자에게 강의 참여 요청을 보냈습니다.", enroll
         );
     }
 }

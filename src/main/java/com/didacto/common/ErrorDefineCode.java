@@ -19,7 +19,9 @@ public enum ErrorDefineCode {
     AUTHENTICATE_FAIL("ERR_08", "권한 인증에 실패했습니다."),
     AUTH_AUTHORITY_FAIL("ERR_09","USER와 ADMIN중 선택해야합니다."),
     LECTURE_NOT_FOUND("ERR_07", "해당 강의를 찾을 수 없습니다."),
-    USER_NOT_FOUND("ERR_10", "해당 사용자를 찾을 수 없습니다.")
+    USER_NOT_FOUND("ENROLL_1", "해당 사용자를 찾을 수 없습니다."),
+    ALREADY_ENROLL_REQUEST("ENROLL_2", "이미 교수자에게 강의 참여 요청을 보냈습니다."),
+    ALREADY_JOIN("ENROLL_3", "이미 강의에 참여된 상태입니다.")
     ;
 
     private final String code;
