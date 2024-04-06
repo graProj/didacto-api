@@ -38,7 +38,7 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private Boolean deleted;
 
-    @OneToMany(mappedBy = "lecture_id")
+    @OneToMany(mappedBy = "lecture")
     private List<Enrollment> enrollments;
 
     @Builder

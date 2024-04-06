@@ -38,8 +38,13 @@ public class Member {
     @Column(nullable = false)
     private OffsetDateTime created_date;
 
-    @OneToMany(mappedBy = "member_id")
+    /**
+     * 연관관계 세팅
+     */
+
+    @OneToMany(mappedBy = "member")
     private List<Enrollment> enrollments;
+
 
 
     /**
