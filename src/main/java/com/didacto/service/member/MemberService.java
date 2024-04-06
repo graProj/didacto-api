@@ -14,12 +14,28 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Transactional(readOnly = true)
+    public List<MemberFindResponse> findAllMembers() {
+        List<Member> members = memberRepository.findAll();
+        return members.stream()
+                .map(MemberFindResponse::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MemberFindResponse findMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        return MemberFindResponse.toDto(member);
+    }
 
     @Transactional
     public void editMemberInfo(String userEmail, MemberEditRequest memberEditRequest) {

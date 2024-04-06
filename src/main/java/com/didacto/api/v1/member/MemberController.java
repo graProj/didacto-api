@@ -7,6 +7,7 @@ import com.didacto.dto.member.MemberEditRequest;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,16 +24,33 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
+
+    @Operation(summary = "MEMBER_01 : 회원 전체 조회 API", description = "전체 회원을 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/members")
+    public CommonResponse findAllMembers(){
+        result =  memberService.findAllMembers();
+        return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
+
+
+    }
+
+    @Operation(summary = "MEMBER_02 : 회원 개별 조회 API", description = "개별 회원을 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/members/{id}")
+    public CommonResponse findMember(@PathVariable("id") Long id) {
+        result = memberService.findMember(id);
+        return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
+
+    }
 
 
 
 
-    @Operation(summary = "AUTH_04 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
+
+    @Operation(summary = "MEMBER_03 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
     @PutMapping("/members")
     public CommonResponse editMemberInfo(@RequestBody MemberEditRequest memberEditRequest){
-
-
         String userEmail = SecurityUtil.getCurrentMemberEmail();
         memberService.editMemberInfo(userEmail, memberEditRequest);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userEmail,
@@ -43,10 +61,13 @@ public class MemberController {
     }
 
 
+    @Operation(summary = "MEMBER_04 : 회원 탈퇴 API", description = "회원을 탈퇴시킨다.")
     @DeleteMapping("/members")
     public CommonResponse deleteMemberInfo() {
         String userEmail = SecurityUtil.getCurrentMemberEmail();
         memberService.deleteMember(userEmail);
         return new CommonResponse<>(true, HttpStatus.OK, "회원이 탈퇴되었습니다.", null);
     }
+
+
 }
