@@ -6,7 +6,9 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -44,6 +46,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "member")
+    private List<LectureMember> lectureMembers;
 
 
 

@@ -17,13 +17,25 @@ public class LectureMember extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long lectureId;
-
-    @Column(nullable = false)
-    private Long memberId;
-
-    @Column(nullable = false)
     private Boolean deleted = false;
 
-    private Long modifiedBy;
+
+    /**
+     * 연관관계 매핑
+     */
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", nullable = false)
+    private Lecture lecture;
+    // private Long lectureId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+    // private Long memberId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by", nullable = false)
+    private Member modifiedBy;
+    // private Long modifiedBy;
 }

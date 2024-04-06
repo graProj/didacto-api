@@ -9,7 +9,9 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -40,6 +42,9 @@ public class Lecture extends BaseEntity {
 
     @OneToMany(mappedBy = "lecture")
     private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "lecture")
+    private List<LectureMember> lectureMembers;
 
     @Builder
     public Lecture(
