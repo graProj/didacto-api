@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Schema(title = "Enrollemnt : 강의 참여 요청")
 public class EnrollmentRequest {
 
-    @NotBlank(message = "참여 대상 강의가 입력되지 않았습니다.")
     @Schema(example = "1")
     private Long lectureId;
 

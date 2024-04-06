@@ -19,7 +19,7 @@ public class EnrollmentBasicTypeResponse {
     @Schema(example = "1")
     private Long id;
 
-    @Schema(example = "WAITING || CANCELLED || ACCEPTED ||REJECTED")
+    @Schema(example = "WAITING || CANCELLED || ACCEPTED || REJECTED")
     private EnrollmentStatus status;
 
     @Schema(example = "1")

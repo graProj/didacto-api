@@ -44,6 +44,9 @@ public class Member {
      * 연관관계 세팅
      */
 
+    @OneToMany(mappedBy = "owner")
+    private List<Lecture> own_lectures;
+
     @OneToMany(mappedBy = "member")
     private List<Enrollment> enrollments;
 

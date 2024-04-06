@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(title = "Enrollemnt : 참여요청 상태 변경 스키마")
+@Schema(title = "Enrollemnt : 참여요청 취소")
 public class EnrollmentCancelRequest {
 
-    @NotBlank(message = "참여요청 기록의 ID가 입력되지 않았습니다.")
     @Schema(example = "1")
     private Long enrollmentId;
 

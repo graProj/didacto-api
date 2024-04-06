@@ -21,7 +21,7 @@ public class LectureResponse {
     public LectureResponse(Lecture lecture) {
         this.id = lecture.getId();
         this.title = lecture.getTitle();
-        this.ownerId = lecture.getOwnerId();
+//        this.ownerId = lecture.getOwnerId();
         this.start_time = lecture.getStartTime();
         this.end_time = lecture.getEndTime();
         this.deleted = lecture.getDeleted();

@@ -30,7 +30,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
-    public Enrollment findWaitingEnrollmentById(Long enrollId, Long memberId) {
+    public Enrollment findWaitingEnrollment(Long enrollId, Long memberId) {
         Enrollment enroll =  queryFactory.selectFrom(enrollment)
                 .where(enrollment.id.eq(enrollId)
                         .and(enrollment.status.eq(EnrollmentStatus.WAITING)
@@ -41,10 +41,24 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
+    public Enrollment findWaitingEnrollmentByTutorId(Long enrollId, Long tutorId) {
+        Enrollment enroll =  queryFactory.selectFrom(enrollment)
+                .where(enrollment.id.eq(enrollId)
+                        .and(enrollment.status.eq(EnrollmentStatus.WAITING)
+                        .and(enrollment.lecture.owner.id.eq(tutorId))))
+                .fetchFirst();
+
+        return enroll;
+    }
+
+
+
+    @Override
     public boolean existJoinByMemberAndLecture(Long memberId, Long lectureId){
         LectureMember exist =  queryFactory.selectFrom(lectureMember)
                 .where(lectureMember.member.id.eq(memberId)
-                        .and(lectureMember.lecture.id.eq(lectureId)))
+                        .and(lectureMember.lecture.id.eq(lectureId))
+                        .and(lectureMember.deleted.eq(false)))
                 .fetchFirst();
 
         return exist != null;

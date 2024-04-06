@@ -9,7 +9,9 @@ public interface EnrollmentCustomRepository {
 
     boolean existWaitingEnrollmentByMemberId(Long memberId, Long lectureId);
 
-    Enrollment findWaitingEnrollmentById(Long enrollId, Long memberId);
+    Enrollment findWaitingEnrollment(Long enrollId, Long memberId);
+
+    Enrollment findWaitingEnrollmentByTutorId(Long enrollId, Long memberId);
 
 //    boolean is(Long memberId);
 

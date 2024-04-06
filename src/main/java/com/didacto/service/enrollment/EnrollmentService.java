@@ -4,16 +4,12 @@ package com.didacto.service.enrollment;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
-import com.didacto.domain.Enrollment;
-import com.didacto.domain.EnrollmentStatus;
-import com.didacto.domain.Lecture;
-import com.didacto.domain.Member;
+import com.didacto.domain.*;
 import com.didacto.dto.enrollment.EnrollmentBasicTypeResponse;
-import com.didacto.dto.enrollment.EnrollmentCancelRequest;
 import com.didacto.dto.enrollment.LectureAndMemberType;
-import com.didacto.dto.enrollment.EnrollmentRequest;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.repository.lecture.LectureRepository;
+import com.didacto.repository.lectureMemer.LectureMemberRepository;
 import com.didacto.repository.member.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,14 +25,14 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final LectureRepository lectureRepository;
     private final MemberRepository memberRepository;
-    private final ModelMapper modelMapper;
+    private final LectureMemberRepository lectureMemberRepository;
 
 
     /**
      * [학생 : 강의 참여 요청]
      * 해당 강의 참여를 교수자에게 요청한다.
-     * @param EnrollmentRequest - .
-     * @return Long - 생성된 Enrollment PK
+     * @param lectureId - 강의 ID
+     * @return EnrollmentBasicTypeResponse
      */
     @Transactional
     public EnrollmentBasicTypeResponse requestEnrollment(Long lectureId, Long memberId){
@@ -72,8 +68,9 @@ public class EnrollmentService {
     /**
      * [학생 : 강의 참여 요청 취소]
      * 참여 요청을 취소한다.
-     * @param EnrollmentCancelRequest - .
-     * @return boolean
+     * @param enrollId - 초대 ID
+     * @param memberId - 멤버 ID
+     * @return EnrollmentBasicTypeResponse
      */
     @Transactional
     public EnrollmentBasicTypeResponse cancelEnrollment(Long enrollId, Long memberId){
@@ -84,7 +81,7 @@ public class EnrollmentService {
         });
 
         // Validate & Find : 멤버와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
-        Enrollment enrollment = enrollmentRepository.findWaitingEnrollmentById(enrollId, memberId);
+        Enrollment enrollment = enrollmentRepository.findWaitingEnrollment(enrollId, memberId);
         if(enrollment == null){
             throw new NoSuchElementFoundException404(ErrorDefineCode.NOT_FOUNT_ENROLL);
         }
@@ -93,6 +90,63 @@ public class EnrollmentService {
         enrollment.updateStatus(EnrollmentStatus.CANCELLED);
         enrollment.updateModifiedMember(member);
         enrollmentRepository.save(enrollment);
+
+        // Out : Object 변환 후 반환
+        EnrollmentBasicTypeResponse response = new EnrollmentBasicTypeResponse(
+                enrollment.getId(),
+                enrollment.getStatus(),
+                enrollment.getLecture().getId(),
+                enrollment.getMember().getId());
+        return response;
+    }
+
+
+    /**
+     * [교수자 : 강의 참여 요청 처리 ]
+     * 참여 요청에 대해서 승인, 혹은 거절한다
+     * @param enrollId - 초대 ID
+     * @param tutorId - 현재 사용자(교수) ID
+     * @param action - 승인/거절
+     * @return EnrollmentBasicTypeResponse
+     */
+    @Transactional
+    public EnrollmentBasicTypeResponse confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action){
+
+        // Validate : 강의 소유자가 존재하는 지 확인
+        Member tutor = memberRepository.findById(tutorId).orElseThrow(() -> {
+            throw new NoSuchElementFoundException404(ErrorDefineCode.USER_NOT_FOUND);
+        });
+
+        // Validate & Find : 강의 소유자와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
+        Enrollment enrollment = enrollmentRepository.findWaitingEnrollmentByTutorId(enrollId, tutorId);
+        if(enrollment == null){
+            throw new NoSuchElementFoundException404(ErrorDefineCode.NOT_FOUNT_ENROLL);
+        }
+
+        // Update : Status 변경, 수정자 변경
+        enrollment.updateStatus(action);
+        enrollment.updateModifiedMember(tutor);
+        enrollmentRepository.save(enrollment);
+
+        // 참여 승인 시 : Member <-> Lecture 연관 설정
+        if(action.equals(EnrollmentStatus.ACCEPTED)){
+            Member member = enrollment.getMember();
+            Lecture lecture = enrollment.getLecture();
+
+            // Validate : 이미 강의에 소속되어 있는지 검사
+            isHaveAlreadyJoin(member, lecture);
+
+            // Relation Set
+            LectureMember lectureMember = LectureMember.builder()
+                    .member(member)
+                    .lecture(lecture)
+                    .modifiedBy(tutor)
+                    .deleted(false)
+                    .build();
+
+            lectureMemberRepository.save(lectureMember);
+
+        }
 
         // Out : Object 변환 후 반환
         EnrollmentBasicTypeResponse response = new EnrollmentBasicTypeResponse(

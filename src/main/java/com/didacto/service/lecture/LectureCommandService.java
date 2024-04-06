@@ -18,7 +18,7 @@ public class LectureCommandService {
     public Lecture create(LectureCreationRequest request) {
         Lecture lecture = Lecture.builder()
                 .title(request.getTitle())
-                .ownerId(request.getOwnerId())
+//                .ownerId(request.getOwnerId())
                 .deleted(false)
                 .state(LectureState.WAITING)
                 .build();
