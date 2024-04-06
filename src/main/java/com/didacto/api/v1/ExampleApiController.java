@@ -129,10 +129,10 @@ public class ExampleApiController {
     @Operation(summary = "EXAM_AUTH_02 : 인증 테스트 (학생)", description = "인증된 학생(USER) 권한만 사용 가능")
     @ApiResponses(value = {
     })
-    public CommonResponse<String> exampleAuthPassByUserRole(
+    public CommonResponse<Long> exampleAuthPassByUserRole(
 
     ) {
-        String result = SecurityUtil.getCurrentMemberEmail();   //현재 요청 주체의 이메일 추출
+        long result = SecurityUtil.getCurrentMemberId();   //현재 요청 주체의 이메일 추출
         return new CommonResponse(true, HttpStatus.OK, "인가 성공으로 API 사용완료", result);
     }
 
