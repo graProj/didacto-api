@@ -4,6 +4,7 @@ import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberEditRequest;
+import com.didacto.dto.member.MemberFindResponse;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "MEMBER API", description = "회원과 관련된 API") // Swagger Docs : API 이름
@@ -29,17 +32,15 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/members")
     public CommonResponse findAllMembers(){
-        result =  memberService.findAllMembers();
+        List<MemberFindResponse> result =  memberService.findAllMembers();
         return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
-
-
     }
 
     @Operation(summary = "MEMBER_02 : 회원 개별 조회 API", description = "개별 회원을 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/members/{id}")
     public CommonResponse findMember(@PathVariable("id") Long id) {
-        result = memberService.findMember(id);
+        MemberFindResponse result= memberService.findMember(id);
         return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
 
     }

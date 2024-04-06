@@ -2,8 +2,10 @@ package com.didacto.service.member;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberEditRequest;
+import com.didacto.dto.member.MemberFindResponse;
 import com.didacto.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +35,10 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberFindResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> {
+            throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
+        });
+
         return MemberFindResponse.toDto(member);
     }
 
