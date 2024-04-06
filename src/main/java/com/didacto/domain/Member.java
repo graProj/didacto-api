@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 
 @Getter
@@ -36,6 +37,9 @@ public class Member {
     @CreatedDate
     @Column(nullable = false)
     private OffsetDateTime created_date;
+
+    @OneToMany(mappedBy = "member_id")
+    private List<Enrollment> enrollments;
 
 
     /**

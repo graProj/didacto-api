@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -36,6 +37,9 @@ public class Lecture extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "lecture_id")
+    private List<Enrollment> enrollments;
 
     @Builder
     public Lecture(
