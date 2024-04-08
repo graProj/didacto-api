@@ -74,6 +74,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    //회원정보수정
     void editMemberInfo() throws Exception {
         // given
         MemberEditRequest req = new MemberEditRequest("asdfl1230!@", "이름 수정","20000324");
@@ -95,7 +96,8 @@ public class MemberControllerTest {
 
 
     @Test
-    public void 회원탈퇴() throws Exception {
+    //회원탈퇴
+    public void deleteMemberInfo() throws Exception {
         // given
         Member member = createMember();
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), "",
