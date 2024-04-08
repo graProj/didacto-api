@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
     private CustomUserDetails createUserDetails(Member member) {
-        CustomUser Dto =  mapper.map(member, CustomUser.class);
-        return new CustomUserDetails(Dto);
+        CustomUser dto =  new CustomUser(member.getId(), member.getPassword(), member.getEmail(), member.getRole());
+        return new CustomUserDetails(dto);
     }
 }

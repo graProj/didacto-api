@@ -1,6 +1,7 @@
 package com.didacto.api.v1;
 
 
+import com.didacto.api.v1.auth.AuthController;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
 import com.didacto.dto.auth.TokenResponse;

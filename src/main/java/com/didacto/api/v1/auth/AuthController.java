@@ -1,4 +1,4 @@
-package com.didacto.api.v1;
+package com.didacto.api.v1.auth;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.common.response.SwaggerErrorResponseType;

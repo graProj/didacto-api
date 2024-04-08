@@ -40,9 +40,11 @@ public class SignUpRequest {
     @NotBlank(message = "생년월일을 입력해 주세요")
     @Schema(description = "생년월일", example = "20000520")
     @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "생년월일은 yyyyMMdd 형식으로 입력해야 합니다.")
+
     private String birth;
 
     @NotBlank(message = "계정 타입은 필수 입력 값입니다.")
+    @Schema(description = "계정 타입(USER/ADMIN)", example = "USER")
     @Pattern(regexp = "^(USER|ADMIN)$", message = "계정 타입은 USER, ADMIN 중 하나여야 합니다.")
     private String authority;
 

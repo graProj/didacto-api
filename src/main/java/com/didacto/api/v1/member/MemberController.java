@@ -21,7 +21,6 @@ import java.util.List;
 
 
 @Tag(name = "MEMBER API", description = "회원과 관련된 API") // Swagger Docs : API 이름
-@RequestMapping("api/v1/member")
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -29,7 +28,6 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "MEMBER_01 : 회원 전체 조회 API", description = "전체 회원을 조회한다.")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/members")
     public CommonResponse findAllMembers(){
         List<MemberFindResponse> result =  memberService.findAllMembers();
@@ -37,7 +35,6 @@ public class MemberController {
     }
 
     @Operation(summary = "MEMBER_02 : 회원 개별 조회 API", description = "개별 회원을 조회한다.")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/members/{id}")
     public CommonResponse findMember(@PathVariable("id") Long id) {
         MemberFindResponse result= memberService.findMember(id);
