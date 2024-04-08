@@ -35,7 +35,7 @@ public class EnrollmentService {
      * @return EnrollmentBasicTypeResponse
      */
     @Transactional
-    public EnrollmentBasicTypeResponse requestEnrollment(Long lectureId, Long memberId){
+    public Long requestEnrollment(Long lectureId, Long memberId){
 
         // Validate : lecture, member의 존재여부 확인
         LectureAndMemberType targets = getMemberAndLecture(memberId, lectureId);
@@ -55,14 +55,8 @@ public class EnrollmentService {
                 .build();
         enrollment = enrollmentRepository.save(enrollment);
 
-        // Out : Object 변환 후 반환
-        EnrollmentBasicTypeResponse response = new EnrollmentBasicTypeResponse(
-                enrollment.getId(),
-                enrollment.getStatus(),
-                enrollment.getLecture().getId(),
-                enrollment.getMember().getId());
-
-        return response;
+        // Out
+       return enrollment.getId();
     }
 
     /**
@@ -73,7 +67,7 @@ public class EnrollmentService {
      * @return EnrollmentBasicTypeResponse
      */
     @Transactional
-    public EnrollmentBasicTypeResponse cancelEnrollment(Long enrollId, Long memberId){
+    public Long cancelEnrollment(Long enrollId, Long memberId){
 
         // Validate : 멤버가 존재하는 지 확인
         Member member = memberRepository.findById(memberId).orElseThrow(() -> {
@@ -89,15 +83,10 @@ public class EnrollmentService {
         // Update : Status 변경, 수정자 변경
         enrollment.updateStatus(EnrollmentStatus.CANCELLED);
         enrollment.updateModifiedMember(member);
-        enrollmentRepository.save(enrollment);
+        enrollment = enrollmentRepository.save(enrollment);
 
-        // Out : Object 변환 후 반환
-        EnrollmentBasicTypeResponse response = new EnrollmentBasicTypeResponse(
-                enrollment.getId(),
-                enrollment.getStatus(),
-                enrollment.getLecture().getId(),
-                enrollment.getMember().getId());
-        return response;
+        // Out
+        return enrollment.getId();
     }
 
 
@@ -110,7 +99,7 @@ public class EnrollmentService {
      * @return EnrollmentBasicTypeResponse
      */
     @Transactional
-    public EnrollmentBasicTypeResponse confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action){
+    public Long confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action){
 
         // Validate : 강의 소유자가 존재하는 지 확인
         Member tutor = memberRepository.findById(tutorId).orElseThrow(() -> {
@@ -126,7 +115,7 @@ public class EnrollmentService {
         // Update : Status 변경, 수정자 변경
         enrollment.updateStatus(action);
         enrollment.updateModifiedMember(tutor);
-        enrollmentRepository.save(enrollment);
+        enrollment = enrollmentRepository.save(enrollment);
 
         // 참여 승인 시 : Member <-> Lecture 연관 설정
         if(action.equals(EnrollmentStatus.ACCEPTED)){
@@ -149,12 +138,7 @@ public class EnrollmentService {
         }
 
         // Out : Object 변환 후 반환
-        EnrollmentBasicTypeResponse response = new EnrollmentBasicTypeResponse(
-                enrollment.getId(),
-                enrollment.getStatus(),
-                enrollment.getLecture().getId(),
-                enrollment.getMember().getId());
-        return response;
+       return enrollment.getId();
     }
 
 
