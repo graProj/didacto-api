@@ -2,28 +2,57 @@ package com.didacto.domain;
 
 import com.didacto.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Enrollment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "enrollment_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Long lectureId;
-
-    @Column(nullable = false)
-    private Long memberId;
-
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status = EnrollmentStatus.WAITING;
 
-    private Long modified_by;
+
+    /**
+     * 연관관꼐 매핑
+     */
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", nullable = false)
+    private Lecture lecture;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by", nullable = false)
+    private Member modified_by;
+
+
+    public void updateStatus(EnrollmentStatus status){
+        this.status = status;
+    }
+
+    public void updateModifiedMember(Member modifiedMember){
+        this.modified_by = modifiedMember;
+    }
+
+
 }

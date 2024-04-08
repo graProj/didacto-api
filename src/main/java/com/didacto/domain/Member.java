@@ -6,6 +6,9 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -36,6 +39,20 @@ public class Member {
     @CreatedDate
     @Column(nullable = false)
     private OffsetDateTime created_date;
+
+    /**
+     * 연관관계 세팅
+     */
+
+    @OneToMany(mappedBy = "owner")
+    private List<Lecture> own_lectures;
+
+    @OneToMany(mappedBy = "member")
+    private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "member")
+    private List<LectureMember> lectureMembers;
+
 
 
     /**
