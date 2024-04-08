@@ -4,11 +4,10 @@ import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.EnrollmentStatus;
-import com.didacto.dto.enrollment.EnrollmentBasicTypeResponse;
 import com.didacto.dto.enrollment.EnrollmentCancelRequest;
 import com.didacto.dto.enrollment.EnrollmentConfirmRequest;
 import com.didacto.dto.enrollment.EnrollmentRequest;
-import com.didacto.service.enrollment.EnrollmentService;
+import com.didacto.service.enrollment.EnrollmentCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "ENROLLEMENT-COMMAND API", description = "강의 구성원 등록 요청 및 처리 API") 
 public class EnrollementCommandController {
 
-    private final EnrollmentService enrollmentService;
+    private final EnrollmentCommandService enrollmentService;
 
     @PostMapping
     @PreAuthorize(AuthConstant.AUTH_USER)

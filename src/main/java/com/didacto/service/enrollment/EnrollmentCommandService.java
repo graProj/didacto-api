@@ -5,14 +5,12 @@ import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.*;
-import com.didacto.dto.enrollment.EnrollmentBasicTypeResponse;
 import com.didacto.dto.enrollment.LectureAndMemberType;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.lectureMemer.LectureMemberRepository;
 import com.didacto.repository.member.MemberRepository;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
-public class EnrollmentService {
+public class EnrollmentCommandService {
     private final EnrollmentRepository enrollmentRepository;
     private final LectureRepository lectureRepository;
     private final MemberRepository memberRepository;
@@ -32,7 +30,7 @@ public class EnrollmentService {
      * [학생 : 강의 참여 요청]
      * 해당 강의 참여를 교수자에게 요청한다.
      * @param lectureId - 강의 ID
-     * @return EnrollmentBasicTypeResponse
+     * @return Long - 초대 PK
      */
     @Transactional
     public Long requestEnrollment(Long lectureId, Long memberId){
@@ -64,7 +62,7 @@ public class EnrollmentService {
      * 참여 요청을 취소한다.
      * @param enrollId - 초대 ID
      * @param memberId - 멤버 ID
-     * @return EnrollmentBasicTypeResponse
+     * @return Long - 초대 PK
      */
     @Transactional
     public Long cancelEnrollment(Long enrollId, Long memberId){
@@ -77,7 +75,7 @@ public class EnrollmentService {
         // Validate & Find : 멤버와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
         Enrollment enrollment = enrollmentRepository.findWaitingEnrollment(enrollId, memberId);
         if(enrollment == null){
-            throw new NoSuchElementFoundException404(ErrorDefineCode.NOT_FOUNT_ENROLL);
+            throw new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL);
         }
 
         // Update : Status 변경, 수정자 변경
@@ -96,7 +94,7 @@ public class EnrollmentService {
      * @param enrollId - 초대 ID
      * @param tutorId - 현재 사용자(교수) ID
      * @param action - 승인/거절
-     * @return EnrollmentBasicTypeResponse
+     * @return Long - 초대 PK
      */
     @Transactional
     public Long confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action){
@@ -109,7 +107,7 @@ public class EnrollmentService {
         // Validate & Find : 강의 소유자와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
         Enrollment enrollment = enrollmentRepository.findWaitingEnrollmentByTutorId(enrollId, tutorId);
         if(enrollment == null){
-            throw new NoSuchElementFoundException404(ErrorDefineCode.NOT_FOUNT_ENROLL);
+            throw new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL);
         }
 
         // Update : Status 변경, 수정자 변경

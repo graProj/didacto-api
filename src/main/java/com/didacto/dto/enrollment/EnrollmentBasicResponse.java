@@ -1,8 +1,6 @@
 package com.didacto.dto.enrollment;
 
 import com.didacto.domain.EnrollmentStatus;
-import com.didacto.domain.Lecture;
-import com.didacto.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Schema(title = "Enrollment : 기본 데이터 Response")
-public class EnrollmentBasicTypeResponse {
+public class EnrollmentBasicResponse {
 
     @Schema(example = "1")
     private Long id;

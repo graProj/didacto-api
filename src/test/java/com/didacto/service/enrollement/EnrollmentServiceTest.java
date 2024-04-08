@@ -1,12 +1,10 @@
 package com.didacto.service.enrollement;
 
 import com.didacto.domain.*;
-import com.didacto.dto.enrollment.EnrollmentBasicTypeResponse;
-import com.didacto.dto.enrollment.EnrollmentCancelRequest;
-import com.didacto.dto.enrollment.EnrollmentConfirmRequest;
+import com.didacto.dto.enrollment.EnrollmentBasicResponse;
 import com.didacto.dto.enrollment.EnrollmentRequest;
-import com.didacto.dto.example.ExampleRequest;
-import com.didacto.service.enrollment.EnrollmentService;
+import com.didacto.service.enrollment.EnrollmentCommandService;
+import com.didacto.service.enrollment.EnrollmentQueryService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EnrollmentServiceTest {
 
     @Autowired
-    private EnrollmentService exampleService;
+    private EnrollmentCommandService enrollmentCommandService;
+
+    @Autowired
+    private EnrollmentQueryService enrollmentQueryService;
 
     @Autowired
     private EntityManager em;
@@ -52,7 +53,7 @@ public class EnrollmentServiceTest {
         //given
 
         //when
-        Long enrollment = exampleService.requestEnrollment(lectureId, studentId);
+        Long enrollment = enrollmentCommandService.requestEnrollment(lectureId, studentId);
 
         //then
         assertThat(enrollment).isNotNull();
@@ -64,13 +65,14 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Cancel_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long enrollment = exampleService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
 
-//        //when
-//        enrollment = exampleService.cancelEnrollment(enrollment.getId(), studentId);
-//
-//        //then
-//        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
+        //when
+        id = enrollmentCommandService.cancelEnrollment(id, studentId);
+
+        //then
+        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
 
     }
 
@@ -79,13 +81,15 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Accept_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long enrollment = exampleService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
 
-//        //when
-//        enrollment = exampleService.confirmEnrollment(enrollment.getId(), tutorId, EnrollmentStatus.ACCEPTED);
-//
-//        //then
-//        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.ACCEPTED);
+        //when
+        Long enrollId = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED);
+
+
+        //then
+        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.ACCEPTED);
     }
 
     @Test
@@ -93,13 +97,14 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Reject_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long enrollment = exampleService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
 
-//        //when
-//        enrollment = exampleService.confirmEnrollment(enrollment.getId(), tutorId, EnrollmentStatus.REJECTED);
-//
-//        //then
-//        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
+        //when
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED);
+
+        //then
+        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
     }
 
 
