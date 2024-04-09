@@ -2,10 +2,7 @@ package com.didacto.dto.enrollment;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -27,5 +24,5 @@ public class PageInfoResponse {
     private long totalPages;
 
     @Schema(description = "다음 페이지 존재여부", example = "true")
-    private boolean haveNext;
+    private Boolean haveNext;
 }

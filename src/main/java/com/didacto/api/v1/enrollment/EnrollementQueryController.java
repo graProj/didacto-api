@@ -31,7 +31,7 @@ public class EnrollementQueryController {
             "페이지네이션, 정렬 기준, 참여 요청 상태(WAITING/ACCEPTED/REJECTED/CANCELED)에 대해 필터링(모두 필터링하지 않을 시 전체조회)하여 조회합니다.<br>" +
             "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date : 1페이지를 10개 단위로 날짜 순으로 정렬하여 모든 상태 조회<br>" +
             "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date&waiting=true : 위에서 waiting 상태만 조회<br>" +
-            "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date&waiting=true&canceled=true : 위에서 cenceled 상태까지 함께 조회<br>"
+            "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date&waiting=true&canceled=true : 위에서 canceled 상태까지 함께 조회<br>"
     )
     public CommonResponse<EnrollmentListResponse> queryEnrollmentsByLecture(
             @Schema(description = "강의 PK", example = "1")
