@@ -68,4 +68,6 @@ public class EnrollementCommandController {
                 true, HttpStatus.OK, "참여 요청 처리가 완료되었습니다.", enroll
         );
     }
+
+
 }

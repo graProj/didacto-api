@@ -25,9 +25,45 @@ public class EnrollementQueryController {
 
     private final EnrollmentQueryService enrollmentQueryService;
 
-    @GetMapping("/{lectureId}")
+    @GetMapping("/{enrollId}")
+    @PreAuthorize(AuthConstant.AUTH_ALL)
+    @Operation(summary = "ENROLL_QUERY_01 : PK로 강의 참여 요청 데이터 조회 (공통)", description = "해당 PK에 해당하는 참여 요청 데이터 조회")
+    public CommonResponse<EnrollmentBasicResponse> queryEnrollmentById(
+            @Schema(description = "초대정보 PK", example = "1")
+            @PathVariable Long enrollId
+    ){
+        EnrollmentBasicResponse response = enrollmentQueryService.getEnrollmentById(enrollId);
+        return new CommonResponse(
+                true, HttpStatus.OK, "강의 참여 요청 데이터를 조회하였습니다", response
+        );
+    }
+
+    @GetMapping()
+    @PreAuthorize(AuthConstant.AUTH_USER)
+    @Operation(summary = "ENROLL_QUERY_02 : 강의 참여 요청 목록 조회 (학생)", description = "해당 학생이 요청한 참여 요청 목록들을 조회합니다.<br>" +
+            "페이지네이션, 정렬 기준, 참여 요청 상태(WAITING/ACCEPTED/REJECTED/CANCELED)에 대해 필터링(모두 필터링하지 않을 시 전체조회)하여 조회합니다.<br>" +
+            "규칙은 ENROLL_QUERY_01과 같습니다.")
+    public CommonResponse<EnrollmentListResponse> queryEnrollmentsByUser(
+
+            @RequestParam(required = false)
+            @Parameter(description = "정렬 기준(date/lecture)(생성일, 강의명)", example = "date")
+            String order,
+
+            // 페이지네이션, 검색 필터 정보 포함
+            @ParameterObject EnrollmentQueryConditionRequest request
+
+    ){
+        Long studentId = SecurityUtil.getCurrentMemberId();
+
+        EnrollmentListResponse response = enrollmentQueryService.getEnrollmentInfoList(null, studentId, request, order);
+        return new CommonResponse(
+                true, HttpStatus.OK, "강의 참여 요청 목록을 조회하였습니다", response
+        );
+    }
+
+    @GetMapping("/lecture/{lectureId}")
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
-    @Operation(summary = "ENROLL_QUERY_01 : 강의 참여 요청 목록 조회 (교수자)", description = "해당 강의의 참여 요청 목록들을 조회합니다.<br>" +
+    @Operation(summary = "ENROLL_QUERY_03 : 강의 참여 요청 목록 조회 (교수자)", description = "해당 강의의 참여 요청 목록들을 조회합니다.<br>" +
             "페이지네이션, 정렬 기준, 참여 요청 상태(WAITING/ACCEPTED/REJECTED/CANCELED)에 대해 필터링(모두 필터링하지 않을 시 전체조회)하여 조회합니다.<br>" +
             "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date : 1페이지를 10개 단위로 날짜 순으로 정렬하여 모든 상태 조회<br>" +
             "- http://localhost:8080/api/v1/enrollment/1?page=1&size=10&order=date&waiting=true : 위에서 waiting 상태만 조회<br>" +
@@ -56,28 +92,7 @@ public class EnrollementQueryController {
 
 
 
-    @GetMapping()
-    @PreAuthorize(AuthConstant.AUTH_USER)
-    @Operation(summary = "ENROLL_QUERY_02 : 강의 참여 요청 목록 조회 (학생)", description = "해당 학생이 요청한 참여 요청 목록들을 조회합니다.<br>" +
-            "페이지네이션, 정렬 기준, 참여 요청 상태(WAITING/ACCEPTED/REJECTED/CANCELED)에 대해 필터링(모두 필터링하지 않을 시 전체조회)하여 조회합니다.<br>" +
-            "규칙은 ENROLL_QUERY_01과 같습니다.")
-    public CommonResponse<EnrollmentListResponse> queryEnrollmentsByUser(
 
-            @RequestParam(required = false)
-            @Parameter(description = "정렬 기준(date/lecture)(생성일, 강의명)", example = "date")
-            String order,
-
-            // 페이지네이션, 검색 필터 정보 포함
-            @ParameterObject EnrollmentQueryConditionRequest request
-
-    ){
-        Long studentId = SecurityUtil.getCurrentMemberId();
-
-        EnrollmentListResponse response = enrollmentQueryService.getEnrollmentInfoList(null, studentId, request, order);
-        return new CommonResponse(
-                true, HttpStatus.OK, "강의 참여 요청 목록을 조회하였습니다", response
-        );
-    }
 
 
 }
