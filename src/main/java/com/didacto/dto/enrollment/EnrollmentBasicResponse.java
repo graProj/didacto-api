@@ -17,10 +17,11 @@ import java.time.OffsetDateTime;
 public class EnrollmentBasicResponse {
 
     @QueryProjection
-    public EnrollmentBasicResponse(Long id, EnrollmentStatus status, Long lecture_id, Long member_id, String member_email, String member_name, OffsetDateTime createdTime, OffsetDateTime modifiedTime) {
+    public EnrollmentBasicResponse(Long id, EnrollmentStatus status, Long lecture_id, String lecture_name, Long member_id, String member_email, String member_name, OffsetDateTime createdTime, OffsetDateTime modifiedTime) {
         this.id = id;
         this.status = status;
         this.lecture_id = lecture_id;
+        this.lecture_name = lecture_name;
         this.member_id = member_id;
         this.member_email = member_email;
         this.member_name = member_name;
@@ -36,6 +37,9 @@ public class EnrollmentBasicResponse {
 
     @Schema(example = "1")
     private Long lecture_id;
+
+    @Schema(example = "자료구조")
+    private String lecture_name;
 
     @Schema(example = "1")
     private Long member_id;

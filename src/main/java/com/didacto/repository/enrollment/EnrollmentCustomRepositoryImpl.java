@@ -7,8 +7,8 @@ import com.didacto.domain.LectureMember;
 import com.didacto.dto.enrollment.EnrollmentBasicResponse;
 import com.didacto.dto.enrollment.EnrollmentQueryConditionRequest;
 import com.didacto.dto.enrollment.QEnrollmentBasicResponse;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -73,36 +73,57 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
-    public List<EnrollmentBasicResponse> findEnrollmentsByLectureId(Long lectureId, EnrollmentQueryConditionRequest condition){
-        long page = condition.getPage();
-        long size = condition.getSize();
-        String order = condition.getOrder();
+    public List<EnrollmentBasicResponse> findEnrollmentsWithFilter(
+            Long lectureId, Long memberId, EnrollmentQueryConditionRequest condition, String order)
+    {
+        Long page = condition.getPage();
+        Long size = condition.getSize();
 
         long offset = (page - 1) * size; // 페이지네이션 Offset 계산
 
         // 동적 쿼리 : 정렬
         OrderSpecifier<?> orderSpecifier;
-        if (order.equals("name")) {
-            orderSpecifier = enrollment.member.name.asc();
-        } else {
+        if(order == null){
             orderSpecifier = enrollment.createdTime.desc();
         }
+        else if (order.equals("name")) {
+            orderSpecifier = enrollment.member.name.asc();
+        }
+        else if (order.equals("lecture")) {
+            orderSpecifier = enrollment.lecture.title.asc();
+        }
+        else if (order.equals("email")) {
+            orderSpecifier = enrollment.member.email.asc();
+        }
+        else {
+            orderSpecifier = enrollment.createdTime.desc();
+        }
+
+
+        // 동적 쿼리 : 조회 조건 (학생 ID, 강의 ID)
+        BooleanBuilder targetPredicate = new BooleanBuilder();
+        if (lectureId != null) {
+            targetPredicate.and(enrollment.lecture.id.eq(lectureId));
+        }
+
+        if (memberId != null) {
+            targetPredicate.and(enrollment.member.id.eq(memberId));
+        }
+
+        // 동적 쿼리 : 상태 필터 조건 (수락, 거절, 대기, 취소)
+        BooleanBuilder statusPredicate = filterStatus(condition);
 
 
         List<EnrollmentBasicResponse> enrolls = queryFactory.select(
                         new QEnrollmentBasicResponse(
                                 enrollment.id, enrollment.status,
-                                enrollment.lecture.id, enrollment.member.id,
+                                enrollment.lecture.id, enrollment.lecture.title,
+                                enrollment.member.id,
                                 enrollment.member.email, enrollment.member.name,
                                 enrollment.createdTime, enrollment.modifiedTime))
                 .from(enrollment)
                 .leftJoin(enrollment.member, member)
-                .where(enrollment.lecture.id.eq(lectureId), (
-                        filterStatus(condition.isWaiting(), EnrollmentStatus.WAITING)
-                                .or(filterStatus(condition.isCanceled(), EnrollmentStatus.CANCELLED))
-                                .or(filterStatus(condition.isAccepted(), EnrollmentStatus.ACCEPTED))
-                                .or(filterStatus(condition.isRejected(), EnrollmentStatus.REJECTED))
-                        ))
+                .where(targetPredicate, statusPredicate)
                 .orderBy(orderSpecifier)
                 .offset(offset)
                 .limit(size)
@@ -112,22 +133,44 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
-    public Long countEnrollmentsByLectureId(Long lectureId, EnrollmentQueryConditionRequest condition){
+    public Long countEnrollmentsWithFilter(Long lectureId, Long memberId, EnrollmentQueryConditionRequest condition){
+
+        // 동적 쿼리 : 조회 조건 (학생 ID, 강의 ID)
+        BooleanBuilder targetPredicate = new BooleanBuilder();
+        if (lectureId != null) {
+            targetPredicate.and(enrollment.lecture.id.eq(lectureId));
+        }
+
+        if (memberId != null) {
+            targetPredicate.and(enrollment.member.id.eq(memberId));
+        }
+
+        // 동적 쿼리 : 상태 필터 조건 (수락, 거절, 대기, 취소)
+        BooleanBuilder statusPredicate = filterStatus(condition);
 
         long total = queryFactory.select(enrollment)
                 .from(enrollment)
-                .where(enrollment.lecture.id.eq(lectureId), (
-                        filterStatus(condition.isWaiting(), EnrollmentStatus.WAITING)
-                                .or(filterStatus(condition.isCanceled(), EnrollmentStatus.CANCELLED))
-                                .or(filterStatus(condition.isAccepted(), EnrollmentStatus.ACCEPTED))
-                                .or(filterStatus(condition.isRejected(), EnrollmentStatus.REJECTED))
-                ))
+                .where(targetPredicate, statusPredicate)
                 .fetchCount();
 
         return total;
     }
 
-    private BooleanExpression filterStatus(boolean include, EnrollmentStatus status){
-        return include == true ? enrollment.status.eq(status) : null;
+
+    private BooleanBuilder filterStatus(EnrollmentQueryConditionRequest condition){
+        BooleanBuilder statusPredicate = new BooleanBuilder();
+        if (condition.getWaiting() != null && condition.getWaiting() == true) {
+            statusPredicate.or(enrollment.status.eq(EnrollmentStatus.WAITING));
+        }
+        if (condition.getCanceled() != null && condition.getCanceled() == true) {
+            statusPredicate.or(enrollment.status.eq(EnrollmentStatus.CANCELLED));
+        }
+        if (condition.getAccepted() != null && condition.getAccepted() == true) {
+            statusPredicate.or(enrollment.status.eq(EnrollmentStatus.ACCEPTED));
+        }
+        if (condition.getRejected() != null && condition.getRejected() == true) {
+            statusPredicate.or(enrollment.status.eq(EnrollmentStatus.REJECTED));
+        }
+        return statusPredicate;
     }
 }

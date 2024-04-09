@@ -50,21 +50,22 @@ public class EnrollmentQueryService {
     }
 
     /**
-     * [교수자 : 해당 강의 PK의 초대 정보 리스트 조회]
+     * [초대 정보 리스트 조회]
      * 해당 강의에 해당하는 초대 정보를 조회한다.
-     * @param lectureId - 강의 ID
+     * @param lectureId - 강의 ID - 해당 강의에 해당하는 초대 정보에 대해 조회한다. Null일 시 전체 강의 조회
+     * @param memberId - 학생 ID - 해당 학생이 보낸 초대 정보에 대해 조회한다. Null일 시 전체 학생 조회
      * @param condition - 페이지네이션과 필터를 포함한 조회 조건
      * @return EnrollmentListResponse
      */
-    public EnrollmentListResponse getEnrollmentInfoByLecture(Long lectureId, EnrollmentQueryConditionRequest condition){
+    public EnrollmentListResponse getEnrollmentInfoList(Long lectureId, Long memberId, EnrollmentQueryConditionRequest condition, String order){
         long page = condition.getPage();
         long size = condition.getSize();
 
         // Query : Enrollments 리스트 조회 : 페이지네이션 및 조건 필터링
-        List<EnrollmentBasicResponse> enrollments = enrollmentRepository.findEnrollmentsByLectureId(lectureId, condition);
+        List<EnrollmentBasicResponse> enrollments = enrollmentRepository.findEnrollmentsWithFilter(lectureId, memberId, condition, order);
 
         // Query : Pagenation을 위한 총 개수 집계
-        long count = enrollmentRepository.countEnrollmentsByLectureId(lectureId, condition);
+        long count = enrollmentRepository.countEnrollmentsWithFilter(lectureId, memberId, condition);
 
         // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
         long totalPage = (long) Math.ceil((double) count / size);

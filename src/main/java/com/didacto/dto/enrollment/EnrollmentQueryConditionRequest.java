@@ -10,24 +10,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EnrollmentQueryConditionRequest {
     @Parameter(description = "조회할 페이지 (1부터 시작)", example = "1", required = true)
-    private long page;
+    private Long page;
 
     @Parameter(description = "한 페이지에 조회할 데이터 수", example = "10", required = true)
-    private long size;
-
-    @Parameter(description = "정렬 기준(date, name)", example = "date", required = true)
-    private String order;
+    private Long size;
 
     @Parameter(description = "수락 대기 상태 포함", example = "true", required = false)
-    boolean waiting;
+    private Boolean waiting;
 
     @Parameter(description = "취소 상태 포함", example = "true", required = false)
-    boolean canceled;
+    private Boolean canceled;
 
     @Parameter(description = "승인 상태 포함", example = "true", required = false)
-    boolean accepted;
+    private Boolean accepted;
 
     @Parameter(description = "거절 상태 포함", example = "true", required = false)
-    boolean rejected;
+    private Boolean rejected;
 
 }
