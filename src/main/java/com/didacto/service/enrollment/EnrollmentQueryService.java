@@ -4,15 +4,13 @@ package com.didacto.service.enrollment;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.*;
-import com.didacto.dto.enrollment.EnrollmentBasicResponse;
-import com.didacto.dto.enrollment.LectureAndMemberType;
+import com.didacto.dto.enrollment.*;
 import com.didacto.repository.enrollment.EnrollmentRepository;
-import com.didacto.repository.lecture.LectureRepository;
-import com.didacto.repository.lectureMemer.LectureMemberRepository;
-import com.didacto.repository.member.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -20,9 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class EnrollmentQueryService {
     private final EnrollmentRepository enrollmentRepository;
-    private final LectureRepository lectureRepository;
-    private final MemberRepository memberRepository;
-    private final LectureMemberRepository lectureMemberRepository;
 
 
     /**
@@ -33,20 +28,61 @@ public class EnrollmentQueryService {
      */
     public EnrollmentBasicResponse getEnrollmentById(Long enrollmentId){
 
-       Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> {
+        // Query
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> {
            throw new NoSuchElementFoundException404(ErrorDefineCode.NOT_FOUND_ENROLL);
-       });
-
-        // Insert : 데이터베이스 저장
-        EnrollmentBasicResponse response = new EnrollmentBasicResponse(
-                enrollment.getId(),
-                enrollment.getStatus(),
-                enrollment.getLecture().getId(),
-                enrollment.getMember().getId());
+        });
 
 
         // Out
-       return response;
+        EnrollmentBasicResponse response = EnrollmentBasicResponse.builder()
+                .id(enrollment.getId())
+                .status(enrollment.getStatus())
+                .lecture_id(enrollment.getLecture().getId())
+                .member_id(enrollment.getMember().getId())
+                .member_email(enrollment.getMember().getEmail())
+                .member_name(enrollment.getMember().getName())
+                .createdTime(enrollment.getCreatedTime())
+                .modifiedTime(enrollment.getModifiedTime())
+                .build();
+
+        return response;
     }
+
+    /**
+     * [교수자 : 해당 강의 PK의 초대 정보 리스트 조회]
+     * 해당 강의에 해당하는 초대 정보를 조회한다.
+     * @param lectureId - 강의 ID
+     * @param condition - 페이지네이션과 필터를 포함한 조회 조건
+     * @return EnrollmentListResponse
+     */
+    public EnrollmentListResponse getEnrollmentInfoByLecture(Long lectureId, EnrollmentQueryConditionRequest condition){
+        long page = condition.getPage();
+        long size = condition.getSize();
+
+        // Query : Enrollments 리스트 조회 : 페이지네이션 및 조건 필터링
+        List<EnrollmentBasicResponse> enrollments = enrollmentRepository.findEnrollmentsByLectureId(lectureId, condition);
+
+        // Query : Pagenation을 위한 총 개수 집계
+        long count = enrollmentRepository.countEnrollmentsByLectureId(lectureId, condition);
+
+        // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
+        long totalPage = (long) Math.ceil((double) count / size);
+        boolean isHaveNext = page < totalPage;
+
+        // Out
+        PageInfoResponse pageInfo = PageInfoResponse.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .totalPages(totalPage)
+                .totalElements(count)
+                .haveNext(isHaveNext)
+                .build();
+
+        EnrollmentListResponse listInfo = new EnrollmentListResponse(enrollments, pageInfo);
+        return listInfo;
+    }
+
+
 
 }

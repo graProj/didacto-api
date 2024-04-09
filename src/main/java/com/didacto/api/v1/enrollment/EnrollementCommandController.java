@@ -26,7 +26,7 @@ public class EnrollementCommandController {
 
     @PostMapping
     @PreAuthorize(AuthConstant.AUTH_USER)
-    @Operation(summary = "ENROLL_COMMAND_01 : 강의 참여 요청 (학생)", description = "해당 강의의 구성원으로 참여를 요청합니다. \\n" +
+    @Operation(summary = "ENROLL_COMMAND_01 : 강의 참여 요청 (학생)", description = "해당 강의의 구성원으로 참여를 요청합니다. <br>" +
             "이미 해당 강의의 소속이거나 대기중인 해당 강의에 대한 참여 요청이 있을 시에는 보낼 수 없습니다.")
     public CommonResponse<Long> createRequest(
             @Valid @RequestBody EnrollmentRequest request
