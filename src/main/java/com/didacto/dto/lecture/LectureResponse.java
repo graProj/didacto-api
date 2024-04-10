@@ -1,6 +1,7 @@
 package com.didacto.dto.lecture;
 
 import com.didacto.domain.Lecture;
+import com.didacto.dto.member.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.time.OffsetDateTime;
 public class LectureResponse {
     private Long id;
     private String title;
-    private Long ownerId;
+    private MemberResponse owner;
     private OffsetDateTime start_time;
     private OffsetDateTime end_time;
     private Boolean deleted;
@@ -21,7 +22,7 @@ public class LectureResponse {
     public LectureResponse(Lecture lecture) {
         this.id = lecture.getId();
         this.title = lecture.getTitle();
-        this.ownerId = lecture.getOwnerId();
+        this.owner = new MemberResponse(lecture.getOwner());
         this.start_time = lecture.getStartTime();
         this.end_time = lecture.getEndTime();
         this.deleted = lecture.getDeleted();
