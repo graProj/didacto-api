@@ -29,7 +29,6 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-
     public Long signup(SignUpRequest req) {
         validateSignUpInfo(req);
         Member member = createSignupFormOfUser(req);

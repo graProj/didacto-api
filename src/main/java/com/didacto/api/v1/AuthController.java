@@ -37,6 +37,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "AUTH_01 : 회원가입 API", description = "회원가입을 시킨다.")
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
             @ApiResponse(responseCode = "409", description = "중복된 이메일",
@@ -45,7 +46,7 @@ public class AuthController {
 
     public CommonResponse<Long> register(@Valid @RequestBody SignUpRequest signUpRequest) {
         Long result = authService.signup(signUpRequest);
-        return new CommonResponse<>(true, HttpStatus.OK, "회원 가입에 성공했습니다.", result);
+        return new CommonResponse<>(true, HttpStatus.CREATED, "회원 가입에 성공했습니다.", result);
     }
 
 
