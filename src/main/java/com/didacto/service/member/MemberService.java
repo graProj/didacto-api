@@ -43,8 +43,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void editMemberInfo(String userEmail, MemberEditRequest memberEditRequest) {
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(() -> {
+    public void editMemberInfo(Long userId, MemberEditRequest memberEditRequest) {
+        Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
         });
 
@@ -62,8 +62,8 @@ public class MemberService {
 
 
     @Transactional
-    public void deleteMember(String userEmail) {
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(() -> {
+    public void deleteMember(Long userId) {
+        Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
         });
         memberRepository.delete(member);

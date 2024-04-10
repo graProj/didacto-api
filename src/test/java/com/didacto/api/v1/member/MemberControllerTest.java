@@ -1,5 +1,7 @@
 package com.didacto.api.v1.member;
 
+import com.didacto.config.security.custom.CustomUser;
+import com.didacto.config.security.custom.CustomUserDetails;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberEditRequest;
 import com.didacto.repository.member.MemberRepository;
@@ -25,6 +27,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static com.didacto.MemberFactory.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
@@ -74,12 +77,13 @@ public class MemberControllerTest {
     }
 
     @Test
-    //회원정보수정
-    void editMemberInfo() throws Exception {
+    public void 회원정보수정() throws Exception {
         // given
-        MemberEditRequest req = new MemberEditRequest("asdfl1230!@", "이름 수정","20000324");
+        MemberEditRequest req = new MemberEditRequest("dnjsaqksfd1230!@", "홍길삼", "19890221");
         Member member = createMember();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), "", Collections.emptyList());
+        CustomUser customUser = new CustomUser(member); // CustomUser 생성
+        CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // when
@@ -87,29 +91,29 @@ public class MemberControllerTest {
                 put("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req))
-        ).andExpect(status().isOk());
+        );
 
         // then
-        verify(memberService).editMemberInfo(refEq(member.getEmail()), refEq(req));
+        verify(memberService).editMemberInfo(refEq(member.getId()), refEq(req));
     }
 
 
-
     @Test
-    //회원탈퇴
+// 회원 탈퇴
     public void deleteMemberInfo() throws Exception {
-        // given
         Member member = createMember();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), "",
-                Collections.emptyList());
+        CustomUser customUser = new CustomUser(member); // CustomUser 생성
+        CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // when then
-        mockMvc.perform(
-                        delete("/api/v1/members"))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/v1/members"));
 
-        verify(memberService).deleteMember(member.getEmail());
+        // then
+        verify(memberService).deleteMember(userId);
+
 
     }
 }

@@ -52,9 +52,9 @@ public class MemberController {
     @Operation(summary = "MEMBER_03 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
     @PutMapping("/members")
     public CommonResponse editMemberInfo(@RequestBody MemberEditRequest memberEditRequest){
-        String userEmail = SecurityUtil.getCurrentMemberEmail();
-        memberService.editMemberInfo(userEmail, memberEditRequest);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userEmail,
+        Long userId = SecurityUtil.getCurrentMemberId();
+        memberService.editMemberInfo(userId, memberEditRequest);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId,
                 memberEditRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -65,8 +65,8 @@ public class MemberController {
     @Operation(summary = "MEMBER_04 : 회원 탈퇴 API", description = "회원을 탈퇴시킨다.")
     @DeleteMapping("/members")
     public CommonResponse deleteMemberInfo() {
-        String userEmail = SecurityUtil.getCurrentMemberEmail();
-        memberService.deleteMember(userEmail);
+        Long userId = SecurityUtil.getCurrentMemberId();
+        memberService.deleteMember(userId);
         return new CommonResponse<>(true, HttpStatus.OK, "회원이 탈퇴되었습니다.", null);
     }
 
