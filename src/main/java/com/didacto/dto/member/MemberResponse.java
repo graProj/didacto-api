@@ -17,7 +17,7 @@ public class MemberResponse {
     private String name;
     private OffsetDateTime birth;
     private Authority role;
-    private OffsetDateTime created_date;
+    private OffsetDateTime createdTime;
 
     public MemberResponse(Member member) {
         this.id = member.getId();
@@ -25,6 +25,6 @@ public class MemberResponse {
         this.name = member.getName();
         this.birth = member.getBirth();
         this.role = member.getRole();
-        this.created_date = member.getCreatedTime();
+        this.createdTime = member.getCreatedTime();
     }
 }
