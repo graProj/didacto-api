@@ -1,20 +1,20 @@
 package com.didacto.domain;
 
+import com.didacto.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -36,16 +36,14 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Authority role;
 
-    @CreatedDate
-    @Column(nullable = false)
-    private OffsetDateTime created_date;
+    private Boolean deleted;
 
     /**
      * 연관관계 세팅
      */
 
     @OneToMany(mappedBy = "owner")
-    private List<Lecture> own_lectures;
+    private List<Lecture> ownLectures;
 
     @OneToMany(mappedBy = "member")
     private List<Enrollment> enrollments;
@@ -53,24 +51,24 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<LectureMember> lectureMembers;
 
-
-
-    /**
-     * 생성일, 수정일 값 세팅
-     */
-    @PrePersist
-    public void prePersist(){
-        this.created_date = OffsetDateTime.now();
-    }
-
-
     @Builder
-    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth) {
+    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
         this.birth = birth;
+        this.deleted = false;
+    }
+
+    public void modify(String password,String name, OffsetDateTime birth) {
+        this.password = password;
+        this.name = name;
+        this.birth = birth;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

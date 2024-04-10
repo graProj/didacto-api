@@ -15,12 +15,12 @@ public class LectureCommandController {
     private final LectureCommandService lectureCommandService;
 
     @PostMapping
-    public CommonResponse<Lecture> create(
+    public CommonResponse<Long> create(
             @RequestBody LectureCreationRequest request
     ){
         Lecture lecture = lectureCommandService.create(request);
-        return new CommonResponse<Lecture>(
-                true, HttpStatus.OK, null, lecture
+        return new CommonResponse(
+                true, HttpStatus.OK, null, lecture.getId()
         );
     }
 }
