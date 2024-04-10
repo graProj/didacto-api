@@ -78,7 +78,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void 회원정보수정() throws Exception {
+    public void edidMember() throws Exception {
         // given
         MemberEditRequest req = new MemberEditRequest("dnjsaqksfd1230!@", "홍길삼", "19890221");
         Member member = createMember();
