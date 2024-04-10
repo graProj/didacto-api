@@ -54,7 +54,6 @@ public class Lecture extends BaseEntity {
             LectureState state,
             OffsetDateTime startTime,
             OffsetDateTime endTime,
-            Boolean deleted,
             Member owner,
             List<Enrollment> enrollments,
             List<LectureMember> lectureMembers
@@ -64,10 +63,17 @@ public class Lecture extends BaseEntity {
         this.state = state;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.deleted = deleted;
+        this.deleted = true;
         this.owner = owner;
         this.enrollments = enrollments;
         this.lectureMembers = lectureMembers;
     }
 
+    public void modify(String title) {
+        this.title = title;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

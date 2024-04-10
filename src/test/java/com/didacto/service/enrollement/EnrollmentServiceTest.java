@@ -261,14 +261,12 @@ public class EnrollmentServiceTest {
                 .title("ENROLLTEST_LECTURE")
                 .owner(tutor)
                 .state(LectureState.WAITING)
-                .deleted(false)
                 .build();
 
         Lecture lecture2 = Lecture.builder()
                 .title("ENROLLTEST_LECTURE2")
                 .owner(tutor)
                 .state(LectureState.WAITING)
-                .deleted(false)
                 .build();
 
         em.persist(lecture);
