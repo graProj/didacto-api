@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberFindResponse {
+public class MemberResponse {
 
     private String email;
     private String name;
 
-    public static MemberFindResponse toDto(Member member) {
-        return new MemberFindResponse(member.getEmail(), member.getName());
+    public static MemberResponse toDto(Member member) {
+        return new MemberResponse(member.getEmail(), member.getName());
     }
 }

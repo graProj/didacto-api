@@ -2,13 +2,10 @@ package com.didacto.api.v1.member;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.SecurityUtil;
-import com.didacto.domain.Member;
-import com.didacto.dto.member.MemberEditRequest;
-import com.didacto.dto.member.MemberFindResponse;
-import com.didacto.repository.member.MemberRepository;
+import com.didacto.dto.member.MemberModificationRequest;
+import com.didacto.dto.member.MemberResponse;
 import com.didacto.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,14 +30,14 @@ public class MemberController {
     @GetMapping("/members")
     @ResponseStatus(HttpStatus.OK)
     public CommonResponse findAllMembers(){
-        List<MemberFindResponse> result =  memberService.findAllMembers();
+        List<MemberResponse> result =  memberService.queryAll();
         return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
     }
 
     @Operation(summary = "MEMBER_02 : 회원 개별 조회 API", description = "개별 회원을 조회한다.")
     @GetMapping("/members/{id}")
     public CommonResponse findMember(@PathVariable("id") Long id) {
-        MemberFindResponse result= memberService.findMember(id);
+        MemberResponse result= memberService.query(id);
         return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
 
     }
@@ -51,9 +48,9 @@ public class MemberController {
 
     @Operation(summary = "MEMBER_03 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
     @PutMapping("/members")
-    public CommonResponse editMemberInfo(@RequestBody MemberEditRequest memberEditRequest){
+    public CommonResponse editMemberInfo(@RequestBody MemberModificationRequest memberEditRequest){
         Long userId = SecurityUtil.getCurrentMemberId();
-        memberService.editMemberInfo(userId, memberEditRequest);
+        memberService.modifyInfo(userId, memberEditRequest);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userId,
                 memberEditRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,7 +63,7 @@ public class MemberController {
     @DeleteMapping("/members")
     public CommonResponse deleteMemberInfo() {
         Long userId = SecurityUtil.getCurrentMemberId();
-        memberService.deleteMember(userId);
+        memberService.delete(userId);
         return new CommonResponse<>(true, HttpStatus.OK, "회원이 탈퇴되었습니다.", null);
     }
 

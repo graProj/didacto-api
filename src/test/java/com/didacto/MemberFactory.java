@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 public class MemberFactory {
 
-    public static Member createMember(){
+    public static Member createMember() {
         Member member = Member.builder()
                 .id(5L)
                 .email("gildong@naver.com")
@@ -18,13 +18,13 @@ public class MemberFactory {
                 .password("gildong123!!")
                 .birth(parseBirth("20000621"))
                 .role(Authority.ROLE_USER)
+                .deleted(false)
                 .build();
         return member;
     }
 
-    private static OffsetDateTime parseBirth(String birth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate birthDate = LocalDate.parse(birth, formatter);
-        return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
+    private static OffsetDateTime parseBirth(String birthString) {
+        // 생년월일 문자열을 OffsetDateTime으로 파싱하는 로직을 구현해야 함
+        return OffsetDateTime.now(); // 임시로 현재 시간을 반환하는 예시
     }
 }

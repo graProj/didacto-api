@@ -1,11 +1,10 @@
 package com.didacto.service.member;
 
 import com.didacto.common.ErrorDefineCode;
-import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Member;
-import com.didacto.dto.member.MemberEditRequest;
-import com.didacto.dto.member.MemberFindResponse;
+import com.didacto.dto.member.MemberModificationRequest;
+import com.didacto.dto.member.MemberResponse;
 import com.didacto.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,26 +25,26 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public List<MemberFindResponse> findAllMembers() {
+    public List<MemberResponse> queryAll() {
         List<Member> members = memberRepository.findAll();
         return members.stream()
-                .map(MemberFindResponse::toDto)
+                .map(MemberResponse::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findMember(Long id) {
+    public MemberResponse query(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
 
-        return MemberFindResponse.toDto(member);
+        return MemberResponse.toDto(member);
     }
 
     @Transactional
-    public void editMemberInfo(Long userId, MemberEditRequest memberEditRequest) {
+    public void modifyInfo(Long userId, MemberModificationRequest memberEditRequest) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
-            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
+            throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
 
         member.modify(
@@ -62,11 +61,12 @@ public class MemberService {
 
 
     @Transactional
-    public void deleteMember(Long userId) {
+    public void delete(Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
-            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
+            throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
-        memberRepository.delete(member);
+        member.delete();
+        memberRepository.save(member);
     }
 }
 

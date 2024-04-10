@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(title = "회원정보 수정 : Request 스키마")  // Swagger Docs 표시 : 스키마 설명
-public class MemberEditRequest {
+public class MemberModificationRequest {
 
     @NotBlank(message = "변경할 비밀번호를 입력해주세요.")
     @Schema(description = "비밀번호", example = "gildong123!@")
