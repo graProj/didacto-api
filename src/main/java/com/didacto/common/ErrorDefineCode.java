@@ -21,9 +21,9 @@ public enum ErrorDefineCode {
     AUTH_AUTHORITY_FAIL("ERR_10","USER와 ADMIN중 선택해야합니다."),
     MEMBER_NOT_FOUND("ERR_11","회원을 찾을 수 없습니다."),
     USER_NOT_FOUND("ENROLL_1", "해당 사용자를 찾을 수 없습니다."),
-    ALREADY_ENROLL_REQUEST("ENROLL_2", "이미 교수자에게 강의 참여 요청을 보냈습니다."),
-    ALREADY_JOIN("ENROLL_3", "이미 강의에 참여된 상태입니다."),
-    ALREADY_ENROLL("ENROLL_4", "참여 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 참여 처리에 대한 사용자의 권한이 없습니다."),
+    ALREADY_ENROLL_REQUEST("ENROLL_2", "이미 교수자에게 강의 등록 요청을 보냈습니다."),
+    ALREADY_JOIN("ENROLL_3", "이미 강의에 등록된 상태입니다."),
+    ALREADY_ENROLL("ENROLL_4", "등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다."),
     NOT_FOUND_ENROLL("ENROLL_5", "해당 초대 정보를 찾을 수 없습니다."),
     ;
 

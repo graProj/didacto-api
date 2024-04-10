@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(title = "Enrollemnt : 강의 참여 요청")
+@Schema(title = "Enrollemnt : 강의 등록 요청")
 public class EnrollmentRequest {
 
     @Schema(example = "1")

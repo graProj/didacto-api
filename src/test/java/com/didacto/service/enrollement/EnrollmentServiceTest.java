@@ -57,7 +57,7 @@ public class EnrollmentServiceTest {
         //given
 
         //when
-        Long enrollment = enrollmentCommandService.requestEnrollment(lectureId, studentId);
+        Long enrollment = enrollmentCommandService.requestEnrollment(lectureId, studentId).getId();
 
         //then
         assertThat(enrollment).isNotNull();
@@ -69,10 +69,10 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Cancel_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId).getId();
 
         //when
-        id = enrollmentCommandService.cancelEnrollment(id, studentId);
+        id = enrollmentCommandService.cancelEnrollment(id, studentId).getId();
 
         //then
         EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
@@ -85,10 +85,10 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Accept_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId).getId();
 
         //when
-        Long enrollId = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED);
+        Long enrollId = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED).getId();
 
 
         //then
@@ -101,10 +101,10 @@ public class EnrollmentServiceTest {
     public void testEnrollment_Reject_Enrollment() throws Exception {
         //given
         EnrollmentRequest request = new EnrollmentRequest(lectureId);
-        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId);
+        Long id = enrollmentCommandService.requestEnrollment(request.getLectureId(), studentId).getId();
 
         //when
-        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED);
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED).getId();
 
         //then
         EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
@@ -112,7 +112,7 @@ public class EnrollmentServiceTest {
     }
 
     @Test
-    @DisplayName("Enrollment : 강의 참여요청 목록 조회 : 강의실 ID로 조회")
+    @DisplayName("Enrollment : 강의 등록요청 목록 조회 : 강의실 ID로 조회")
     public void testEnrollment_Query_Enrollment_ByLectureId() throws Exception {
 
         // given
@@ -127,7 +127,7 @@ public class EnrollmentServiceTest {
         EnrollmentListResponse enrollments3 =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, getReject, "date");
 
         // then
-        // 총 참여요청 개수 4개
+        // 총 등록요청 개수 4개
         assertThat(enrollments.getEnrollments().size()).isEqualTo(4);
         // 총 Accept 개수 2개
         assertThat(enrollments2.getEnrollments().size()).isEqualTo(2);
@@ -151,7 +151,7 @@ public class EnrollmentServiceTest {
         EnrollmentListResponse enrollments3 =  enrollmentQueryService.getEnrollmentInfoList(null, studentId, getReject, "date");
 
         // then
-        // 총 참여요청 개수 4개
+        // 총 등록요청 개수 4개
         assertThat(enrollments.getEnrollments().size()).isEqualTo(4);
         // 총 Accept 개수 1개
         assertThat(enrollments2.getEnrollments().size()).isEqualTo(1);
@@ -196,26 +196,26 @@ public class EnrollmentServiceTest {
     }
 
     private void enrollListGiven(){
-        // given : Student 1 -> Lecture 1 참여요청
+        // given : Student 1 -> Lecture 1 등록요청
         // Cancel 1, Reject 1, Accept 1
         EnrollmentRequest givenRequest = new EnrollmentRequest(lectureId);
-        Long id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId);
-        id = enrollmentCommandService.cancelEnrollment(id, studentId);
-        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId);
-        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED);
-        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId);
-        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED);
+        Long id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId).getId();
+        id = enrollmentCommandService.cancelEnrollment(id, studentId).getId();
+        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId).getId();
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED).getId();
+        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId).getId();
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED).getId();
 
-        // given : Student 2 -> Lecture 1 참여요청
+        // given : Student 2 -> Lecture 1 등록요청
         // Accept 1
-        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId2);
-        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED);
+        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId2).getId();
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.ACCEPTED).getId();
 
-        // given : Student 1 -> Lecture 2 참여요청
+        // given : Student 1 -> Lecture 2 등록요청
         // Accept 1
         givenRequest = new EnrollmentRequest(lectureId2);
-        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId);
-        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED);
+        id = enrollmentCommandService.requestEnrollment(givenRequest.getLectureId(), studentId).getId();
+        id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED).getId();
     }
 
 

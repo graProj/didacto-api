@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(title = "Enrollemnt : 참여요청 취소")
+@Schema(title = "Enrollemnt : 등록요청 취소")
 public class EnrollmentCancelRequest {
 
     @Schema(example = "1")
