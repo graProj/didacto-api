@@ -29,6 +29,7 @@ import java.util.Optional;
 import static com.didacto.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -101,6 +102,7 @@ public class MemberControllerTest {
     @Test
 // 회원 탈퇴
     public void deleteMemberInfo() throws Exception {
+        // given
         Member member = createMember();
         CustomUser customUser = new CustomUser(member); // CustomUser 생성
         CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
@@ -108,12 +110,13 @@ public class MemberControllerTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // when then
+        Long userId = member.getId(); // 회원의 ID를 얻어옴
+
+        // when
         mockMvc.perform(delete("/api/v1/members"));
 
         // then
-        verify(memberService).deleteMember(userId);
-
-
+        verify(memberService).deleteMember(eq(userId));
     }
+
 }
