@@ -36,6 +36,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Authority role;
 
+    private Boolean deleted;
+
     /**
      * 연관관계 세팅
      */
@@ -50,12 +52,23 @@ public class Member extends BaseEntity {
     private List<LectureMember> lectureMembers;
 
     @Builder
-    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth) {
+    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
         this.birth = birth;
+        this.deleted = false;
+    }
+
+    public void modify(String password,String name, OffsetDateTime birth) {
+        this.password = password;
+        this.name = name;
+        this.birth = birth;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

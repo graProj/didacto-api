@@ -3,12 +3,14 @@ package com.didacto.dto.member;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberResponse {
     private Long id;
     private String email;
