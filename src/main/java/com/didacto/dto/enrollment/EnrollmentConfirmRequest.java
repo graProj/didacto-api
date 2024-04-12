@@ -15,12 +15,13 @@ import lombok.NoArgsConstructor;
 @Schema(title = "Enrollemnt : 등록요청 상태 변경 스키마")
 public class EnrollmentConfirmRequest {
 
-    @Schema(example = "1", required = true, description = "에러 유형 (500, 404, 403, 415), 그 외 정상 ")
+    @NotBlank(message = "등록요청 기록의 ID가 입력되지 않았습니다.")
+    @Schema(example = "1", required = true)
     private Long enrollmentId;
 
-    @NotBlank(message = "등록요청 기록의 ID가 입력되지 않았습니다.")
+    @NotBlank(message = "동작을 입력해주세요")
     @Pattern(regexp = "^(ACCEPTED|REJECTED)$", message = "동작은 승인(ACCEPTED) 혹은 거절(REJECTED) 둘 중 하나여야 합니다.")
-    @Schema(example = "ACCEPTED || REJECTED", description = "에러 유형 (500, 404, 403, 415), 그 외 정상 ")
+    @Schema(example = "ACCEPTED || REJECTED")
     private String action;
 
 }
