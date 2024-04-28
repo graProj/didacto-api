@@ -41,9 +41,16 @@ public class AuthService {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(() -> {
             throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
         });
-        validatePassword(req, member);
-        TokenDto token = generateToken(member);
-        return new TokenResponse(token.getAccessToken(), token.getRefreshToken());
+
+        if(!member.getDeleted()){
+            validatePassword(req, member);
+            TokenDto token = generateToken(member);
+            return new TokenResponse(token.getAccessToken(), token.getRefreshToken());
+
+        }else{
+            throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
+        }
+
     }
 
 
@@ -52,8 +59,13 @@ public class AuthService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
             throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
         });
-        TokenDto token = generateToken(member);
-        return new TokenResponse(token.getAccessToken(), null);
+        if(!member.getDeleted()){
+            TokenDto token = generateToken(member);
+            return new TokenResponse(token.getAccessToken(), null);
+        }else{
+            throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
+        }
+
     }
 
     private Member createSignupFormOfUser(SignUpRequest req) {
