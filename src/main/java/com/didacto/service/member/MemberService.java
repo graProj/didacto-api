@@ -1,6 +1,7 @@
 package com.didacto.service.member;
 
 import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
@@ -28,6 +29,7 @@ public class MemberService {
     public List<MemberResponse> queryAll() {
         List<Member> members = memberRepository.findAll();
         return members.stream()
+                .filter(member -> !member.getDeleted())
                 .map(MemberResponse::new)
                 .collect(Collectors.toList());
     }
@@ -38,7 +40,13 @@ public class MemberService {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
 
-        return new MemberResponse(member);
+        if(!member.getDeleted()){
+            return new MemberResponse(member);
+        }else{
+            throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
+        }
+
+
     }
 
     @Transactional
@@ -47,10 +55,15 @@ public class MemberService {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
 
-        member.modify(
-                passwordEncoder.encode(memberEditRequest.getPassword()),
-                memberEditRequest.getName(),
-                parseBirth(memberEditRequest.getBirth()));
+        if(!member.getDeleted()){
+            member.modify(
+                    passwordEncoder.encode(memberEditRequest.getPassword()),
+                    memberEditRequest.getName(),
+                    parseBirth(memberEditRequest.getBirth()));
+        }else{
+            throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
+        }
+
     }
 
     private OffsetDateTime parseBirth(String birth) {

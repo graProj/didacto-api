@@ -62,7 +62,8 @@ public class AuthService {
         if(!member.getDeleted()){
             TokenDto token = generateToken(member);
             return new TokenResponse(token.getAccessToken(), null);
-        }else{
+        }
+        else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
         }
 
