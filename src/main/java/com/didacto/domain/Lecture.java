@@ -63,7 +63,7 @@ public class Lecture extends BaseEntity {
         this.state = state;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.deleted = true;
+        this.deleted = false;
         this.owner = owner;
         this.enrollments = enrollments;
         this.lectureMembers = lectureMembers;

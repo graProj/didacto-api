@@ -5,7 +5,9 @@ import com.didacto.domain.Lecture;
 import com.didacto.domain.LectureState;
 import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureCreationRequest;
+import com.didacto.dto.lecture.LectureListResponse;
 import com.didacto.dto.lecture.LectureModificationRequest;
+import com.didacto.dto.lecture.LecturePagingRequest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,6 +100,35 @@ public class LectureServiceTest {
         assertThat(lecture).isNotNull();
     }
 
+    @Test
+    @DisplayName("Lecture : 키워드로 강의 리스트 조회")
+    public void 강의_키워드로_리스트_조회() {
+        // given, when
+        LectureListResponse lectures = lectureQueryService.queryEnrollmentListByKeyword(
+                new LecturePagingRequest(1L, 10L), "date", "TestCode"
+        );
+
+        // then
+        assertThat(lectures.getLectures().size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Lecture : 강의 전체 리스트 조회")
+    public void 강의_전체_리스트_조회() {
+        // given, when
+        LectureListResponse lectures = lectureQueryService.queryEnrollmentListByKeyword(
+                new LecturePagingRequest(1L, 10L), "date", null
+        );
+
+        // then
+        assertThat(lectures.getLectures())
+                .extracting(e -> e.getId())
+                .contains(lecturId);
+
+    }
+
+
+
     private void initializeData(){
         Member tutor = Member.builder()
                 .email("enrolltec@test.com")
@@ -113,8 +144,22 @@ public class LectureServiceTest {
                 .state(LectureState.WAITING)
                 .build();
 
+        Lecture lecture2 = Lecture.builder()
+                .title("TestCodeLecture1")
+                .owner(tutor)
+                .state(LectureState.WAITING)
+                .build();
+
+        Lecture lecture3 = Lecture.builder()
+                .title("TestCodeLecture2")
+                .owner(tutor)
+                .state(LectureState.WAITING)
+                .build();
+
         em.persist(tutor);
         em.persist(lecture);
+        em.persist(lecture2);
+        em.persist(lecture3);
         em.clear();
         em.flush();
 
