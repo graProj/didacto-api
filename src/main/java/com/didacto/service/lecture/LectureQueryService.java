@@ -9,6 +9,7 @@ import com.didacto.dto.enrollment.EnrollmentQueryConditionRequest;
 import com.didacto.dto.enrollment.PageInfoResponse;
 import com.didacto.dto.lecture.LectureListResponse;
 import com.didacto.dto.lecture.LecturePagingRequest;
+import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.repository.lecture.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,27 @@ public class LectureQueryService {
         long page = pageInfo.getPage();
         long size = pageInfo.getSize();
 
-        LectureListResponse lectures = new LectureListResponse();
-        return lectures;
+        // Query : Enrollments 리스트 조회 : 페이지네이션 및 조건 필터링
+        List<LectureResponse> lectures = lectureRepository.findLecturesByKeyword(order, keyword, page, size);
+
+        // Query : Pagenation을 위한 총 개수 집계
+        long count = lectureRepository.countLecturesByKeyword(keyword);
+
+        // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
+        long totalPage = (long) Math.ceil((double) count / size);
+        boolean isHaveNext = page < totalPage;
+
+        // Out
+        PageInfoResponse pageResult = PageInfoResponse.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .totalPages(totalPage)
+                .totalElements(count)
+                .haveNext(isHaveNext)
+                .build();
+
+        LectureListResponse result = new LectureListResponse(lectures, pageResult);
+        return result;
+
     }
 }

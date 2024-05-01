@@ -38,26 +38,25 @@ public class LectureQueryController {
 
     @GetMapping("")
     @PreAuthorize(AuthConstant.AUTH_ALL)
-    @Operation(summary = "ENROLL_QUERY_02 : 키워드로 강의 리스트 검색", description = "키워드가 포함된 이름의 강의 리스트를 검색합니다.<br>" +
+    @Operation(summary = "ENROLL_QUERY_02 : 강의 리스트 조회 (+키워드 검색)", description = "키워드가 포함된 이름의 강의 리스트를 검색합니다.<br>" +
             "페이지네이션 정보와 검색 키워드, 정렬 순서를 파라미터로 받습니다."
     )
     public CommonResponse<EnrollmentListResponse> queryListByKeyword(
 
             @RequestParam(required = false)
-            @Parameter(description = "검색 키워드", example = "SMU")
+            @Parameter(description = "검색 키워드(없을 시 전체조회)", example = "SMU")
             String keyword,
 
             @RequestParam(required = false)
-            @Parameter(description = "정렬 기준(date/title)(생성일, 강의명)", example = "date")
+            @Parameter(description = "정렬 기준(date/title)(생성일, 강의명), 디폴트값 date", example = "date")
             String order,
 
-            // 페이지네이션 정보
             @ParameterObject LecturePagingRequest page
 
     ){
         LectureListResponse response = lectureQueryService.queryEnrollmentListByKeyword(page, order, keyword);
         return new CommonResponse(
-                true, HttpStatus.OK, "키워드로 강의 목록을 조회하였습니다", response
+                true, HttpStatus.OK, "강의 목록을 조회하였습니다", response
         );
     }
 }
