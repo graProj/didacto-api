@@ -109,7 +109,9 @@ public class LectureServiceTest {
         );
 
         // then
-        assertThat(lectures.getLectures().size()).isEqualTo(2);
+        assertThat(lectures.getLectures().size()).isEqualTo(2); //키워드 검색 검증
+        assertThat(lectures.getPageInfo().getHaveNext()).isEqualTo(false); //페이지네이션 검증
+        assertThat(lectures.getPageInfo().getTotalPages()).isEqualTo(1);
     }
 
     @Test
@@ -117,13 +119,14 @@ public class LectureServiceTest {
     public void 강의_전체_리스트_조회() {
         // given, when
         LectureListResponse lectures = lectureQueryService.queryEnrollmentListByKeyword(
-                new LecturePagingRequest(1L, 10L), "date", null
+                new LecturePagingRequest(2L, 2L), "date", null
         );
 
         // then
         assertThat(lectures.getLectures())
                 .extracting(e -> e.getId())
-                .contains(lecturId);
+                .contains(lecturId);    //정렬 검증
+
 
     }
 
