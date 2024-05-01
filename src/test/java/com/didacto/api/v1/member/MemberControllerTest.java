@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,8 +84,8 @@ public class MemberControllerTest {
         // given
         MemberModificationRequest req = new MemberModificationRequest("dnjsaqksfd1230!@", "홍길삼", "19890221");
         Member member = createMember();
-        CustomUser customUser = new CustomUser(member); // CustomUser 생성
-        CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
+        CustomUser customUser = new CustomUser(member);
+        CustomUserDetails userDetails = new CustomUserDetails(customUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -101,7 +102,7 @@ public class MemberControllerTest {
 
 
     @Test
-// 회원 탈퇴
+    // 회원 탈퇴
     public void deleteMemberInfo() throws Exception {
         // given
         Member member = createMember();
@@ -117,7 +118,6 @@ public class MemberControllerTest {
         mockMvc.perform(delete("/api/v1/members"));
 
         // then
-        //TODO Member의 delete값이 true로 바뀌는지 확인하는 테스트 작성 필요
         verify(memberService).delete(userId);
     }
 
