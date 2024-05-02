@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return memberRepository.findByEmail(email)
+                .filter(member -> !member.getDeleted())
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL));
     }
