@@ -26,7 +26,8 @@ public enum ErrorDefineCode {
     ALREADY_JOIN("ENROLL_3", "이미 강의에 등록된 상태입니다."),
     ALREADY_ENROLL("ENROLL_4", "등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다."),
     NOT_FOUND_ENROLL("ENROLL_5", "해당 초대 정보를 찾을 수 없습니다."),
-
+    LECTURE_MEMBER_NOT_FOUND("LMB_01", "강의 참여자를 찾을 수 없습니다."),
+    LECTURE_MEMBER_ALREADY_EXISTENCE("LMB_02", "이미 강의에 등록된 사용자입니다."),
     ;
 
     private final String code;

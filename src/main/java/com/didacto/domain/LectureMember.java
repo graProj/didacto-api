@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -22,6 +21,8 @@ public class LectureMember extends BaseEntity {
     @Column(name = "lecture_member_id")
     private Long id;
 
+    @Column(nullable = false)
+    @Builder.Default
     private Boolean deleted = false;
 
 
@@ -32,15 +33,19 @@ public class LectureMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
     private Lecture lecture;
-    // private Long lectureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    // private Long memberId;
 
+    @LastModifiedBy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_by", nullable = false)
     private Member modifiedBy;
-    // private Long modifiedBy;
+
+    public Long delete(Member deletedBy){
+        modifiedBy = deletedBy;
+        deleted = true;
+        return this.id;
+    }
 }

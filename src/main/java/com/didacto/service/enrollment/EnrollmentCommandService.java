@@ -10,6 +10,7 @@ import com.didacto.domain.Lecture;
 import com.didacto.domain.Member;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.service.lecture.LectureQueryService;
+import com.didacto.service.lecturemember.LectureMemberCommandService;
 import com.didacto.service.member.MemberQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class EnrollmentCommandService {
     private final EnrollmentRepository enrollmentRepository;
     private final LectureQueryService lectureQueryService;
     private final MemberQueryService memberQueryService;
+    private final LectureMemberCommandService lectureMemberCommandService;
 
     /**
      * [학생 : 강의 등록 요청]
@@ -118,7 +120,7 @@ public class EnrollmentCommandService {
             // Validate : 이미 강의에 등록됐는지 검사
             isEnrolled(member, lecture);
 
-            // TODO: LectureMember 생성
+            lectureMemberCommandService.createLectureMember(enrollment);
         }
 
        return enrollment;

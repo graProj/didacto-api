@@ -3,10 +3,13 @@ package com.didacto.api.v1.lecture;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.domain.Lecture;
+import com.didacto.domain.LectureMember;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
 import com.didacto.service.lecture.LectureCommandService;
+import com.didacto.service.lecturemember.LectureMemberCommandService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,8 +50,8 @@ public class LectureCommandController {
     @DeleteMapping
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "LECTURE_COMMAND_03 : 강의 삭제 (교수)", description = "강의를 삭제합니다.")
-    public CommonResponse<Long> modify(
-            @RequestParam Long lectureId
+    public CommonResponse<Long> delete(
+            @Parameter(example = "1") @RequestParam("lectureId") Long lectureId
     ){
         Lecture lecture = lectureCommandService.delete(lectureId);
         return new CommonResponse(
