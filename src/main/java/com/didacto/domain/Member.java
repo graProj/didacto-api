@@ -30,6 +30,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+
     @Column
     private OffsetDateTime birth;
 

@@ -6,7 +6,6 @@ import com.didacto.domain.LectureMember;
 import com.didacto.dto.enrollment.PageInfoResponse;
 import com.didacto.dto.lecturemember.LectureMemberPageResponse;
 import com.didacto.dto.lecturemember.LectureMemberQueryFilter;
-import com.didacto.repository.lecturemember.LectureMemberCustomRepository;
 import com.didacto.repository.lecturemember.LectureMemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

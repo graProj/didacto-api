@@ -28,7 +28,7 @@ public class LectureMemberCommandService {
      */
     @Transactional
     public LectureMember createLectureMember(Enrollment enrollment) {
-        if (isJoined(enrollment.getLecture(), enrollment.getMember())){
+        if (isJoined(enrollment.getLecture(), enrollment.getMember())) {
             throw new AlreadyExistElementException409(ErrorDefineCode.LECTURE_MEMBER_ALREADY_EXISTENCE);
         }
 
@@ -66,7 +66,7 @@ public class LectureMemberCommandService {
                         .build()
         ).get(0);
 
-        if (!lectureMember.getMember().getId().equals(deletedBy)){
+        if (!lectureMember.getMember().getId().equals(deletedBy)) {
             throw new ForbiddenException403(ErrorDefineCode.AUTHORIZATION_FAIL);
         }
 
