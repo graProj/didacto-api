@@ -20,11 +20,13 @@ public enum ErrorDefineCode {
     AUTHENTICATE_FAIL("ERR_09", "권한 인증에 실패했습니다."),
     AUTH_AUTHORITY_FAIL("ERR_10","USER와 ADMIN중 선택해야합니다."),
     MEMBER_NOT_FOUND("ERR_11","회원을 찾을 수 없습니다."),
+    MEMBER_UNRESISTER("ERR_12","탈퇴된 회원입니다."),
     USER_NOT_FOUND("ENROLL_1", "해당 사용자를 찾을 수 없습니다."),
     ALREADY_ENROLL_REQUEST("ENROLL_2", "이미 교수자에게 강의 등록 요청을 보냈습니다."),
     ALREADY_JOIN("ENROLL_3", "이미 강의에 등록된 상태입니다."),
     ALREADY_ENROLL("ENROLL_4", "등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다."),
     NOT_FOUND_ENROLL("ENROLL_5", "해당 초대 정보를 찾을 수 없습니다."),
+
     ;
 
     private final String code;
