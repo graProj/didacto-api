@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/lecture-member")
-@Tag(name = "LECTURE-MEMBER-COMMAND API", description = "강의 구성원 관련 API")
+@Tag(name = "LECTURE-MEMBER COMMAND API", description = "강의 구성원 관련 API")
 public class LectureMemberCommandController {
     private final LectureMemberCommandService lectureMemberCommandService;
 

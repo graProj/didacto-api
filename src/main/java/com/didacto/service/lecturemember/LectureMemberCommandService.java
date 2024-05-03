@@ -9,7 +9,6 @@ import com.didacto.domain.LectureMember;
 import com.didacto.domain.Member;
 import com.didacto.dto.lecturemember.LectureMemberQueryFilter;
 import com.didacto.repository.lecturemember.LectureMemberRepository;
-import com.didacto.service.lecture.LectureQueryService;
 import com.didacto.service.member.MemberQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,13 +57,13 @@ public class LectureMemberCommandService {
      */
     @Transactional
     public LectureMember deleteLectureMember(Long lectureId, Long memberId, Long deletedBy) {
-        LectureMember lectureMember = lectureMemberQueryService.queryWithFilter(
+        LectureMember lectureMember = lectureMemberQueryService.queryOne(
                 LectureMemberQueryFilter.builder()
                         .lectureId(lectureId)
                         .memberId(memberId)
                         .deleted(false)
                         .build()
-        ).get(0);
+        );
 
         if (!lectureMember.getMember().getId().equals(deletedBy)) {
             throw new ForbiddenException403(ErrorDefineCode.AUTHORIZATION_FAIL);

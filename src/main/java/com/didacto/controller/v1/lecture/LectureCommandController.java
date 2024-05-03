@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/lecture")
-@Tag(name = "LECTURE-COMMAND API", description = "강의 생성 및 수정 API")
+@Tag(name = "LECTURE COMMAND API", description = "강의 생성 및 수정 API")
 public class LectureCommandController {
     private final LectureCommandService lectureCommandService;
 

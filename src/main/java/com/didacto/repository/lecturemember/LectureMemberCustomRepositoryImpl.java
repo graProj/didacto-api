@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.didacto.domain.QLectureMember.lectureMember;
 
@@ -22,7 +23,13 @@ public class LectureMemberCustomRepositoryImpl implements LectureMemberCustomRep
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<LectureMember> findLectureMembersWithFilter(LectureMemberQueryFilter filter) {
+    public Optional<LectureMember> findLectureMember(LectureMemberQueryFilter filter) {
+        JPAQuery<LectureMember> query = queryWithFilter(filter);
+        return Optional.ofNullable(query.fetchOne());
+    }
+
+    @Override
+    public List<LectureMember> findLectureMembers(LectureMemberQueryFilter filter) {
         return queryFactory.selectDistinct(lectureMember)
                 .from(lectureMember)
                 .where(lectureMember.lecture.id.eq(filter.getLectureId())
@@ -41,10 +48,18 @@ public class LectureMemberCustomRepositoryImpl implements LectureMemberCustomRep
             query.orderBy(new OrderSpecifier<>(order.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(order.getProperty())));
         }
 
+        long offset = (pageable.getOffset() - 1) * pageable.getPageSize(); // 페이지네이션 Offset 계산
+
         return query
-                .offset(pageable.getOffset())
+                .offset(offset)
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    @Override
+    public Long countLectureMembers(LectureMemberQueryFilter filter) {
+        JPAQuery<LectureMember> query = queryWithFilter(filter);
+        return query.fetchCount();
     }
 
     private JPAQuery<LectureMember> queryWithFilter(LectureMemberQueryFilter filter) {
@@ -56,12 +71,5 @@ public class LectureMemberCustomRepositoryImpl implements LectureMemberCustomRep
                         filter.getDeleted() != null ? lectureMember.deleted.eq(filter.getDeleted()) : null
                 );
         return query;
-    }
-
-    @Override
-    public long countLectureMemberPage(LectureMemberQueryFilter filter) {
-        JPAQuery<LectureMember> query = queryWithFilter(filter);
-
-        return query.fetchCount();
     }
 }

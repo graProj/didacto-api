@@ -5,9 +5,9 @@ import com.didacto.domain.Lecture;
 import com.didacto.domain.LectureState;
 import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureCreationRequest;
-import com.didacto.dto.lecture.LectureListResponse;
 import com.didacto.dto.lecture.LectureModificationRequest;
-import com.didacto.dto.lecture.LecturePagingRequest;
+import com.didacto.dto.lecture.LecturePageResponse;
+import com.didacto.dto.lecture.LectureQueryFilter;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -94,7 +96,7 @@ public class LectureServiceTest {
     @DisplayName("Lecture : (교수) 강의 조회")
     public void 강의_단건_조회() {
         // given, when
-        Lecture lecture = lectureQueryService.query(lecturId);
+        Lecture lecture = lectureQueryService.queryOne(lecturId);
 
         // then
         assertThat(lecture).isNotNull();
@@ -104,8 +106,11 @@ public class LectureServiceTest {
     @DisplayName("Lecture : 키워드로 강의 리스트 조회")
     public void 강의_키워드로_리스트_조회() {
         // given, when
-        LectureListResponse lectures = lectureQueryService.queryEnrollmentListByKeyword(
-                new LecturePagingRequest(1L, 10L), "date", "TestCode"
+        LecturePageResponse lectures = lectureQueryService.queryPage(
+                PageRequest.of(1, 10),
+                LectureQueryFilter.builder()
+                        .titleKeyword("TestCode")
+                        .build()
         );
 
         // then
@@ -118,8 +123,9 @@ public class LectureServiceTest {
     @DisplayName("Lecture : 강의 전체 리스트 조회")
     public void 강의_전체_리스트_조회() {
         // given, when
-        LectureListResponse lectures = lectureQueryService.queryEnrollmentListByKeyword(
-                new LecturePagingRequest(2L, 2L), "date", null
+        LecturePageResponse lectures = lectureQueryService.queryPage(
+                PageRequest.of(2, 2, Sort.by(Sort.Direction.DESC,"id")),
+                LectureQueryFilter.builder().build()
         );
 
         // then
