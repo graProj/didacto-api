@@ -1,4 +1,4 @@
-package com.didacto.api.v1.member;
+package com.didacto.controller.v1.member;
 
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberResponse;

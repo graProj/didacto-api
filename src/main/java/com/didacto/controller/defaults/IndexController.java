@@ -1,4 +1,4 @@
-package com.didacto.api.defaults;
+package com.didacto.controller.defaults;
 
 
 import org.springframework.stereotype.Controller;

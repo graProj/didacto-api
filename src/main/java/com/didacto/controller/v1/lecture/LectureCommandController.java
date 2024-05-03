@@ -1,13 +1,11 @@
-package com.didacto.api.v1.lecture;
+package com.didacto.controller.v1.lecture;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.domain.Lecture;
-import com.didacto.domain.LectureMember;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
 import com.didacto.service.lecture.LectureCommandService;
-import com.didacto.service.lecturemember.LectureMemberCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

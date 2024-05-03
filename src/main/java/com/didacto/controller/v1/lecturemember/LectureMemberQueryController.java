@@ -1,4 +1,4 @@
-package com.didacto.api.v1.lecturemember;
+package com.didacto.controller.v1.lecturemember;
 
 
 import com.didacto.common.response.CommonResponse;

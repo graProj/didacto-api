@@ -1,4 +1,4 @@
-package com.didacto.api.v1.member;
+package com.didacto.controller.v1.member;
 
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetails;
@@ -7,7 +7,6 @@ import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

@@ -1,18 +1,15 @@
-package com.didacto.api.v1.lecture;
+package com.didacto.controller.v1.lecture;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
-import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Lecture;
 import com.didacto.dto.enrollment.EnrollmentListResponse;
-import com.didacto.dto.enrollment.EnrollmentQueryConditionRequest;
 import com.didacto.dto.lecture.LectureListResponse;
 import com.didacto.dto.lecture.LecturePagingRequest;
 import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.service.lecture.LectureQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;

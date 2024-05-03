@@ -1,4 +1,4 @@
-package com.didacto.api.v1.member;
+package com.didacto.controller.v1.member;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.SecurityUtil;

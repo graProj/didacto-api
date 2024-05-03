@@ -1,4 +1,4 @@
-package com.didacto.api.v1.enrollment;
+package com.didacto.controller.v1.enrollment;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;

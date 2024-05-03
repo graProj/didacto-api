@@ -1,10 +1,9 @@
-package com.didacto.api.v1.auth;
+package com.didacto.controller.v1.auth;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.common.response.SwaggerErrorResponseType;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
-import com.didacto.domain.Member;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
 import com.didacto.dto.auth.TokenResponse;
@@ -20,9 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
