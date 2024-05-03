@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class LectureMemberCommandService {
     private final LectureMemberRepository lectureMemberRepository;
     private final LectureMemberQueryService lectureMemberQueryService;
-    private final LectureQueryService lectureQueryService;
     private final MemberQueryService memberQueryService;
 
     /**

@@ -20,7 +20,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class LectureMemberQueryService {
     private final LectureMemberRepository lectureMemberRepository;
-    private final LectureMemberCustomRepository lectureMemberCustomRepository;
 
     public LectureMember query(Long lectureMemberId){
         return lectureMemberRepository.findById(lectureMemberId)
@@ -28,7 +27,7 @@ public class LectureMemberQueryService {
     }
 
     public List<LectureMember> queryWithFilter(LectureMemberQueryFilter filter){
-        return lectureMemberCustomRepository.findLectureMembersWithFilter(filter);
+        return lectureMemberRepository.findLectureMembersWithFilter(filter);
     }
 
     public LectureMemberPageResponse queryPage(Pageable pageable, LectureMemberQueryFilter request) {
@@ -36,10 +35,10 @@ public class LectureMemberQueryService {
         long size = pageable.getPageSize();
 
         // Query : 페이지네이션 및 조건 필터링
-        List<LectureMember> lectureMembers = lectureMemberCustomRepository.findLectureMemberPage(pageable, request);
+        List<LectureMember> lectureMembers = lectureMemberRepository.findLectureMemberPage(pageable, request);
 
         // Query : Pagenation을 위한 총 개수 집계
-        long count = lectureMemberCustomRepository.countLectureMemberPage(request);
+        long count = lectureMemberRepository.countLectureMemberPage(request);
 
         // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
         long totalPage = (long) Math.ceil((double) count / size);
