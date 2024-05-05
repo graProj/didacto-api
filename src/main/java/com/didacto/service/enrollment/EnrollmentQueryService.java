@@ -6,6 +6,8 @@ import com.didacto.config.exception.custom.exception.NoSuchElementFoundException
 import com.didacto.domain.*;
 import com.didacto.dto.enrollment.*;
 import com.didacto.repository.enrollment.EnrollmentRepository;
+import com.didacto.dto.PageInfoResponse;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

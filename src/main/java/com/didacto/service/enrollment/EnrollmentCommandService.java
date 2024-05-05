@@ -37,7 +37,7 @@ public class EnrollmentCommandService {
     @Transactional
     public Enrollment requestEnrollment(Long lectureId, Long memberId){
 
-        Lecture lecture = lectureQueryService.query(lectureId);
+        Lecture lecture = lectureQueryService.queryOne(lectureId);
         Member member = memberQueryService.query(memberId);
 
         // Validate : 이미 대기중인 초대 요청이 있는 지 조회

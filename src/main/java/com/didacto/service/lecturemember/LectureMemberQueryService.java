@@ -3,7 +3,7 @@ package com.didacto.service.lecturemember;
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.LectureMember;
-import com.didacto.dto.enrollment.PageInfoResponse;
+import com.didacto.dto.PageInfoResponse;
 import com.didacto.dto.lecturemember.LectureMemberPageResponse;
 import com.didacto.dto.lecturemember.LectureMemberQueryFilter;
 import com.didacto.repository.lecturemember.LectureMemberRepository;
@@ -20,13 +20,14 @@ import java.util.List;
 public class LectureMemberQueryService {
     private final LectureMemberRepository lectureMemberRepository;
 
-    public LectureMember query(Long lectureMemberId){
+    public LectureMember queryOne(Long lectureMemberId){
         return lectureMemberRepository.findById(lectureMemberId)
                 .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.LECTURE_NOT_FOUND));
     }
 
-    public List<LectureMember> queryWithFilter(LectureMemberQueryFilter filter){
-        return lectureMemberRepository.findLectureMembersWithFilter(filter);
+    public LectureMember queryOne(LectureMemberQueryFilter filter){
+        return lectureMemberRepository.findLectureMember(filter)
+                .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.LECTURE_NOT_FOUND));
     }
 
     public LectureMemberPageResponse queryPage(Pageable pageable, LectureMemberQueryFilter request) {
@@ -37,7 +38,7 @@ public class LectureMemberQueryService {
         List<LectureMember> lectureMembers = lectureMemberRepository.findLectureMemberPage(pageable, request);
 
         // Query : Pagenation을 위한 총 개수 집계
-        long count = lectureMemberRepository.countLectureMemberPage(request);
+        long count = lectureMemberRepository.countLectureMembers(request);
 
         // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
         long totalPage = (long) Math.ceil((double) count / size);

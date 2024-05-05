@@ -1,4 +1,4 @@
-package com.didacto.dto.enrollment;
+package com.didacto.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

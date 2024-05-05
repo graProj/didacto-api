@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/lecture-member/query")
-@Tag(name = "LECTURE-MEMBER-QUERY API", description = "강의 구성원 조회 API")
+@RequestMapping("api/v1/lecture-member")
+@Tag(name = "LECTURE-MEMBER QUERY API", description = "강의 구성원 조회 API")
 public class LectureMemberQueryController {
     private final LectureMemberQueryService lectureMemberQueryService;
 
     @GetMapping("{lectureMemberId}")
     @Operation(summary = "LECTURE_MEMBER_QUERY_01 : 강의 구성원 조회")
-    public CommonResponse<LectureMemberResponse> query(@PathVariable("lectureMemberId") Long lectureId) {
-        LectureMember lectureMember = lectureMemberQueryService.query(lectureId);
+    public CommonResponse<LectureMemberResponse> queryOne(@PathVariable("lectureMemberId") Long lectureId) {
+        LectureMember lectureMember = lectureMemberQueryService.queryOne(lectureId);
 
         return new CommonResponse(
                 true,
@@ -42,7 +42,7 @@ public class LectureMemberQueryController {
     @Operation(summary = "LECTURE_MEMBER_QUERY_02 : 강의 구성원 목록 조회")
     public CommonResponse<LectureMemberPageResponse> queryPage(
             @PageableDefault(size = 100)
-            @SortDefault(sort = "createdTime", direction = Sort.Direction.DESC)
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable,
             @ParameterObject LectureMemberQueryFilter request
     ){
