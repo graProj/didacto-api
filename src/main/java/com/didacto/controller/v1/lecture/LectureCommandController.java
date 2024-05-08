@@ -2,6 +2,7 @@ package com.didacto.controller.v1.lecture;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
+import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Lecture;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
@@ -27,7 +28,7 @@ public class LectureCommandController {
     public CommonResponse<Long> create(
             @RequestBody LectureCreationRequest request
     ){
-        Lecture lecture = lectureCommandService.create(request);
+        Lecture lecture = lectureCommandService.create(request, SecurityUtil.getCurrentMemberId());
         return new CommonResponse(
                 true, HttpStatus.OK, null, lecture.getId()
         );

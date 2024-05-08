@@ -10,12 +10,9 @@ import lombok.NoArgsConstructor;
 public class LectureCreationRequest {
     @Schema(example = "강의 제목")
     private String title;
-    @Schema(example = "1")
-    private Long ownerId;
 
     @Builder
-    public LectureCreationRequest(String title, Long ownerId) {
+    public LectureCreationRequest(String title) {
         this.title = title;
-        this.ownerId = ownerId;
     }
 }
