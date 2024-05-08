@@ -1,5 +1,6 @@
 package com.didacto;
 
+import com.didacto.common.BaseEntity;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 
@@ -8,7 +9,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-public class MemberFactory {
+public class MemberFactory extends BaseEntity {
 
     public static Member createMember() {
         Member member = Member.builder()

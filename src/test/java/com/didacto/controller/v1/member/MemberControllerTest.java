@@ -1,10 +1,10 @@
 package com.didacto.controller.v1.member;
 
+import com.didacto.MemberRepository;
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetails;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
-import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,18 +27,22 @@ import java.util.Collections;
 
 import static com.didacto.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @Transactional
 @DisplayName("Member Controller")
 @ExtendWith(MockitoExtension.class)
+@Sql(value = "classpath:init/user-data.sql", executionPhase = BEFORE_TEST_METHOD)
 public class MemberControllerTest {
 
     @InjectMocks
@@ -59,8 +64,10 @@ public class MemberControllerTest {
     @Test
         //회원전체조회
     void findAllMembers() throws Exception {
-        mockMvc.perform(get("/api/v1/members"))
-                .andExpect(status().isOk());
+        this.mockMvc.perform(get("/api/v1/members"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
         verify(memberService).queryAll();
     }
 
@@ -90,7 +97,7 @@ public class MemberControllerTest {
         // when
         mockMvc.perform(
                 put("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req))
         );
 

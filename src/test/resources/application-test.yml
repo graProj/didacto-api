@@ -1,16 +1,22 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:test # h2 support in-memory-db
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
     username: sa
     password:
-    driver-class-name: org.h2.Driver
-
+  h2:
+    console:
+      enabled: true
+  profiles:
+    active: local
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true # log
-
-logging.level:
-  org.hibernate.SQL: debug
+      ddl-auto: update
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql # 더미데이터 파일 연결
+      schema-locations: classpath:schema.sql # 스케마 파일 연결
