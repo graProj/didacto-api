@@ -48,7 +48,7 @@ public class LectureMemberCustomRepositoryImpl implements LectureMemberCustomRep
             query.orderBy(new OrderSpecifier<>(order.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(order.getProperty())));
         }
 
-        long offset = (pageable.getOffset() - 1) * pageable.getPageSize(); // 페이지네이션 Offset 계산
+        int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize(); // 페이지네이션 Offset 계산
 
         return query
                 .offset(offset)
