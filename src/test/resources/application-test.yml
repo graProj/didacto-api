@@ -13,11 +13,5 @@ spring:
         format_sql: true
     defer-datasource-initialization: true
 
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
-      mode: always
-
 logging.level:
   org.hibernate.SQL: debug
