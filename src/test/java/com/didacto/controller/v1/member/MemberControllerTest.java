@@ -1,10 +1,10 @@
 package com.didacto.controller.v1.member;
 
-import com.didacto.MemberRepository;
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetails;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
+import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @DisplayName("Member Controller")
 @ExtendWith(MockitoExtension.class)
-@Sql(value = "classpath:init/user-data.sql", executionPhase = BEFORE_TEST_METHOD)
 public class MemberControllerTest {
 
     @InjectMocks

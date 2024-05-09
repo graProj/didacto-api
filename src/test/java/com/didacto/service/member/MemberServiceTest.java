@@ -9,8 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 
 
 @TestPropertySource(locations = "classpath:application-test.yml")
+@AutoConfigureTestDatabase
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
@@ -58,7 +61,6 @@ class MemberServiceTest {
         // given
         Long id = 5L;
         Member member = createMember();
-
         given(memberRepository.findById(id)).willReturn(Optional.of(member));
 
         // when

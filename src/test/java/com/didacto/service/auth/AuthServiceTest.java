@@ -48,8 +48,11 @@ public class AuthServiceTest {
     void beforeEach() {
         authService = new AuthService(memberRepository, passwordEncoder, tokenProvider);
     }
+
+
+
     @Test
-    void 로그인_테스트() {
+    void 로그인실패_테스트() {
         // given
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
 

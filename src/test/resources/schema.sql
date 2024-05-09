@@ -7,5 +7,5 @@ CREATE TABLE member (
     role ENUM('USER'),
     deleted BOOLEAN,
     created_time DATETIME NOT NULL,
-    modified_time DATETIME,
+    modified_time DATETIME
 );

@@ -1,22 +1,23 @@
 spring:
   datasource:
+    initialization-mode: always
     url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
     username: sa
     password:
-  h2:
-    console:
-      enabled: true
-  profiles:
-    active: local
+    driver-class-name: org.h2.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    database: h2
     hibernate:
-      ddl-auto: update
-    open-in-view: false
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+
   sql:
     init:
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
       mode: always
-      data-locations: classpath:data.sql # 더미데이터 파일 연결
-      schema-locations: classpath:schema.sql # 스케마 파일 연결
+
+logging.level:
+  org.hibernate.SQL: debug
