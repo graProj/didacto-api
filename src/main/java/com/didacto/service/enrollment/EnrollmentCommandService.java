@@ -3,6 +3,7 @@ package com.didacto.service.enrollment;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Enrollment;
 import com.didacto.domain.EnrollmentStatus;
@@ -15,7 +16,7 @@ import com.didacto.service.member.MemberQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.transaction.support.TransactionTemplate;
 
 
 @Service
@@ -26,6 +27,7 @@ public class EnrollmentCommandService {
     private final LectureQueryService lectureQueryService;
     private final MemberQueryService memberQueryService;
     private final LectureMemberCommandService lectureMemberCommandService;
+    private final TransactionTemplate transactionTemplate;
 
     /**
      * [학생 : 강의 등록 요청]
@@ -39,6 +41,11 @@ public class EnrollmentCommandService {
 
         Lecture lecture = lectureQueryService.queryOne(lectureId);
         Member member = memberQueryService.query(memberId);
+
+        // Validate : 등록요청을 한 강의가 삭제된 경우
+        if(lecture.getDeleted() == true){
+            throw new NoSuchElementFoundException404(ErrorDefineCode.DELETED_LECTURE);
+        }
 
         // Validate : 이미 대기중인 초대 요청이 있는 지 조회
         isHaveAlreadyWaitRequest(member, lecture);
@@ -105,6 +112,15 @@ public class EnrollmentCommandService {
         Enrollment enrollment = enrollmentRepository.findWaitingEnrollmentByTutorId(enrollId, tutorId);
         if(enrollment == null){
             throw new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL);
+        }
+
+
+        // Validate : 강의등록요청을 한 회원이 탈퇴상태일 시 상태 Cancel 처리
+        if(enrollment.getMember() == null || enrollment.getMember().getDeleted()){
+            enrollment.updateStatus(EnrollmentStatus.CANCELLED);
+            enrollment.updateModifiedMember(tutor);
+            enrollmentRepository.save(enrollment);
+            return enrollment;
         }
 
         // Update : Status 변경, 수정자 변경
