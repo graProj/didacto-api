@@ -55,11 +55,10 @@ public class LectureServiceTest {
         // given
         LectureCreationRequest request = LectureCreationRequest.builder()
                 .title("강의 제목")
-                .ownerId(tutorId)
                 .build();
 
         // when
-        Lecture lecture = lectureCommandService.create(request);
+        Lecture lecture = lectureCommandService.create(request, tutorId);
 
         // then
         assertThat(lecture).isNotNull();

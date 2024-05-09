@@ -21,8 +21,8 @@ public class LectureCommandService {
     private final MemberQueryService memberQueryService;
 
     @Transactional
-    public Lecture create(LectureCreationRequest request) {
-        Member member = memberQueryService.query(request.getOwnerId());
+    public Lecture create(LectureCreationRequest request, Long createdBy) {
+        Member member = memberQueryService.query(createdBy);
 
         Lecture lecture = Lecture.builder()
                 .title(request.getTitle())
