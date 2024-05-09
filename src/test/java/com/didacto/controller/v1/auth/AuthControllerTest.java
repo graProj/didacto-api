@@ -1,4 +1,4 @@
-package com.didacto.controller.v1;
+package com.didacto.controller.v1.auth;
 
 
 import com.didacto.controller.v1.auth.AuthController;
