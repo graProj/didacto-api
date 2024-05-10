@@ -74,8 +74,8 @@ public class AuthController {
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
     public CommonResponse<TokenResponse> reissue() {
-        String email = SecurityUtil.getCurrentMemberEmail();
-        TokenResponse token = authService.reissueAccessToken(email);
+        Long id = SecurityUtil.getCurrentMemberId();
+        TokenResponse token = authService.reissueAccessToken(id);
         return new CommonResponse<>(true, HttpStatus.OK, "Access 토큰 재발급에 성공했습니다.", token);
     }
 }

@@ -55,9 +55,9 @@ public class AuthService {
 
 
     @Transactional
-    public TokenResponse reissueAccessToken(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
-            throw new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL);
+    public TokenResponse reissueAccessToken(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> {
+            throw new AuthCredientialException401(ErrorDefineCode.MEMBER_NOT_FOUND);
         });
         if(!member.getDeleted()){
             TokenDto token = generateToken(member);
