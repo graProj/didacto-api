@@ -78,7 +78,8 @@ public class AuthServiceTest {
     @Test
     void 비밀번호_검증_테스트() {
         // given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER)));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
 
         // when, then
