@@ -3,6 +3,8 @@ package com.didacto.service.auth;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.config.security.jwt.TokenProvider;
+import com.didacto.domain.Authority;
+import com.didacto.domain.Member;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
 import com.didacto.repository.member.MemberRepository;
@@ -48,10 +50,15 @@ public class AuthServiceTest {
     void beforeEach() {
         authService = new AuthService(memberRepository, passwordEncoder, tokenProvider);
     }
+
+
+
     @Test
-    void 로그인_테스트() {
+    void 로그인실패_테스트() {
+
         // given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
             // when, then
             assertThatThrownBy(() -> authService.signIn(new LoginRequest("email", "password")))
@@ -71,7 +78,8 @@ public class AuthServiceTest {
     @Test
     void 비밀번호_검증_테스트() {
         // given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
 
         // when, then

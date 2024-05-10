@@ -22,9 +22,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 
 	// mariadb
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+
+	//test
+	testRuntimeOnly 'com.h2database:h2'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'

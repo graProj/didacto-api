@@ -2,6 +2,7 @@ package com.didacto.controller.v1.member;
 
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetails;
+import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.repository.member.MemberRepository;
@@ -14,10 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +27,16 @@ import java.util.Collections;
 
 import static com.didacto.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @Transactional
@@ -59,8 +63,10 @@ public class MemberControllerTest {
     @Test
         //회원전체조회
     void findAllMembers() throws Exception {
-        mockMvc.perform(get("/api/v1/members"))
-                .andExpect(status().isOk());
+        this.mockMvc.perform(get("/api/v1/members"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
         verify(memberService).queryAll();
     }
 
@@ -80,8 +86,8 @@ public class MemberControllerTest {
     //회원정보수정
     public void edidMember() throws Exception {
         // given
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         MemberModificationRequest req = new MemberModificationRequest("dnjsaqksfd1230!@", "홍길삼", "19890221");
-        Member member = createMember();
         CustomUser customUser = new CustomUser(member);
         CustomUserDetails userDetails = new CustomUserDetails(customUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
@@ -90,7 +96,7 @@ public class MemberControllerTest {
         // when
         mockMvc.perform(
                 put("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req))
         );
 
@@ -103,7 +109,7 @@ public class MemberControllerTest {
     // 회원 탈퇴
     public void deleteMemberInfo() throws Exception {
         // given
-        Member member = createMember();
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         CustomUser customUser = new CustomUser(member); // CustomUser 생성
         CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
 
