@@ -1,10 +1,7 @@
 package com.didacto.service.enrollement;
 
 import com.didacto.domain.*;
-import com.didacto.dto.enrollment.EnrollmentBasicResponse;
-import com.didacto.dto.enrollment.EnrollmentListResponse;
-import com.didacto.dto.enrollment.EnrollmentQueryConditionRequest;
-import com.didacto.dto.enrollment.EnrollmentRequest;
+import com.didacto.dto.enrollment.*;
 import com.didacto.service.enrollment.EnrollmentCommandService;
 import com.didacto.service.enrollment.EnrollmentQueryService;
 import jakarta.persistence.EntityManager;
@@ -13,13 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,7 +76,7 @@ public class EnrollmentServiceTest {
         id = enrollmentCommandService.cancelEnrollment(id, studentId).getId();
 
         //then
-        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        EnrollmentResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
         assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
 
     }
@@ -96,7 +93,7 @@ public class EnrollmentServiceTest {
 
 
         //then
-        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        EnrollmentResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
         assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.ACCEPTED);
     }
 
@@ -111,7 +108,7 @@ public class EnrollmentServiceTest {
         id = enrollmentCommandService.confirmEnrollment(id, tutorId, EnrollmentStatus.REJECTED).getId();
 
         //then
-        EnrollmentBasicResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
+        EnrollmentResponse enrollment =  enrollmentQueryService.getEnrollmentById(id);
         assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
     }
 
@@ -123,12 +120,26 @@ public class EnrollmentServiceTest {
         enrollListGiven();
 
         // when
-        EnrollmentQueryConditionRequest getAll = new EnrollmentQueryConditionRequest(1L, 10L, true, true, true, true);
-        EnrollmentQueryConditionRequest getAccept = new EnrollmentQueryConditionRequest(1L, 10L, false, false, true, false);
-        EnrollmentQueryConditionRequest getReject = new EnrollmentQueryConditionRequest(1L, 10L, false, false, false, true);
-        EnrollmentListResponse enrollments =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, getAll, "date");
-        EnrollmentListResponse enrollments2 =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, getAccept, "date");
-        EnrollmentListResponse enrollments3 =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, getReject, "date");
+        EnrollmentPageResponse enrollments =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .lectureId(lectureId)
+                        .build()
+        );
+        EnrollmentPageResponse enrollments2 =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .statuses(List.of(EnrollmentStatus.ACCEPTED))
+                        .lectureId(lectureId)
+                        .build()
+        );
+        EnrollmentPageResponse enrollments3 =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .statuses(List.of(EnrollmentStatus.REJECTED))
+                        .lectureId(lectureId)
+                        .build()
+        );
 
         // then
         // 총 등록요청 개수 4개
@@ -147,13 +158,26 @@ public class EnrollmentServiceTest {
         enrollListGiven();
 
         // when
-        EnrollmentQueryConditionRequest getAll = new EnrollmentQueryConditionRequest(1L, 10L, true, true, true, true);
-        EnrollmentQueryConditionRequest getAccept = new EnrollmentQueryConditionRequest(1L, 10L, false, false, true, false);
-        EnrollmentQueryConditionRequest getReject = new EnrollmentQueryConditionRequest(1L, 10L, false, false, false, true);
-        EnrollmentListResponse enrollments =  enrollmentQueryService.getEnrollmentInfoList(null, studentId, getAll, "date");
-        EnrollmentListResponse enrollments2 =  enrollmentQueryService.getEnrollmentInfoList(null, studentId, getAccept, "date");
-        EnrollmentListResponse enrollments3 =  enrollmentQueryService.getEnrollmentInfoList(null, studentId, getReject, "date");
-
+        EnrollmentPageResponse enrollments =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .memberId(studentId)
+                        .build()
+        );
+        EnrollmentPageResponse enrollments2 =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .statuses(List.of(EnrollmentStatus.ACCEPTED))
+                        .memberId(studentId)
+                        .build()
+        );
+        EnrollmentPageResponse enrollments3 =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .statuses(List.of(EnrollmentStatus.REJECTED))
+                        .memberId(studentId)
+                        .build()
+        );
         // then
         // 총 등록요청 개수 4개
         assertThat(enrollments.getEnrollments().size()).isEqualTo(4);
@@ -171,10 +195,18 @@ public class EnrollmentServiceTest {
         enrollListGiven();
 
         //when
-        EnrollmentQueryConditionRequest request = new EnrollmentQueryConditionRequest(1L, 3L, true, true, true, true);
-        EnrollmentQueryConditionRequest request2 = new EnrollmentQueryConditionRequest(2L, 3L, true, true, true, true);
-        EnrollmentListResponse enrollments =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, request, "date");
-        EnrollmentListResponse enrollments2 =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, request2, "date");
+        EnrollmentPageResponse enrollments =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 3),
+                EnrollmentQueryFilter.builder()
+                        .lectureId(lectureId)
+                        .build()
+        );
+        EnrollmentPageResponse enrollments2 =  enrollmentQueryService.queryPage(
+                PageRequest.of(2, 3),
+                EnrollmentQueryFilter.builder()
+                        .lectureId(lectureId)
+                        .build()
+        );
 
         //then
         assertThat(enrollments.getEnrollments().size()).isEqualTo(3);
@@ -191,8 +223,13 @@ public class EnrollmentServiceTest {
         enrollListGiven();
 
         //when
-        EnrollmentQueryConditionRequest request = new EnrollmentQueryConditionRequest(1L, 10L, false, false, true, true);
-        EnrollmentListResponse enrollments =  enrollmentQueryService.getEnrollmentInfoList(lectureId, null, request, "date");
+        EnrollmentPageResponse enrollments =  enrollmentQueryService.queryPage(
+                PageRequest.of(1, 10),
+                EnrollmentQueryFilter.builder()
+                        .lectureId(lectureId)
+                        .statuses(List.of(EnrollmentStatus.ACCEPTED,EnrollmentStatus.REJECTED))
+                        .build()
+        );
 
         //then
         assertThat(enrollments.getEnrollments().size()).isEqualTo(3);

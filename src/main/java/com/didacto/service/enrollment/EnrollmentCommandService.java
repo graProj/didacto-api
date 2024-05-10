@@ -3,7 +3,6 @@ package com.didacto.service.enrollment;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AlreadyExistElementException409;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Enrollment;
 import com.didacto.domain.EnrollmentStatus;
@@ -12,6 +11,7 @@ import com.didacto.domain.Member;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.service.lecture.LectureQueryService;
 import com.didacto.service.lecturemember.LectureMemberCommandService;
+import com.didacto.service.lecturemember.LectureMemberQueryService;
 import com.didacto.service.member.MemberQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Transactional(readOnly = true)
 public class EnrollmentCommandService {
     private final EnrollmentRepository enrollmentRepository;
+    private final EnrollmentQueryService enrollmentQueryService;
     private final LectureQueryService lectureQueryService;
     private final MemberQueryService memberQueryService;
+    private final LectureMemberQueryService lectureMemberQueryService;
     private final LectureMemberCommandService lectureMemberCommandService;
     private final TransactionTemplate transactionTemplate;
 
@@ -37,13 +39,13 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment requestEnrollment(Long lectureId, Long memberId){
+    public Enrollment requestEnrollment(Long lectureId, Long memberId) {
 
         Lecture lecture = lectureQueryService.queryOne(lectureId);
         Member member = memberQueryService.query(memberId);
 
         // Validate : 등록요청을 한 강의가 삭제된 경우
-        if(lecture.getDeleted() == true){
+        if (lecture.getDeleted() == true) {
             throw new NoSuchElementFoundException404(ErrorDefineCode.DELETED_LECTURE);
         }
 
@@ -63,7 +65,7 @@ public class EnrollmentCommandService {
         enrollment = enrollmentRepository.save(enrollment);
 
         // Out
-       return enrollment;
+        return enrollment;
     }
 
     /**
@@ -75,15 +77,13 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment cancelEnrollment(Long enrollId, Long memberId){
+    public Enrollment cancelEnrollment(Long enrollId, Long memberId) {
 
         Member member = memberQueryService.query(memberId);
 
         // Validate & Find : 멤버와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
-        Enrollment enrollment = enrollmentRepository.findWaitingEnrollment(enrollId, memberId);
-        if(enrollment == null){
-            throw new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL);
-        }
+        Enrollment enrollment = enrollmentQueryService.findWaitingEnrollment(enrollId, memberId)
+                .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL));
 
         // Update : Status 변경, 수정자 변경
         enrollment.updateStatus(EnrollmentStatus.CANCELLED);
@@ -104,19 +104,17 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action){
+    public Enrollment confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action) {
 
         Member tutor = memberQueryService.query(tutorId);
 
         // Validate & Find : 강의 소유자와 일치, WAITING 상태, enrollId에 해당하는 레코드 조회
-        Enrollment enrollment = enrollmentRepository.findWaitingEnrollmentByTutorId(enrollId, tutorId);
-        if(enrollment == null){
-            throw new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL);
-        }
+        Enrollment enrollment = enrollmentQueryService.findWaitingEnrollmentByTutorId(enrollId, tutorId)
+                .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ALREADY_ENROLL));
 
 
         // Validate : 강의등록요청을 한 회원이 탈퇴상태일 시 상태 Cancel 처리
-        if(enrollment.getMember() == null || enrollment.getMember().getDeleted()){
+        if (enrollment.getMember() == null || enrollment.getMember().getDeleted()) {
             enrollment.updateStatus(EnrollmentStatus.CANCELLED);
             enrollment.updateModifiedMember(tutor);
             enrollmentRepository.save(enrollment);
@@ -129,7 +127,7 @@ public class EnrollmentCommandService {
         enrollment = enrollmentRepository.save(enrollment);
 
         // 등록 승인 시 : Member <-> Lecture 연관 설정
-        if(action.equals(EnrollmentStatus.ACCEPTED)){
+        if (action.equals(EnrollmentStatus.ACCEPTED)) {
             Member member = enrollment.getMember();
             Lecture lecture = enrollment.getLecture();
 
@@ -139,31 +137,30 @@ public class EnrollmentCommandService {
             lectureMemberCommandService.createLectureMember(enrollment);
         }
 
-       return enrollment;
+        return enrollment;
     }
 
 
     /**
      * 해당 회원이 이미 Wait 상태인 Member-Lecture Enroll이 존재하는지 확인
      */
-    private void isHaveAlreadyWaitRequest(Member member, Lecture lecture){
-        boolean exist = enrollmentRepository.existWaitingEnrollmentByMemberId(member.getId(), lecture.getId());
+    private void isHaveAlreadyWaitRequest(Member member, Lecture lecture) {
+        boolean exist = enrollmentQueryService.existWaitingEnrollmentByMemberId(member.getId(), lecture.getId());
 
-        if(exist) {
+        if (exist) {
             throw new AlreadyExistElementException409(ErrorDefineCode.ALREADY_ENROLL_REQUEST);
         }
     }
 
 
-
     /**
      * 이미 해당 Lecture에 Member가 등록되어 있는지 확인
      */
-    private void isEnrolled(Member member, Lecture lecture){
-        boolean isEnrolled = enrollmentRepository.existJoinByMemberAndLecture(
+    private void isEnrolled(Member member, Lecture lecture) {
+        boolean isEnrolled = lectureMemberQueryService.existLectureMember(
                 member.getId(), lecture.getId());
 
-        if(isEnrolled) {
+        if (isEnrolled) {
             throw new AlreadyExistElementException409(ErrorDefineCode.ALREADY_JOIN);
         }
     }

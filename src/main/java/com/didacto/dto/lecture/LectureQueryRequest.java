@@ -1,17 +1,14 @@
 package com.didacto.dto.lecture;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.didacto.dto.PageQueryRequest;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class LectureQueryFilter {
+public class LectureQueryRequest extends PageQueryRequest {
     private String titleKeyword;
     private Boolean deleted;
 }
-

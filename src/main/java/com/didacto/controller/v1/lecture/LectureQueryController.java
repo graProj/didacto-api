@@ -5,6 +5,7 @@ import com.didacto.domain.Lecture;
 import com.didacto.dto.PageQueryRequest;
 import com.didacto.dto.lecture.LecturePageResponse;
 import com.didacto.dto.lecture.LectureQueryFilter;
+import com.didacto.dto.lecture.LectureQueryRequest;
 import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.service.lecture.LectureQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,13 +38,16 @@ public class LectureQueryController {
         );
     }
 
-    @GetMapping("page")
+    @GetMapping("list")
     @Operation(summary = "LECTURE_QUERY_02 : 강의 목록 조회")
     public CommonResponse<LecturePageResponse> queryPage(
-            @ParameterObject PageQueryRequest pageRequest,
-            @ParameterObject LectureQueryFilter request
+            @ParameterObject LectureQueryRequest request
     ){
-        LecturePageResponse lecturePageResponse = lectureQueryService.queryPage(pageRequest.toPageable(), request);
+        LectureQueryFilter filter = LectureQueryFilter.builder()
+                .titleKeyword(request.getTitleKeyword())
+                .deleted(request.getDeleted())
+                .build();
+        LecturePageResponse lecturePageResponse = lectureQueryService.queryPage(request.getPageable(), filter);
 
         return new CommonResponse(
                 true,

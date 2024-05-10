@@ -55,4 +55,14 @@ public class LectureMemberQueryService {
 
         return new LectureMemberPageResponse(pageInfo, lectureMembers);
     }
+
+    public boolean existLectureMember(Long memberId, Long lectureId) {
+        return lectureMemberRepository.findLectureMember(
+                LectureMemberQueryFilter.builder()
+                        .memberId(memberId)
+                        .lectureId(lectureId)
+                        .deleted(false)
+                        .build()
+        ).isPresent();
+    }
 }
