@@ -36,6 +36,9 @@ class MemberServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
 
     @Test
     void queryAll() {

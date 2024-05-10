@@ -25,7 +25,8 @@ public class MemberFactory extends BaseEntity {
     }
 
     private static OffsetDateTime parseBirth(String birthString) {
-        // 생년월일 문자열을 OffsetDateTime으로 파싱하는 로직을 구현해야 함
-        return OffsetDateTime.now(); // 임시로 현재 시간을 반환하는 예시
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate birthDate = LocalDate.parse(birthString, formatter);
+        return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
     }
 }
