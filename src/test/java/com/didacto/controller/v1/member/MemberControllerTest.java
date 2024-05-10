@@ -2,6 +2,7 @@ package com.didacto.controller.v1.member;
 
 import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetails;
+import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.repository.member.MemberRepository;
@@ -85,8 +86,8 @@ public class MemberControllerTest {
     //회원정보수정
     public void edidMember() throws Exception {
         // given
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         MemberModificationRequest req = new MemberModificationRequest("dnjsaqksfd1230!@", "홍길삼", "19890221");
-        Member member = createMember();
         CustomUser customUser = new CustomUser(member);
         CustomUserDetails userDetails = new CustomUserDetails(customUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
@@ -108,7 +109,7 @@ public class MemberControllerTest {
     // 회원 탈퇴
     public void deleteMemberInfo() throws Exception {
         // given
-        Member member = createMember();
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         CustomUser customUser = new CustomUser(member); // CustomUser 생성
         CustomUserDetails userDetails = new CustomUserDetails(customUser); // CustomUserDetails 생성
 

@@ -1,5 +1,6 @@
 package com.didacto.service.member;
 
+import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.dto.member.MemberResponse;
@@ -35,14 +36,12 @@ class MemberServiceTest {
     @Mock
     MemberRepository memberRepository;
 
-    @Mock
-    PasswordEncoder passwordEncoder;
 
     @Test
     void queryAll() {
         // given
-        Member member = createMember();
-        Member member2 = createMember();
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member2 = createMember(2L,"gilsam456@naver.com","홍길삼","gilsam123456!@","19960130", Authority.ROLE_USER);
         List<Member> list = new LinkedList<>();
         list.add(member);
         list.add(member2);
@@ -59,12 +58,11 @@ class MemberServiceTest {
     @Test
     void query() {
         // given
-        Long id = 5L;
-        Member member = createMember();
-        given(memberRepository.findById(id)).willReturn(Optional.of(member));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         // when
-        MemberResponse result = memberService.query(id);
+        MemberResponse result = memberService.query(member.getId());
 
         // then
         assertThat(result.getName()).isEqualTo("홍길동");
@@ -73,9 +71,8 @@ class MemberServiceTest {
     @Test
     void modifyInfo() {
         // given
-        Long id = 5L;
-        Member member = createMember();
-        given(memberRepository.findById(id)).willReturn(Optional.of(member));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         MemberModificationRequest req = new MemberModificationRequest("dkfwhiba1230!@", "홍길자", "19990513");
 
@@ -94,9 +91,8 @@ class MemberServiceTest {
     @Test
     void delete() {
         //given
-        Long id = 5L;
-        Member member = createMember();
-        given(memberRepository.findById(id)).willReturn(Optional.of(member));
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         //when
         memberService.delete(member.getId());

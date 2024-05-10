@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         // H2 데이터베이스에 접근하는 쿼리를 실행합니다.
         int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM member", Integer.class);
 
-        // 결과가 예상과 일치하는지 확인합니다.
         assertTrue(count >= 0);
     }
 }

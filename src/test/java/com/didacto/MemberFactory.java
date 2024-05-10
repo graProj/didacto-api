@@ -11,14 +11,14 @@ import java.time.format.DateTimeFormatter;
 
 public class MemberFactory extends BaseEntity {
 
-    public static Member createMember() {
+    public static Member createMember(Long id, String email, String name, String password, String birth, Authority role) {
         Member member = Member.builder()
-                .id(5L)
-                .email("gildong@naver.com")
-                .name("홍길동")
-                .password("gildong123!!")
-                .birth(parseBirth("20000621"))
-                .role(Authority.ROLE_USER)
+                .id(id)
+                .email(email)
+                .name(name)
+                .password(password)
+                .birth(parseBirth(birth))
+                .role(role)
                 .deleted(false)
                 .build();
         return member;
