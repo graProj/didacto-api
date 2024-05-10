@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class LectureQueryFilter {
+    @Schema(description = "강의명으로 검색합니다.")
     private String titleKeyword;
     private Boolean deleted;
 }
