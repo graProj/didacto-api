@@ -2,13 +2,15 @@ package com.didacto.controller.v1.lecturemember;
 
 
 import com.didacto.common.response.CommonResponse;
+import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.LectureMember;
-import com.didacto.dto.PageQueryRequest;
 import com.didacto.dto.lecturemember.LectureMemberPageResponse;
 import com.didacto.dto.lecturemember.LectureMemberQueryFilter;
+import com.didacto.dto.lecturemember.LectureMemberQueryRequest;
 import com.didacto.dto.lecturemember.LectureMemberResponse;
 import com.didacto.service.lecturemember.LectureMemberQueryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -38,13 +40,37 @@ public class LectureMemberQueryController {
         );
     }
 
-    @GetMapping("page")
-    @Operation(summary = "LECTURE_MEMBER_QUERY_02 : 강의 구성원 목록 조회")
-    public CommonResponse<LectureMemberPageResponse> queryPage(
-            @ParameterObject PageQueryRequest pageable,
-            @ParameterObject LectureMemberQueryFilter request
+    @GetMapping("list/member")
+    @Operation(summary = "LECTURE_MEMBER_QUERY_02 : 유저가 속한 강의 목록 조회")
+    public CommonResponse<LectureMemberPageResponse> queryByMember(
+            @ParameterObject LectureMemberQueryRequest request
     ){
-        LectureMemberPageResponse lectureMemberPageResponse = lectureMemberQueryService.queryPage(pageable.toPageable(), request);
+        Long memberId = SecurityUtil.getCurrentMemberId();
+        LectureMemberQueryFilter filter = LectureMemberQueryFilter.builder()
+                .memberId(memberId)
+                .deleted(request.getDeleted())
+                .build();
+        LectureMemberPageResponse lectureMemberPageResponse = lectureMemberQueryService.queryPage(request.getPageable(), filter);
+
+        return new CommonResponse(
+                true,
+                HttpStatus.OK,
+                "강의 구성 목록을 조회하였습니다.",
+                lectureMemberPageResponse
+        );
+    }
+
+    @GetMapping("list/lecture/{lectureId}")
+    @Operation(summary = "LECTURE_MEMBER_QUERY_03 : 강의에 속한 학생 목록 조회")
+    public CommonResponse<LectureMemberPageResponse> queryByLecture(
+            @PathVariable("lectureId") @Schema(example = "1") Long lectureId,
+            @ParameterObject LectureMemberQueryRequest request
+    ){
+        LectureMemberQueryFilter filter = LectureMemberQueryFilter.builder()
+                .lectureId(lectureId)
+                .deleted(request.getDeleted())
+                .build();
+        LectureMemberPageResponse lectureMemberPageResponse = lectureMemberQueryService.queryPage(request.getPageable(), filter);
 
         return new CommonResponse(
                 true,

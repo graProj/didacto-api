@@ -13,15 +13,15 @@ import org.springframework.data.domain.Sort;
 public class PageQueryRequest {
     @Schema(required = true, example = "1", minimum = "1")
     private int page;
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "10", description = "Default : 10")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, defaultValue = "10")
     private int size = 10;
-    @Schema(example = "createdTime", description = "Default : createdTime")
+    @Schema(defaultValue = "createdTime")
     private String[] sort = {"createdTime"};
-    @Schema(example = "DESC", description = "Default : DESC")
+    @Schema(defaultValue = "DESC")
     private Sort.Direction direction = Sort.Direction.DESC;
 
 
-    public PageRequest toPageable(){
+    public PageRequest getPageable(){
         return PageRequest.of(page, size, Sort.by(sort));
     }
 }
