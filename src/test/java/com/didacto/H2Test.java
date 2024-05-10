@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
     @AutoConfigureTestDatabase
-    public class h2Test {
+    public class H2Test {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
