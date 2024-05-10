@@ -25,10 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 
-@TestPropertySource(locations = "classpath:application-test.yml")
-@AutoConfigureTestDatabase
+//@AutoConfigureTestDatabase를 사용해야 Test용 DB를 사용함
+//@ExtenWith를 사용해야 Mokito를 사용할 수 있음
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
+
+    //InjectMocks : 생성된 Mock 객체를 사용하고 있는 객체에게 주입한다는 어노테이션
+    //Mock : Mock 객체를 자동적으로 생성해주는 어노테이션
 
     @InjectMocks
     MemberService memberService;
@@ -39,14 +42,13 @@ class MemberServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-
     @Test
     void queryAll() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member1 = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         Member member2 = createMember(2L,"gilsam456@naver.com","홍길삼","gilsam123456!@","19960130", Authority.ROLE_USER);
         List<Member> list = new LinkedList<>();
-        list.add(member);
+        list.add(member1);
         list.add(member2);
 
         given(memberRepository.findAll()).willReturn(list);
