@@ -29,7 +29,6 @@ public class EnrollmentCommandService {
     private final MemberQueryService memberQueryService;
     private final LectureMemberQueryService lectureMemberQueryService;
     private final LectureMemberCommandService lectureMemberCommandService;
-    private final TransactionTemplate transactionTemplate;
 
     /**
      * [학생 : 강의 등록 요청]
@@ -62,6 +61,7 @@ public class EnrollmentCommandService {
                 .member(member)
                 .modified_by(member)
                 .build();
+
         enrollment = enrollmentRepository.save(enrollment);
 
         // Out

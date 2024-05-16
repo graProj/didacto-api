@@ -27,7 +27,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     @Override
     public Optional<Enrollment> findEnrollment(EnrollmentQueryFilter request) {
         JPAQuery<Enrollment> query = queryWithFilter(request);
-        return Optional.ofNullable(query.fetchOne());
+        return Optional.ofNullable(query.fetchFirst());
     }
 
     @Override
