@@ -12,6 +12,7 @@ import com.didacto.dto.enrollment.EnrollmentConfirmRequest;
 import com.didacto.dto.enrollment.EnrollmentRequest;
 import com.didacto.service.enrollment.EnrollmentCommandService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +47,11 @@ public class EnrollmentCommandController {
     @PreAuthorize(AuthConstant.AUTH_USER)
     @Operation(summary = "ENROLL_COMMAND_02 : 강의 등록 요청 취소 (학생)", description = "요청한 등록을 취소합니다.")
     public CommonResponse<Long> cancelRequest(
-            @Valid @RequestBody EnrollmentCancelRequest request
+            @Parameter(example = "1") @RequestParam("enrollmentId") Long enrollmentId
     ){
         Long studentId = SecurityUtil.getCurrentMemberId();
 
-        Long enroll = enrollmentService.cancelEnrollment(request.getEnrollmentId(), studentId).getId();
+        Long enroll = enrollmentService.cancelEnrollment(enrollmentId, studentId).getId();
         return new CommonResponse(
                 true, HttpStatus.OK, "등록 요청이 취소되었습니다.", enroll
         );
