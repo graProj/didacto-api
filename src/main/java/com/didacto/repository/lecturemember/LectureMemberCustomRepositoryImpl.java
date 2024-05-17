@@ -32,9 +32,11 @@ public class LectureMemberCustomRepositoryImpl implements LectureMemberCustomRep
     public List<LectureMember> findLectureMembers(LectureMemberQueryFilter filter) {
         return queryFactory.selectDistinct(lectureMember)
                 .from(lectureMember)
-                .where(lectureMember.lecture.id.eq(filter.getLectureId())
-                        .and(lectureMember.member.id.eq(filter.getMemberId()))
-                        .and(lectureMember.deleted.eq(filter.getDeleted()))
+                .where(
+                        filter.getLectureId() != null ? lectureMember.lecture.id.eq(filter.getLectureId()) : null,
+                        filter.getMemberId() != null ? lectureMember.member.id.eq(filter.getMemberId()) : null,
+                        filter.getMemberIds() != null ? lectureMember.member.id.in(filter.getMemberIds()) : null,
+                        filter.getDeleted() != null ? lectureMember.deleted.eq(filter.getDeleted()) : null
                 )
                 .fetch();
     }

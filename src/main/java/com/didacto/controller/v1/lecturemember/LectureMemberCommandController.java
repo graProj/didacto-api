@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/lecture-member")
@@ -33,6 +35,22 @@ public class LectureMemberCommandController {
         LectureMember lectureMember = lectureMemberCommandService.deleteLectureMember(lectureId, memberId, principal);
         return new CommonResponse(
                 true, HttpStatus.OK, null, lectureMember.getId()
+        );
+    }
+
+    @DeleteMapping("members")
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @Operation(summary = "LECTURE_MEMBER_COMMAND_02 : 강의 구성원 복수 삭제 (강의강퇴) (교수)", description = "강의 구성원을 복수 삭제합니다.")
+    public CommonResponse<Long> deleteLectureMembers(
+            @Parameter(example = "1")
+            @RequestParam("lectureId") Long lectureId,
+            @Parameter(example = "{1}")
+            @RequestParam("memberIds") List<Long> memberIds
+    ){
+        Long principal = SecurityUtil.getCurrentMemberId();
+        List<LectureMember> lectureMember = lectureMemberCommandService.deleteLectureMembers(lectureId, memberIds, principal);
+        return new CommonResponse(
+                true, HttpStatus.OK, null, lectureMember.stream().map(LectureMember::getId).toList()
         );
     }
 }

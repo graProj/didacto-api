@@ -56,6 +56,10 @@ public class LectureMemberQueryService {
         return new LectureMemberPageResponse(pageInfo, lectureMembers);
     }
 
+    public List<LectureMember> query(LectureMemberQueryFilter filter) {
+        return lectureMemberRepository.findLectureMembers(filter);
+    }
+
     public boolean existLectureMember(Long memberId, Long lectureId) {
         return lectureMemberRepository.findLectureMember(
                 LectureMemberQueryFilter.builder()

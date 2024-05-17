@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
@@ -71,5 +73,24 @@ public class LectureMemberCommandService {
 
         lectureMember.delete(memberQueryService.query(deletedBy));
         return lectureMemberRepository.save(lectureMember);
+    }
+
+    @Transactional
+    public List<LectureMember> deleteLectureMembers(Long lectureId, List<Long> memberIds, Long deletedBy) {
+        Member deletedByMember = memberQueryService.query(deletedBy);
+
+        List<LectureMember> lectureMembers = lectureMemberQueryService.query(
+                LectureMemberQueryFilter.builder()
+                        .lectureId(lectureId)
+                        .memberIds(memberIds)
+                        .deleted(false)
+                        .build()
+        );
+
+        lectureMembers.forEach(lectureMember -> {
+            lectureMember.delete(deletedByMember);
+        });
+
+        return lectureMemberRepository.saveAll(lectureMembers);
     }
 }
