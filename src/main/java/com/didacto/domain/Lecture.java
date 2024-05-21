@@ -7,11 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -69,10 +68,12 @@ public class Lecture extends BaseEntity {
         this.lectureMembers = lectureMembers;
     }
 
+    @Transactional
     public void modify(String title) {
         this.title = title;
     }
 
+    @Transactional
     public void delete() {
         this.deleted = true;
     }

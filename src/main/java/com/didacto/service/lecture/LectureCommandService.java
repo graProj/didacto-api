@@ -33,6 +33,7 @@ public class LectureCommandService {
         return lectureRepository.save(lecture);
     }
 
+    @Transactional
     public Lecture modify(LectureModificationRequest request) {
         Lecture lecture = lectureRepository.findById(request.getLectureId()).orElseThrow(()
                 -> new NoSuchElementFoundException404(ErrorDefineCode.LECTURE_NOT_FOUND)
@@ -43,6 +44,7 @@ public class LectureCommandService {
         return lectureRepository.save(lecture);
     }
 
+    @Transactional
     public Lecture delete(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(()
                 -> new NoSuchElementFoundException404(ErrorDefineCode.LECTURE_NOT_FOUND)
