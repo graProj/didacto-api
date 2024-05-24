@@ -68,12 +68,10 @@ public class Lecture extends BaseEntity {
         this.lectureMembers = lectureMembers;
     }
 
-    @Transactional
     public void modify(String title) {
         this.title = title;
     }
-
-    @Transactional
+    
     public void delete() {
         this.deleted = true;
     }
