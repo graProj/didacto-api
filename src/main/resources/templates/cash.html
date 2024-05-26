@@ -21,11 +21,12 @@
           const amount = document.getElementById("price").value;
           const IMP = window.IMP; // 생략 가능
           IMP.init("imp44240506"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
+          var merchant_uid = "O" + new Date().getTime(); // 고유한 주문번호 생성
           IMP.request_pay(
             {
               pg: "html5_inicis", //PG사
               pay_method: "card", //결제방식
-              //merchant_uid: "ORD20180131-0000011", // 주문번호-상품ID, 생략시 자동생성
+              merchant_uid: merchant_uid, // 주문번호-상품ID, 생략시 자동생성
               name: "노르웨이 회전 의자", // 상품이름
               amount: amount, // 가격
               buyer_email: "gildong@gmail.com",
