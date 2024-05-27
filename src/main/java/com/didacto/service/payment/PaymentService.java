@@ -3,6 +3,7 @@ package com.didacto.service.payment;
 import com.didacto.domain.Order;
 import com.didacto.domain.PaymentStatus;
 import com.didacto.dto.pay.PayRequest;
+import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.repository.pament.PaymentCustomRepository;
 import com.didacto.repository.pament.PaymentRepository;
