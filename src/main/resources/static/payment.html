@@ -8,7 +8,7 @@
     <!-- jQuery -->
     <script
             type="text/javascript"
-            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
     ></script>
     <!-- iamport.payment.js -->
     <script
@@ -37,31 +37,34 @@
               buyer_postcode: "01181",
             },
             function(rsp) {
+                     // callback
+                    console.log(rsp); //백엔드에 넘겨줄 결제 처리 완료 정보
                     if (rsp.success) {
-                        alert('call back!!: ' + JSON.stringify(rsp));
                         // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
-                        // jQuery로 HTTP 요청
-                        jQuery.ajax({
-                            url: "/payment",
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            data: JSON.stringify({
-                                "payment_uid": rsp.imp_uid,      // 결제 고유번호
-                                "order_uid": rsp.merchant_uid   // 주문번호
-                            })
-                        }).done(function (response) {
-                            console.log(response);
+                        alert("결제 성공");
+                        axios.post("/payment", {
+                            payment_uid: rsp.imp_uid, // 결제 고유번호
+                            order_uid: rsp.merchant_uid // 주문번호
+                        }, {
+                            headers: { "Content-Type": "application/json" }
+                        })
+                        .then(function (response) {
+                            console.log(response.data);
                             // 가맹점 서버 결제 API 성공시 로직
-                            //alert('Please, Check your payment result page!!' + rsp);
-                            alert('결제 완료!' + rsp);
+                            alert('결제 완료!' + JSON.stringify(rsp));
                             window.location.href = "/success-payment";
                         })
+                        .catch(function (error) {
+                            console.error('결제 실패: ', error);
+                            alert('결제 처리 중 오류가 발생했습니다.');
+                        });
                     } else {
-                        // alert("success? "+ rsp.success+ ", 결제에 실패하였습니다. 에러 내용: " + JSON.stringify(rsp));
-                        alert('결제 실패!' + rsp);
+                        // 결제 실패 시 처리 로직
+                        alert("결제 실패");
                         window.location.href = "/fail-payment";
                     }
-                });
+                }
+            );
         }
     </script>
 </head>
