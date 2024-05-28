@@ -15,7 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long price;
-    private String itemName; // 프리티어, 실버, 골드 등등..
+    private Grade itemName; // 프리티어, 실버, 골드 등등..
     private String orderUid; //주문번호
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -25,7 +25,7 @@ public class Order {
     private Payment payment;
 
     @Builder
-    public Order(Long price, String itemName, String orderUid, Member member, Payment payment) {
+    public Order(Long price, Grade itemName, String orderUid, Member member, Payment payment) {
         this.price = price;
         this.itemName = itemName;
         this.orderUid = orderUid;

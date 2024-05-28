@@ -35,7 +35,7 @@ public class PaymentService{
                 .buyerName(order.getMember().getName())
                 .buyerEmail(order.getMember().getEmail())
                 .paymentPrice(order.getPayment().getPrice())
-                .itemName(order.getItemName())
+                .itemName(String.valueOf(order.getItemName()))
                 .orderUid(order.getOrderUid())
                 .build();
     }
