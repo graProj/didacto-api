@@ -6,7 +6,4 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 
 public interface PaymentCustomRepository {
-    PayRequest findRequestDto(String orderUid);
-    // 결제(콜백)
-    IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request);
 }

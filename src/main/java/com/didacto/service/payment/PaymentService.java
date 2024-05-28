@@ -22,12 +22,11 @@ import java.math.BigDecimal;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PaymentService implements PaymentCustomRepository {
+public class PaymentService{
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final IamportClient iamportClient;
 
-    @Override
     public PayRequest findRequestDto(String orderUid) {
         Order order = orderRepository.findOrderAndPaymentAndMember(orderUid)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
@@ -41,7 +40,7 @@ public class PaymentService implements PaymentCustomRepository {
                 .build();
     }
 
-    @Override
+
     public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
         try {
             // 결제 단건 조회(아임포트)

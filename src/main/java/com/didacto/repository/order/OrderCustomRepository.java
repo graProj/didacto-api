@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface OrderCustomRepository {
-    Order autoOrder(Member member);
+    Optional<Order> findOrderAndPaymentAndMember(String orderUid);
+    Optional<Order> findOrderAndPayment(String orderUid);
+
 }

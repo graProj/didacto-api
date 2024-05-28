@@ -16,11 +16,10 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderService implements OrderCustomRepository {
+public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
 
-    @Override
     public Order autoOrder(Member member) {
          Payment payment = Payment.builder()
                 .price(1000L)

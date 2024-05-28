@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "orders") // Mariadb에서 order가 예약어로 되어있기 때문에 @Table은 필수로 작성
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
