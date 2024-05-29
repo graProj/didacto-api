@@ -31,9 +31,7 @@ public class PaymentController {
     @PostMapping("/payment")
     public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
-
         log.info("결제 응답={}", iamportResponse.getResponse().toString());
-
         return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
     }
 

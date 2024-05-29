@@ -21,20 +21,17 @@
           const amount = document.getElementById("price").value;
           const IMP = window.IMP; // 생략 가능
           IMP.init("imp51203488"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
-          var orderUid = "af70c196-1f18-4464-bfea-5cd9706d153c"
+          var orderUid = "5c61070d-7314-43e9-a8ba-c726ae6896b1"
           console.log("결제 요청 시작");
           IMP.request_pay(
             {
               pg: "html5_inicis", // PG사
               pay_method: "card", // 결제방식
               merchant_uid: orderUid, // 주문번호-상품ID, 생략시 자동생성
-              name: "노르웨이 회전 의자", // 상품이름
+              name: "DIDACTO PREMIEM", // 상품이름
               amount: amount, // 가격
               buyer_email: "gildong@gmail.com",
               buyer_name: "홍길동",
-              buyer_tel: "010-4242-4242",
-              buyer_addr: "서울특별시 강남구 신사동",
-              buyer_postcode: "01181",
             },
             function(rsp) {
                      // callback
@@ -53,7 +50,7 @@
                             console.log(response.data);
                             // 가맹점 서버 결제 API 성공시 로직
                             alert('결제 완료!' + JSON.stringify(rsp));
-                            window.location.href = "/success-payment";
+                            window.location.href = "/success-payment.html";
                         })
                         .catch(function (error) {
                             console.error('결제 실패: ', error);
@@ -62,7 +59,7 @@
                     } else {
                         // 결제 실패 시 처리 로직
                         alert("결제 실패");
-                        window.location.href = "/fail-payment";
+                        window.location.href = "/fail-payment.html";
                     }
                 }
             );

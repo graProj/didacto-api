@@ -30,7 +30,8 @@ public enum ErrorDefineCode {
     LECTURE_MEMBER_NOT_FOUND("LMB_01", "강의 참여자를 찾을 수 없습니다."),
     LECTURE_MEMBER_ALREADY_EXISTENCE("LMB_02", "이미 강의에 등록된 사용자입니다."),
     DELETED_LECTURE("LECTURE_01", "삭제된 강의입니다."),
-    ORDER_GRADE_FAIL("ORDER_01","Freeteer, Silver, Gold중 선택해야합니다."),
+    ORDER_GRADE_FAIL("ORDER_01","주문된 상품이 프리미엄이 아닙니다."),
+    ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다.")
     ;
 
     private final String code;

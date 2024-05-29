@@ -1,6 +1,8 @@
 package com.didacto.controller.v1.pay;
 
+import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Lecture;
@@ -8,6 +10,8 @@ import com.didacto.domain.Member;
 import com.didacto.domain.Order;
 import com.didacto.dto.order.OrderRequest;
 import com.didacto.repository.member.MemberRepository;
+import com.didacto.repository.order.OrderRepository;
+import com.didacto.repository.order.OrderRepositoryImpl;
 import com.didacto.service.member.MemberQueryService;
 import com.didacto.service.member.MemberService;
 import com.didacto.service.order.OrderService;
@@ -32,16 +36,13 @@ public class OrderController {
     private final MemberQueryService memberQueryService;
     private final OrderService orderService;
     private final MemberRepository memberRepository;
+    private final OrderRepository orderRepository;
 
-//    @GetMapping("/order")
-//    public String order(@RequestParam(name = "message", required = false) String message,
-//                        @RequestParam(name = "orderUid", required = false) String id,
-//                        Model model) {
-//
-//        model.addAttribute("message", message);
-//        model.addAttribute("orderUid", id);
-//        return "order";
-//    }
+    @GetMapping("/order")
+    public Order queryOne(Long orderId) {
+        return orderRepository.findById(orderId)
+                        .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
+    }
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)

@@ -35,29 +35,20 @@ public class OrderService {
     private Order createFormOfOrder(OrderRequest req) {
 
 
-        Grade grade = null;
+        String grade = null;
         Long price = 0L;
 
-        if (req.getItemName().equals("Freeteer")) {
-            grade = Grade.Freeteer;
+        if (req.getItemName().equals("Premium")) {
+            grade = "Premium";
             price = 1000L;
-            System.out.println("Matched grade: Freeteer");
-        } else if (req.getItemName().equals("Silver")) {
-            grade = Grade.Silver;
-            price = 2000L;
-            System.out.println("Matched grade: Silver");
-        } else if (req.getItemName().equals("Gold")) {
-            grade = Grade.Gold;
-            price = 3000L;
-            System.out.println("Matched grade: Gold");
-        } else {
+        }else {
             throw new PreconditionFailException412(ErrorDefineCode.ORDER_GRADE_FAIL);
         }
 
         Long member_id = SecurityUtil.getCurrentMemberId();
         Member member = memberQueryService.query(member_id);
 
-        // 임시 payment 생성
+        //결제내역 생성
         Payment payment = Payment.builder()
                 .price(price)
                 .status(PaymentStatus.READY)
