@@ -56,8 +56,11 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 
+	// Reactor
+	implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.0'
 
-
+	// WebFlux
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.3'
 }
 
 tasks.named('test') {
