@@ -59,7 +59,7 @@ public class OrderService {
 
         // 임시 payment 생성
         Payment payment = Payment.builder()
-                .price(1000L)
+                .price(price)
                 .status(PaymentStatus.READY)
                 .build();
 

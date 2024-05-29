@@ -21,13 +21,13 @@
           const amount = document.getElementById("price").value;
           const IMP = window.IMP; // 생략 가능
           IMP.init("imp51203488"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
-          var merchant_uid = "O" + new Date().getTime(); // 고유한 주문번호 생성
+          var orderUid = "af70c196-1f18-4464-bfea-5cd9706d153c"
           console.log("결제 요청 시작");
           IMP.request_pay(
             {
               pg: "html5_inicis", // PG사
               pay_method: "card", // 결제방식
-              merchant_uid: merchant_uid, // 주문번호-상품ID, 생략시 자동생성
+              merchant_uid: orderUid, // 주문번호-상품ID, 생략시 자동생성
               name: "노르웨이 회전 의자", // 상품이름
               amount: amount, // 가격
               buyer_email: "gildong@gmail.com",
@@ -40,8 +40,9 @@
                      // callback
                     console.log(rsp); //백엔드에 넘겨줄 결제 처리 완료 정보
                     if (rsp.success) {
+
                         // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
-                        alert("결제 성공");
+                        alert('call back!!: ' + JSON.stringify(rsp));
                         axios.post("/payment", {
                             payment_uid: rsp.imp_uid, // 결제 고유번호
                             order_uid: rsp.merchant_uid // 주문번호
