@@ -21,17 +21,24 @@
           const amount = document.getElementById("price").value;
           const IMP = window.IMP; // 생략 가능
           IMP.init("imp51203488"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
-          var orderUid = "5c61070d-7314-43e9-a8ba-c726ae6896b1"
+
+          //임시로 넣어놓은 데이터데이터
+          var orderuid = "b9f67877-9406-4bf0-aab8-1c33b2a0fb76"
+          var item_name = "premium"
+          var buyer_email = "asdf1234@naver.com"
+          var buyer_name = "홍길동"
+
+
           console.log("결제 요청 시작");
           IMP.request_pay(
             {
               pg: "html5_inicis", // PG사
               pay_method: "card", // 결제방식
-              merchant_uid: orderUid, // 주문번호-상품ID, 생략시 자동생성
-              name: "DIDACTO PREMIEM", // 상품이름
+              merchant_uid: orderuid, // 주문번호-상품ID, 생략시 자동생성
+              name: item_name, // 상품이름
               amount: amount, // 가격
-              buyer_email: "gildong@gmail.com",
-              buyer_name: "홍길동",
+              buyer_email: buyer_email,
+              buyer_name: buyer_name,
             },
             function(rsp) {
                      // callback

@@ -35,11 +35,12 @@ public class OrderService {
     private Order createFormOfOrder(OrderRequest req) {
 
 
-        String grade = null;
+        Grade grade = null;
         Long price = 0L;
 
+        //일단 상품을 입력받아서 저장하는 식으로 작성 나중에 정적테이블을 만들어서 연관시키는 방법도 고려중
         if (req.getItemName().equals("Premium")) {
-            grade = "Premium";
+            grade = Grade.Premium;
             price = 1000L;
         }else {
             throw new PreconditionFailException412(ErrorDefineCode.ORDER_GRADE_FAIL);

@@ -2,7 +2,8 @@ package com.didacto.service.payment;
 
 import com.didacto.domain.Order;
 import com.didacto.domain.PaymentStatus;
-import com.didacto.dto.pay.PayRequest;
+
+import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.repository.pament.PaymentCustomRepository;
@@ -12,11 +13,11 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @Service
@@ -27,15 +28,16 @@ public class PaymentService{
     private final PaymentRepository paymentRepository;
     private final IamportClient iamportClient;
 
-    public PayRequest findRequestDto(String orderUid) {
+    public PayResponse findRequestDto(String orderUid) {
         Order order = orderRepository.findOrderAndPaymentAndMember(orderUid)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
 
-        return PayRequest.builder()
+
+        return PayResponse.builder()
                 .buyerName(order.getMember().getName())
                 .buyerEmail(order.getMember().getEmail())
                 .paymentPrice(order.getPayment().getPrice())
-                .itemName(String.valueOf(order.getItemName()))
+                .itemName(order.getItemName())
                 .orderUid(order.getOrderUid())
                 .build();
     }
@@ -84,8 +86,6 @@ public class PaymentService{
         } catch (IamportResponseException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (java.io.IOException e) {
             throw new RuntimeException(e);
         }
     }

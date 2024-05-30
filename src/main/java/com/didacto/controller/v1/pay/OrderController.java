@@ -42,6 +42,8 @@ public class OrderController {
     public Order queryOne(Long orderId) {
         return orderRepository.findById(orderId)
                         .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
+
+        
     }
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)

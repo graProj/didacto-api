@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderRequest {
 
-    @Pattern(regexp = "^(Freeteer|Silver|Gold)$", message = "등급은 Freeteer, Silver, Gold 중 하나여야 합니다.")
+    @Pattern(regexp = "^(Freeteer|Silver|Gold|Premium)$", message = "등급은 Freeteer, Silver, Gold 중 하나여야 합니다.")
     private String itemName;
 }
