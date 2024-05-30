@@ -61,6 +61,9 @@ dependencies {
 
 	// WebFlux
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.3'
+
+	//RabbiMq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 tasks.named('test') {
