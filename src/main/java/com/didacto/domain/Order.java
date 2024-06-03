@@ -15,7 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long price;
-    private Grade itemName; // 프리미엄
+    private Grade itemName; // 프리티어, 프리미엄
     private String orderUid; //주문번호
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

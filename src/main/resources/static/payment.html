@@ -22,8 +22,8 @@
           const IMP = window.IMP; // 생략 가능
           IMP.init("imp51203488"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
 
-          //임시로 넣어놓은 데이터데이터
-          var orderuid = "6e377342-d9d6-4983-8578-8804de54ee5d"
+          //임시로 넣어놓은 데이터
+          var orderuid = "6782469d-ee3a-45fc-9bec-0b806f1316ac"
           var item_name = "premium"
           var buyer_email = "asdf1234@naver.com"
           var buyer_name = "홍길동"
@@ -44,12 +44,12 @@
                      // callback
                     console.log(rsp); //백엔드에 넘겨줄 결제 처리 완료 정보
                     if (rsp.success) {
-
                         // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
                         alert('call back!!: ' + JSON.stringify(rsp));
                         axios.post("/payment", {
                             payment_uid: rsp.imp_uid, // 결제 고유번호
                             order_uid: rsp.merchant_uid // 주문번호
+                            //item_name: rsp.name // 주문아이템 이름
                         }, {
                             headers: { "Content-Type": "application/json" }
                         })
