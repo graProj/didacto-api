@@ -46,7 +46,10 @@ public class MonitoringController {
     @Operation(summary = "MONITORING_02 : 모니터링(학생 화면) 이미지 스트림 연결",
             description = "SSE 방식으로 이미지 스트림을 연결합니다. 스트림에선 모니터링 이미지를 포함한 정보를 방출합니다." +
                     "<br>swagger-ui에서는 확인이 어렵습니다. Postman 등을 이용해 확인해주세요.")
-    public Flux<MonitoringImageEvent> imageStream() {
-        return monitoringService.getStream();
+    public Flux<MonitoringImageEvent> imageStream(
+            @RequestParam("lectureId") Long lectureId
+    ) {
+        return monitoringService.getStream()
+                .filter(event -> event.getLectureId().equals(lectureId));
     }
 }
