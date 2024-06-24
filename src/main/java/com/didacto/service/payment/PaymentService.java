@@ -5,6 +5,7 @@ import com.didacto.domain.Order;
 
 import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
+import com.didacto.dto.pay.WebhookRequest;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.repository.pament.PaymentRepository;
@@ -42,7 +43,31 @@ public class PaymentService{
                 .build();
     }
 
+    @Transactional
+    public void processWebhook(WebhookRequest webhookRequest) {
+        try {
+            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(webhookRequest.getPaymentUid());
 
+            // 주문내역 조회
+            Order order = orderRepository.findOrderAndPayment(webhookRequest.getOrderUid())
+                    .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+
+            if ("paid".equals(iamportResponse.getResponse().getStatus())) {
+                // 결제 성공 시 처리 로직
+                order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), webhookRequest.getPaymentUid());
+                order.getMember().premium();
+            } else {
+                // 결제 실패 시 처리 로직
+                orderRepository.delete(order);
+                paymentRepository.delete(order.getPayment());
+                throw new RuntimeException("결제 실패: " + iamportResponse.getResponse().getFailReason());
+            }
+        } catch (IamportResponseException | IOException e) {
+            throw new RuntimeException("결제 처리 중 오류 발생", e);
+        }
+    }
+
+    @Transactional
     public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
         try {
             // 결제 단건 조회(아임포트)
