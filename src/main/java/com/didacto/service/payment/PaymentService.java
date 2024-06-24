@@ -46,15 +46,15 @@ public class PaymentService{
     @Transactional
     public void processWebhook(WebhookRequest webhookRequest) {
         try {
-            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(webhookRequest.getPaymentUid());
+            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(webhookRequest.getImp_Uid());
 
             // 주문내역 조회
-            Order order = orderRepository.findOrderAndPayment(webhookRequest.getOrderUid())
+            Order order = orderRepository.findOrderAndPayment(webhookRequest.getMerchant_Uid())
                     .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
 
             if ("paid".equals(iamportResponse.getResponse().getStatus())) {
                 // 결제 성공 시 처리 로직
-                order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), webhookRequest.getPaymentUid());
+                order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), webhookRequest.getImp_Uid());
                 order.getMember().premium();
             } else {
                 // 결제 실패 시 처리 로직
