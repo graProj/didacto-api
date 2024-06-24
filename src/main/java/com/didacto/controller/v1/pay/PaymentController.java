@@ -7,6 +7,7 @@ import com.didacto.config.exception.custom.exception.NoSuchElementFoundException
 import com.didacto.domain.Order;
 import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
+import com.didacto.dto.pay.WebhookRequest;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.service.order.OrderService;
 import com.didacto.service.payment.PaymentService;
@@ -45,6 +46,12 @@ public class PaymentController {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
         log.info("결제 응답={}", iamportResponse.getResponse().toString());
         return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/webhook")
+    public ResponseEntity<String> handleWebhook(@RequestBody WebhookRequest webhookData) {
+        paymentService.processWebhook(webhookData);
+        return ResponseEntity.ok("Webhook received");
     }
 
     @GetMapping("/success-payment")

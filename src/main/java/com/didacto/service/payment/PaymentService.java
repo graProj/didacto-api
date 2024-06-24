@@ -1,9 +1,7 @@
 package com.didacto.service.payment;
 
-import com.didacto.config.security.SecurityUtil;
-import com.didacto.domain.Member;
 import com.didacto.domain.Order;
-import com.didacto.domain.PaymentStatus;
+
 
 import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
@@ -80,7 +78,7 @@ public class PaymentService{
             }
 
             // 결제 상태 변경
-            order.getPayment().changePaymentBySuccess(PaymentStatus.OK, iamportResponse.getResponse().getImpUid());
+            order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), iamportResponse.getResponse().getImpUid());
             order.getMember().premium();
 
             return iamportResponse;

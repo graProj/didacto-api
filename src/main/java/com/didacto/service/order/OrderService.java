@@ -52,7 +52,7 @@ public class OrderService {
         //결제내역 생성
         Payment payment = Payment.builder()
                 .price(price)
-                .status(PaymentStatus.READY)
+                .status("Ready")
                 .build();
 
         paymentRepository.save(payment);

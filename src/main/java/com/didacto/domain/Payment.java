@@ -16,15 +16,15 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long price;
-    private PaymentStatus status;
+    private String status;
     private String paymentUid;
 
     @Builder
-    public Payment(Long price, PaymentStatus status){
+    public Payment(Long price, String status){
         this.price = price;
         this.status = status;
     }
-    public void changePaymentBySuccess(PaymentStatus status, String paymentUid) {
+    public void changePaymentBySuccess(String status, String paymentUid) {
         this.status = status;
         this.paymentUid = paymentUid;
     }
