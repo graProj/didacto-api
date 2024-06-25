@@ -4,6 +4,7 @@ import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
 
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
+import com.didacto.config.security.AuthConstant;
 import com.didacto.domain.Order;
 import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
@@ -13,10 +14,12 @@ import com.didacto.service.order.OrderService;
 import com.didacto.service.payment.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,20 +31,21 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
+
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @Operation(summary = "PAYMENT_01 : 결제 데이터 조회 API", description = "결제에 필요한 데이터를 조회한다.")
     @GetMapping("/payment/{orderId}")
     public CommonResponse<PayResponse> paymentPage(@PathVariable("orderId") Long order_id) {
         String orderUid = queryOne(order_id).getOrderUid();
         PayResponse payResponse = paymentService.findRequestDto(orderUid);
 
         return new CommonResponse(
-                true,
-                HttpStatus.OK,
-                "결재내역을 조회하였습니다.",
-                payResponse
+                true, HttpStatus.OK, "결재내역을 조회하였습니다.", payResponse
         );
     }
 
-    @ResponseBody
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
     public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);

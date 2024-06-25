@@ -38,16 +38,10 @@ public class OrderController {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
 
-    @GetMapping("/order")
-    public Order queryOne(Long orderId) {
-        return orderRepository.findById(orderId)
-                        .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
-
-        
-    }
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "ORDER_01 : 주문 생성 API", description = "주문을 생성한다.")
     @PostMapping("/order")
     public CommonResponse<Long> create(
             @RequestBody OrderRequest request
