@@ -1,6 +1,7 @@
 package com.didacto.domain;
 
 
+import com.didacto.dto.pay.WebhookPayloadRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Order {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
+    private String merchantUid;
 
     @Builder
     public Order(Long price, Grade itemName, String orderUid, Member member, Payment payment) {
@@ -31,5 +33,12 @@ public class Order {
         this.orderUid = orderUid;
         this.member = member;
         this.payment = payment;
+    }
+
+    public void setOrder(WebhookPayloadRequest payload) {
+        this.merchantUid = payload.getMerchantUid();
+        this.orderUid = payload.getMerchantUid();
+        this.merchantUid = payload.getMerchantUid();
+        this.merchantUid = payload.getMerchantUid();
     }
 }

@@ -2,15 +2,13 @@ package com.didacto.controller.v1.pay;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
-
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.domain.Order;
 import com.didacto.dto.pay.PayResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
-import com.didacto.dto.pay.WebhookRequest;
+import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.order.OrderRepository;
-import com.didacto.service.order.OrderService;
 import com.didacto.service.payment.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
@@ -20,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -44,7 +40,6 @@ public class PaymentController {
         );
     }
 
-    @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
     public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
@@ -54,9 +49,9 @@ public class PaymentController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<String> handleWebhook(@RequestBody WebhookRequest webhookData) {
-        paymentService.processWebhook(webhookData);
-        return ResponseEntity.ok("Webhook received");
+    public ResponseEntity<String> handleWebhook(@RequestBody WebhookPayloadRequest payload) {
+            paymentService.processWebhookPayment(payload);
+            return ResponseEntity.ok("Webhook received");
     }
 
     @GetMapping("/success-payment")
@@ -69,11 +64,8 @@ public class PaymentController {
         return "fail-payment";
     }
 
-
     public Order queryOne(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
-
-
     }
 }
