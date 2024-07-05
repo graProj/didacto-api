@@ -16,7 +16,7 @@ public class WebhookPayloadRequest {
     private String impUid;
 
     @NotBlank(message = "주문 고유 번호")
-    @Schema(description = "주문 고유 번호", example = "order_123456789")
+    @Schema(description = "주문 고유 번호", example = "643c7b2d-748a-4e0b-9b47-7de6f8fd2da7")
     private String merchantUid;
 
     @NotBlank(message = "결제 상태")

@@ -61,9 +61,9 @@ public class PaymentService {
     public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
         try {
             // 결제 단건 조회(아임포트)
-            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getImp_uid());
+            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPayment_uid());
             // 주문내역 조회
-            Order order = orderRepository.findOrderAndPayment(request.getMerchant_uid())
+            Order order = orderRepository.findOrderAndPayment(request.getOrder_uid())
                     .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
 
             // 결제 상태 검증 및 처리
