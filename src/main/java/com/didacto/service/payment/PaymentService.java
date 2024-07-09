@@ -1,7 +1,7 @@
 package com.didacto.service.payment;
 
 import com.didacto.domain.Order;
-import com.didacto.dto.pay.PayResponse;
+import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.order.OrderRepository;
@@ -44,11 +44,11 @@ public class PaymentService {
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
 
-    public PayResponse findRequestDto(String orderUid) {
+    public OrderResponse findRequestDto(String orderUid) {
         Order order = orderRepository.findOrderAndPaymentAndMember(orderUid)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
 
-        return PayResponse.builder()
+        return OrderResponse.builder()
                 .buyerName(order.getMember().getName())
                 .buyerEmail(order.getMember().getEmail())
                 .paymentPrice(order.getPayment().getPrice())
@@ -62,6 +62,9 @@ public class PaymentService {
         try {
             // 결제 단건 조회(아임포트)
             IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPayment_uid());
+            if (iamportResponse == null) {
+                throw new IllegalArgumentException("결제 내역이 없습니다.");
+            }
             // 주문내역 조회
             Order order = orderRepository.findOrderAndPayment(request.getOrder_uid())
                     .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
@@ -140,5 +143,11 @@ public class PaymentService {
         // 결제 상태 변경
         order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), iamportResponse.getResponse().getImpUid());
         order.getMember().premium();
+    }
+
+
+
+    private void query(int user_id){
+
     }
 }

@@ -1,4 +1,4 @@
-package com.didacto.dto.pay;
+package com.didacto.dto.order;
 
 import com.didacto.domain.Grade;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PayResponse {
+public class OrderResponse {
 
     @NotBlank(message = "주문 고유 번호.")
     @Schema(description = "주문 고유 번호", example = "1ca63a53-fd66-496b-a2fc-c6a4ca7dd75f")
@@ -21,7 +21,7 @@ public class PayResponse {
     private String buyerEmail;
 
     @Builder
-    public PayResponse(String orderUid, Grade itemName, String buyerName, Long paymentPrice, String buyerEmail) {
+    public OrderResponse(String orderUid, Grade itemName, String buyerName, Long paymentPrice, String buyerEmail) {
         this.orderUid = orderUid;
         this.itemName = itemName;
         this.buyerName = buyerName;

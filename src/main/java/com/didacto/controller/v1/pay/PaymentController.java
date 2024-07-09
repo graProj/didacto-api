@@ -5,9 +5,8 @@ import com.didacto.common.response.CommonResponse;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.domain.Order;
-import com.didacto.dto.pay.PayResponse;
+import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
-import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.service.payment.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -31,15 +30,15 @@ public class PaymentController {
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_01 : 결제 데이터 조회 API", description = "결제에 필요한 데이터를 조회한다.")
     @GetMapping("/payment/{orderId}")
-    public CommonResponse<PayResponse> paymentPage(@PathVariable("orderId") Long order_id) {
+    public CommonResponse<OrderResponse> paymentPage(@PathVariable("orderId") Long order_id) {
         String orderUid = queryOne(order_id).getOrderUid();
-        PayResponse payResponse = paymentService.findRequestDto(orderUid);
+        OrderResponse orderResponse = paymentService.findRequestDto(orderUid);
 
         return new CommonResponse(
-                true, HttpStatus.OK, "결재내역을 조회하였습니다.", payResponse
+                true, HttpStatus.OK, "결재내역을 조회하였습니다.", orderResponse
         );
     }
-
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
     public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
@@ -48,21 +47,14 @@ public class PaymentController {
         return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/webhook")
-    public ResponseEntity<String> handleWebhook(@RequestBody WebhookPayloadRequest payload) {
-            paymentService.processWebhookPayment(payload);
-            return ResponseEntity.ok("Webhook received");
-    }
 
-    @GetMapping("/success-payment")
-    public String successPaymentPage() {
-        return "success-payment";
-    }
+//    @PostMapping("/webhook")
+//    public ResponseEntity<String> handleWebhook(@RequestBody WebhookPayloadRequest payload) {
+//            paymentService.processWebhookPayment(payload);
+//            return ResponseEntity.ok("Webhook received");
+//    }
 
-    @GetMapping("/fail-payment")
-    public String failPaymentPage() {
-        return "fail-payment";
-    }
+
 
     public Order queryOne(Long orderId) {
         return orderRepository.findById(orderId)
