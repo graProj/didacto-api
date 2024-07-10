@@ -12,5 +12,4 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class OrderQueryRequest extends PageQueryRequest {
     private Long member_id;
-    private String status;
 }

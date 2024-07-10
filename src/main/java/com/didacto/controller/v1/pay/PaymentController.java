@@ -54,7 +54,6 @@ public class PaymentController {
     ){
         OrderQueryFilter filter = OrderQueryFilter.builder()
                 .member_id(request.getMember_id())
-                .status(request.getStatus())
                 .build();
 
         OrderPageResponse orderPageResponse = orderQueryService.queryPage(request.getPageable(), filter);
