@@ -1,12 +1,16 @@
 package com.didacto.dto.order;
 
 import com.didacto.domain.Grade;
+import com.didacto.domain.Order;
+import com.didacto.dto.member.MemberResponse;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.OffsetDateTime;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -19,13 +23,14 @@ public class OrderResponse {
     private String buyerName;
     private Long paymentPrice;
     private String buyerEmail;
+    private OffsetDateTime paymentTime;
 
-    @Builder
-    public OrderResponse(String orderUid, Grade itemName, String buyerName, Long paymentPrice, String buyerEmail) {
-        this.orderUid = orderUid;
-        this.itemName = itemName;
-        this.buyerName = buyerName;
-        this.paymentPrice = paymentPrice;
-        this.buyerEmail = buyerEmail;
+    public OrderResponse(Order order) {
+        this.orderUid = order.getOrderUid();
+        this.itemName = order.getItemName();
+        this.buyerName = order.getMember().getName();
+        this.paymentPrice = order.getPrice();
+        this.buyerEmail = order.getMember().getEmail();
+        this.paymentTime = order.getPayment().getModifiedTime();
     }
    }

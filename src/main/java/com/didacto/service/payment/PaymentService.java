@@ -1,6 +1,11 @@
 package com.didacto.service.payment;
 
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.common.response.CommonResponse;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
+import com.didacto.domain.Lecture;
 import com.didacto.domain.Order;
+import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.dto.pay.WebhookPayloadRequest;
@@ -14,6 +19,7 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -44,18 +50,6 @@ public class PaymentService {
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
 
-    public OrderResponse findRequestDto(String orderUid) {
-        Order order = orderRepository.findOrderAndPaymentAndMember(orderUid)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
-
-        return OrderResponse.builder()
-                .buyerName(order.getMember().getName())
-                .buyerEmail(order.getMember().getEmail())
-                .paymentPrice(order.getPayment().getPrice())
-                .itemName(order.getItemName())
-                .orderUid(order.getOrderUid())
-                .build();
-    }
 
     @Transactional
     public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
@@ -143,11 +137,5 @@ public class PaymentService {
         // 결제 상태 변경
         order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), iamportResponse.getResponse().getImpUid());
         order.getMember().premium();
-    }
-
-
-
-    private void query(int user_id){
-
     }
 }
