@@ -12,6 +12,7 @@ import com.didacto.service.order.OrderService;
 import com.didacto.service.payment.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "PAYMENT API", description = "결제 관련 API")
 public class PaymentController {
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
