@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "PAYMENT API", description = "결제 관련 API")
+@Tag(name = "PAYMENT API", description = "결제 API")
 public class PaymentController {
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
