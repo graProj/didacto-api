@@ -16,6 +16,7 @@ import com.didacto.service.member.MemberQueryService;
 import com.didacto.service.member.MemberService;
 import com.didacto.service.order.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/order")
+@Tag(name = "ORDER API", description = "주문 API")
 public class OrderController {
     private final MemberService memberService;
     private final MemberQueryService memberQueryService;
@@ -38,7 +40,7 @@ public class OrderController {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
 
-    @GetMapping("/order")
+    @GetMapping("")
     public Order queryOne(Long orderId) {
         return orderRepository.findById(orderId)
                         .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
@@ -48,7 +50,7 @@ public class OrderController {
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/order")
+    @PostMapping("")
     public CommonResponse<Long> create(
             @RequestBody OrderRequest request
     ) {
