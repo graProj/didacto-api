@@ -40,6 +40,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    private OffsetDateTime gradeExpiration;
+
     /**
      * 연관관계 세팅
      */
@@ -54,7 +56,7 @@ public class Member extends BaseEntity {
     private List<LectureMember> lectureMembers;
 
     @Builder
-    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted, Grade grade) {
+    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted, Grade grade, OffsetDateTime gradeExpiration) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -63,6 +65,7 @@ public class Member extends BaseEntity {
         this.birth = birth;
         this.deleted = false;
         this.grade = Grade.Freeteer;
+        this.gradeExpiration = gradeExpiration;
     }
 
     public void modify(String password,String name, OffsetDateTime birth) {
@@ -75,5 +78,14 @@ public class Member extends BaseEntity {
         this.deleted = true;
     }
 
-    public void premium() {this.grade = Grade.Premium;}
+    public void premium(OffsetDateTime gradeExpiration) {
+        this.grade = Grade.Premium;
+        this.gradeExpiration = gradeExpiration;
+    }
+
+    public void downgradeToFreeTeer() {
+        this.grade = Grade.Freeteer;
+        this.gradeExpiration = null; // 무료 등급은 만료일 없음
+    }
+
 }

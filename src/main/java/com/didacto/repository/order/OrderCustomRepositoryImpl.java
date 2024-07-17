@@ -40,8 +40,7 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
             query.orderBy(new OrderSpecifier<>(order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC, pathBuilder.get(order.getProperty())));
         }
 
-        // 페이지네이션 Offset 계산 수정
-        int offset = pageable.getPageNumber() * pageable.getPageSize();
+        int offset = pageable.getPageNumber() * pageable.getPageSize(); // 페이지네이션 Offset 계산
 
         return query
                 .offset(offset)
@@ -58,10 +57,10 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
     private JPAQuery<Order> queryWithFilter(OrderQueryFilter filter) {
         JPAQuery<Order> query = queryFactory.select(order)
                 .from(order)
-                .join(order.payment, payment)  // order와 payment를 조인합니다.
+                .join(order.payment, payment)
                 .where(
-                        payment.status.eq("Paid"), // payment status가 "Paid"인 경우 필터링합니다.
-                        filter.getMember_id() != null ? order.member.id.eq(filter.getMember_id()) : null // filter에서 member_id가 있는 경우 필터링합니다.
+                        payment.status.eq("Paid"), // payment status가 "Paid"인 경우 필터링
+                        filter.getMember_id() != null ? order.member.id.eq(filter.getMember_id()) : null // filter에서 member_id가 있는 경우 필터링
                 );
 
 
