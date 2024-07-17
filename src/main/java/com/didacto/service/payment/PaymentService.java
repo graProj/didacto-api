@@ -4,11 +4,13 @@ import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Lecture;
+import com.didacto.domain.Member;
 import com.didacto.domain.Order;
 import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.dto.pay.WebhookPayloadRequest;
+import com.didacto.repository.member.MemberRepository;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.repository.pament.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class PaymentService {
 
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
+    private final MemberRepository memberRepository;
     private IamportClient iamportClient;
 
     @Value("${imp.api.key}")
@@ -136,6 +140,9 @@ public class PaymentService {
 
         // 결제 상태 변경
         order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), iamportResponse.getResponse().getImpUid());
-        order.getMember().premium();
+
+        Member member = order.getMember();
+        member.premium(OffsetDateTime.now().plusYears(1));
+        memberRepository.save(member);
     }
 }
