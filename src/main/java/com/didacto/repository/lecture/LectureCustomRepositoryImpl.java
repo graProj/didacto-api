@@ -51,7 +51,8 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
     public long countByOwner(Member member) {
         return queryFactory
                 .selectFrom(lecture)
-                .where(lecture.owner.eq(member))
+                .where(lecture.owner.eq(member),
+                        lecture.deleted .eq(false))
                 .fetchCount();
     }
 

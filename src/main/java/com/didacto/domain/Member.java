@@ -56,7 +56,7 @@ public class Member extends BaseEntity {
     private List<LectureMember> lectureMembers;
 
     @Builder
-    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted, Grade grade, OffsetDateTime gradeExpiration) {
+    public Member(Long id, String email, String password, String name, Authority role, OffsetDateTime birth, Boolean deleted, Grade grade) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -65,7 +65,7 @@ public class Member extends BaseEntity {
         this.birth = birth;
         this.deleted = false;
         this.grade = Grade.Freeteer;
-        this.gradeExpiration = gradeExpiration;
+        this.gradeExpiration = null;
     }
 
     public void modify(String password,String name, OffsetDateTime birth) {
@@ -87,5 +87,7 @@ public class Member extends BaseEntity {
         this.grade = Grade.Freeteer;
         this.gradeExpiration = null; // 무료 등급은 만료일 없음
     }
+
+
 
 }

@@ -14,6 +14,7 @@ import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -30,16 +31,18 @@ public class LectureCommandService {
     public Lecture create(LectureCreationRequest request, Long createdBy) {
         Member member = memberQueryService.query(createdBy);
 
-        if (member.getGrade() == Grade.Premium && member.getGradeExpiration().isBefore(OffsetDateTime.now().now())) {
-            member.downgradeToFreeTeer();
-            memberRepository.save(member);
-        }
-
         long lectureCount = lectureRepository.countByOwner(member);
         if (member.getGrade() == Grade.Freeteer && lectureCount >= 3) {
             throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
         }
 
+        if (member.getGrade() == Grade.Premium && member.getGradeExpiration().isBefore(OffsetDateTime.now())) {
+            try {
+                downgradeMemberToFreeTier(member);
+            } catch (Exception e) {
+                throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_PREMIUM_OVER);
+            }
+        }
 
         Lecture lecture = Lecture.builder()
                 .title(request.getTitle())
@@ -68,5 +71,11 @@ public class LectureCommandService {
         lecture.delete();
 
         return lectureRepository.save(lecture);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void downgradeMemberToFreeTier(Member member) {
+        member.downgradeToFreeTeer();
+        memberRepository.save(member);
     }
 }
