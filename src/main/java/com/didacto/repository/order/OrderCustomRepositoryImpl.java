@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.didacto.domain.QLecture.lecture;
+import static com.didacto.domain.QLectureMember.lectureMember;
 import static com.didacto.domain.QOrder.order;
 import static com.didacto.domain.QPayment.payment;
 
@@ -34,13 +35,14 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
     public List<Order> findOrderPage(Pageable pageable, OrderQueryFilter request) {
         JPAQuery<Order> query = queryWithFilter(request);
 
-        // Sorting 설정
         for (Sort.Order order : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder<>(QOrder.order.getType(), QOrder.order.getMetadata());
+            PathBuilder pathBuilder = new PathBuilder(QOrder.order.getType(), QOrder.order.getMetadata());
             query.orderBy(new OrderSpecifier<>(order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC, pathBuilder.get(order.getProperty())));
         }
 
-        int offset = pageable.getPageNumber() * pageable.getPageSize(); // 페이지네이션 Offset 계산
+
+
+        int offset = Math.max(0, (pageable.getPageNumber() - 1) * pageable.getPageSize()); // Offset이 0 미만이 되지 않도록 보장
 
         return query
                 .offset(offset)
@@ -59,12 +61,9 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
                 .from(order)
                 .join(order.payment, payment)
                 .where(
-                        payment.status.eq("Paid"), // payment status가 "Paid"인 경우 필터링
-                        filter.getMember_id() != null ? order.member.id.eq(filter.getMember_id()) : null // filter에서 member_id가 있는 경우 필터링
+                        payment.status.eq("paid"), // payment status가 "paid"인 경우 필터링
+                        filter.getMember_id() != null ? order.member.id.eq(filter.getMember_id()) : null
                 );
-
-
-
         return query;
     }
 

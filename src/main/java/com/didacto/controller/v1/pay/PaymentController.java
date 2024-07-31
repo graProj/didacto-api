@@ -4,6 +4,7 @@ import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.security.AuthConstant;
+import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Order;
 import com.didacto.dto.lecture.LecturePageResponse;
 import com.didacto.dto.lecture.LectureQueryFilter;
@@ -52,8 +53,9 @@ public class PaymentController {
     public CommonResponse<OrderPageResponse> queryPage(
             @ParameterObject OrderQueryRequest request
     ){
+        Long memberId = SecurityUtil.getCurrentMemberId();
         OrderQueryFilter filter = OrderQueryFilter.builder()
-                .member_id(request.getMember_id())
+                .member_id(memberId)
                 .build();
 
         OrderPageResponse orderPageResponse = orderQueryService.queryPage(request.getPageable(), filter);

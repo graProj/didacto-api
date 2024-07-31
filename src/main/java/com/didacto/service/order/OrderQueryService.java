@@ -36,12 +36,17 @@ public class OrderQueryService {
         // Query : 페이지네이션 및 조건 필터링
         List<Order> orders = orderRepository.findOrderPage(pageable, request);
 
+
+
+
+
         // Query : Pagenation을 위한 총 개수 집계
         long count = orderRepository.countOrders(request);
 
+
         // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
         long totalPage = (long) Math.ceil((double) count / size);
-        boolean isHaveNext = page < totalPage;
+        boolean isHaveNext = page < totalPage-1;
 
         // Out
         PageInfoResponse pageInfo = PageInfoResponse.builder()

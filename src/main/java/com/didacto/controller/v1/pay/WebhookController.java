@@ -22,7 +22,10 @@ public class WebhookController {
         // 결제 상태 업데이트 로직
         if ("paid".equals(status)) {
             // 결제 성공 처리
-            System.out.println("Payment " + merchantUid + " is paid with amount " + amount);
+            System.out.println("impUid " + impUid );
+            System.out.println("merchantUid " + merchantUid);
+            System.out.println("status " +status );
+            System.out.println("amount " +amount );
         } else {
             // 결제 실패 처리
             System.out.println("Payment " + merchantUid + " failed.");
