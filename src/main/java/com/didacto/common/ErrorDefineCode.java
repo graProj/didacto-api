@@ -33,7 +33,8 @@ public enum ErrorDefineCode {
     LECTURE_MEMBER_PREMIUM_OVER("LMB_04", "PREMIUM 구독기간이 만료되었습니다."),
     DELETED_LECTURE("LECTURE_01", "삭제된 강의입니다."),
     ORDER_GRADE_FAIL("ORDER_01","주문된 상품이 프리미엄이 아닙니다."),
-    ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다.")
+    ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다."),
+    PAYMENT_NOT_FOUND("PAYMENT_01", "결제 완료된 상품이 없습니다.")
     ;
 
     private final String code;

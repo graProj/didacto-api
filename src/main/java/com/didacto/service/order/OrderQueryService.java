@@ -30,7 +30,7 @@ public class OrderQueryService {
 
 
     public OrderPageResponse queryPage(Pageable pageable, OrderQueryFilter request) {
-        long page = pageable.getOffset();
+        long page = pageable.getPageNumber();
         long size = pageable.getPageSize();
 
         // Query : 페이지네이션 및 조건 필터링
@@ -43,10 +43,15 @@ public class OrderQueryService {
         // Query : Pagenation을 위한 총 개수 집계
         long count = orderRepository.countOrders(request);
 
+        System.out.println(page);
+        System.out.println(count);
+        System.out.println(size);
+
 
         // Calc : 총 페이지 수와 다음 페이지 존재 여부 계산
         long totalPage = (long) Math.ceil((double) count / size);
-        boolean isHaveNext = page < totalPage-1;
+
+        boolean isHaveNext = page < totalPage;
 
         // Out
         PageInfoResponse pageInfo = PageInfoResponse.builder()

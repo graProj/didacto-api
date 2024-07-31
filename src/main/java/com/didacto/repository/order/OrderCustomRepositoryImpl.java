@@ -1,5 +1,7 @@
 package com.didacto.repository.order;
 
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Lecture;
 import com.didacto.domain.Order;
 import com.didacto.domain.QOrder;
@@ -42,7 +44,8 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
 
 
 
-        int offset = Math.max(0, (pageable.getPageNumber() - 1) * pageable.getPageSize()); // Offset이 0 미만이 되지 않도록 보장
+        int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize(); // 페이지네이션 Offset 계산
+
 
         return query
                 .offset(offset)
