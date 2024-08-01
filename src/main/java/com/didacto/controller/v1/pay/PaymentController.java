@@ -14,6 +14,7 @@ import com.didacto.dto.order.OrderQueryFilter;
 import com.didacto.dto.order.OrderQueryRequest;
 import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
+import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.service.order.OrderQueryService;
 import com.didacto.service.payment.PaymentService;
@@ -82,11 +83,12 @@ public class PaymentController {
     }
 
 
-//    @PostMapping("/webhook")
-//    public ResponseEntity<String> handleWebhook(@RequestBody WebhookPayloadRequest payload) {
-//            paymentService.processWebhookPayment(payload);
-//            return ResponseEntity.ok("Webhook received");
-//    }
+    @PostMapping("/webhook")
+    public ResponseEntity<IamportResponse<Payment>> handleWebhook(@RequestBody PaymentCallbackRequest request) {
+        IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
+        log.info("결제 응답={}", iamportResponse.getResponse().toString());
+        return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
+    }
 
 
 }
