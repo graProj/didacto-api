@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/payment")
 @Tag(name = "PAYMENT API", description = "결제 관련 조회 API")
 public class PaymentQueryController {
     private final PaymentService paymentService;
@@ -33,7 +33,7 @@ public class PaymentQueryController {
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_01 : 결제 데이터 조회", description = "결제에 필요한 데이터를 조회한다.")
-    @GetMapping("/payment/{orderId}")
+    @GetMapping("/{orderId}")
     public CommonResponse<OrderResponse> paymentPage(@PathVariable("orderId") Long order_id) {
         Order order = orderQueryService.query(order_id);
 
@@ -43,7 +43,7 @@ public class PaymentQueryController {
     }
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
-    @GetMapping("/payment/list")
+    @GetMapping("/list")
     @Operation(summary = "PAYMENT_02 : 결제 목록 조회", description = "결제가 완료된 항목을 조회한다.")
     public CommonResponse<OrderPageResponse> queryPage(
             @ParameterObject OrderQueryRequest request

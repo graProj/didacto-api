@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderCommanService {
+public class OrderCommandService {
     private final OrderRepository orderRepository;
     private final MemberQueryService memberQueryService;
     private final PaymentRepository paymentRepository;
@@ -49,7 +49,7 @@ public class OrderCommanService {
         //결제내역 생성
         Payment payment = Payment.builder()
                 .price(price)
-                .status("Ready")
+                .status(PaymentStatus.READY)
                 .build();
 
         paymentRepository.save(payment);

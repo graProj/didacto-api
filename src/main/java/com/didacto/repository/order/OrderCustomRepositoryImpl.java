@@ -2,10 +2,7 @@ package com.didacto.repository.order;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
-import com.didacto.domain.Lecture;
-import com.didacto.domain.Order;
-import com.didacto.domain.QOrder;
-import com.didacto.domain.QPayment;
+import com.didacto.domain.*;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.didacto.dto.order.OrderQueryFilter;
 import com.querydsl.core.types.OrderSpecifier;
@@ -64,7 +61,7 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
                 .from(order)
                 .join(order.payment, payment)
                 .where(
-                        payment.status.eq("paid"), // payment status가 "paid"인 경우 필터링
+                        payment.status.eq(PaymentStatus.PAID), // payment status가 "paid"인 경우 필터링
                         filter.getMember_id() != null ? order.member.id.eq(filter.getMember_id()) : null
                 );
         return query;

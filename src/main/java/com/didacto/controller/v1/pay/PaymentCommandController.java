@@ -1,5 +1,6 @@
 package com.didacto.controller.v1.pay;
 
+import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.service.order.OrderQueryService;
@@ -28,19 +29,23 @@ public class PaymentCommandController {
 //    @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
-    public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
+    public CommonResponse<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
         log.info("결제 응답={}", iamportResponse.getResponse().toString());
-        return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
+        return new CommonResponse<>(
+                true, HttpStatus.OK, null, iamportResponse
+        );
     }
 
 
     @Operation(summary = "PAYMENT_03 : 웹훅 API", description = "웹훅을 통해 결제를 진행한다.")
     @PostMapping("/webhook")
-    public ResponseEntity<IamportResponse<Payment>> handleWebhook(@RequestBody PaymentCallbackRequest request) {
+    public CommonResponse<IamportResponse<Payment>> handleWebhook(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
         log.info("결제 응답={}", iamportResponse.getResponse().toString());
-        return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
+        return new CommonResponse<>(
+                true, HttpStatus.OK, null, iamportResponse
+        );
     }
 
 

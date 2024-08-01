@@ -2,10 +2,7 @@ package com.didacto.domain;
 
 import com.didacto.common.BaseEntity;
 import com.fasterxml.jackson.databind.ser.Serializers;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,15 +15,17 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long price;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
     private String paymentUid;
 
     @Builder
-    public Payment(Long price, String status){
+    public Payment(Long price, PaymentStatus status){
         this.price = price;
         this.status = status;
     }
-    public void changePaymentBySuccess(String status, String paymentUid) {
+    public void changePaymentBySuccess(PaymentStatus status, String paymentUid) {
         this.status = status;
         this.paymentUid = paymentUid;
     }

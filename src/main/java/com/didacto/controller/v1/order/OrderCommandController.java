@@ -3,7 +3,7 @@ package com.didacto.controller.v1.order;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.dto.order.OrderRequest;
-import com.didacto.service.order.OrderCommanService;
+import com.didacto.service.order.OrderCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/order")
 @Tag(name = "ORDER API", description = "주문 API")
 public class OrderCommandController {
-    private final OrderCommanService orderService;
+    private final OrderCommandService orderService;
 
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)

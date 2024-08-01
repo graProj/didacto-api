@@ -39,7 +39,9 @@ public class LectureCommandService {
         if (member.getGrade() == Grade.Premium && member.getGradeExpiration().isBefore(OffsetDateTime.now())) {
             try {
                 downgradeMemberToFreeTier(member);
-            } catch (Exception e) {
+            } finally {
+                // finally 블록에서 예외를 던지기 전에 downgradeMemberToFreeTier 호출
+                downgradeMemberToFreeTier(member);
                 throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_PREMIUM_OVER);
             }
         }

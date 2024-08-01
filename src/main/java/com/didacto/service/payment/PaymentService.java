@@ -6,6 +6,7 @@ import com.didacto.config.exception.custom.exception.NoSuchElementFoundException
 import com.didacto.domain.Lecture;
 import com.didacto.domain.Member;
 import com.didacto.domain.Order;
+import com.didacto.domain.PaymentStatus;
 import com.didacto.dto.lecture.LectureResponse;
 import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
@@ -139,7 +140,7 @@ public class PaymentService {
         }
 
         // 결제 상태 변경
-        order.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getStatus(), iamportResponse.getResponse().getImpUid());
+        order.getPayment().changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
 
         Member member = order.getMember();
         member.premium(OffsetDateTime.now().plusYears(1));

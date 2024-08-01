@@ -1,16 +1,21 @@
 package com.didacto.config.pay;
 
 import com.siot.IamportRestClient.IamportClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
-    String apikey = "6213286820175160";
-    String secretKey = "jFHaAVeJAK12x2K7yhdKEbxm5KKGK03Is5PdWNMuaxuwZSH9MG4abidehgwdAd3c2WzgpbrR51KYpSb7";
+
+    @Value("${imp.api.key}")
+    private String apikey;
+
+    @Value("${imp.api.secretkey}")
+    private String secretKey;
 
     @Bean
-    public IamportClient iamportClient(){
+    public IamportClient iamportClient() {
         return new IamportClient(apikey, secretKey);
     }
 }
