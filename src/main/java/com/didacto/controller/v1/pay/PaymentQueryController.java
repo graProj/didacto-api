@@ -1,39 +1,33 @@
 package com.didacto.controller.v1.pay;
 
-import com.didacto.common.ErrorDefineCode;
 import com.didacto.common.response.CommonResponse;
-import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Order;
-import com.didacto.dto.lecture.LecturePageResponse;
-import com.didacto.dto.lecture.LectureQueryFilter;
-import com.didacto.dto.lecture.LectureQueryRequest;
 import com.didacto.dto.order.OrderPageResponse;
 import com.didacto.dto.order.OrderQueryFilter;
 import com.didacto.dto.order.OrderQueryRequest;
 import com.didacto.dto.order.OrderResponse;
-import com.didacto.dto.pay.PaymentCallbackRequest;
-import com.didacto.dto.pay.WebhookPayloadRequest;
-import com.didacto.repository.order.OrderRepository;
 import com.didacto.service.order.OrderQueryService;
 import com.didacto.service.payment.PaymentService;
-import com.siot.IamportRestClient.response.IamportResponse;
-import com.siot.IamportRestClient.response.Payment;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-public class PaymentController {
+@Tag(name = "PAYMENT API", description = "결제 관련 조회 API")
+public class PaymentQueryController {
     private final PaymentService paymentService;
     private final OrderQueryService orderQueryService;
 
@@ -68,28 +62,4 @@ public class PaymentController {
                 orderPageResponse
         );
     }
-
-
-
-
-
-    @PreAuthorize(AuthConstant.AUTH_ADMIN)
-    @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
-    @PostMapping("/payment")
-    public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
-        IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
-        log.info("결제 응답={}", iamportResponse.getResponse().toString());
-        return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
-    }
-
-
-    @Operation(summary = "PAYMENT_03 : 웹훅 API", description = "웹훅을 통해 결제를 진행한다.")
-    @PostMapping("/webhook")
-    public ResponseEntity<IamportResponse<Payment>> handleWebhook(@RequestBody PaymentCallbackRequest request) {
-        IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
-        log.info("결제 응답={}", iamportResponse.getResponse().toString());
-        return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
-    }
-
-
 }
