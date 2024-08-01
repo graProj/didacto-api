@@ -22,7 +22,7 @@ public class OrderCommandController {
 
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "ORDER_01 : 주문 생성 API", description = "주문을 생성한다.")
+    @Operation(summary = "ORDER_01 : 주문 생성 API", description = "주문을 생성해 결제에 필요한 데이터를 생성한다.")
     @PostMapping("")
 
     public CommonResponse<Long> create(

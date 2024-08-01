@@ -26,7 +26,7 @@ public class PaymentCommandController {
     private final OrderQueryService orderQueryService;
 
 
-//    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
     public CommonResponse<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
