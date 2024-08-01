@@ -38,14 +38,14 @@ public class LectureCommandService {
         }
 
         if (member.getGrade() == Grade.Premium && member.getGradeExpiration().isBefore(OffsetDateTime.now())) {
-            try {
-                downgradeMemberToFreeTier(member);
-            } finally {
-                // finally 블록에서 예외를 던지기 전에 downgradeMemberToFreeTier 호출
-                downgradeMemberToFreeTier(member);
-                throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_PREMIUM_OVER);
+            downgradeMemberToFreeTier(member);
+            if (member.getGrade() == Grade.Freeteer && lectureCount >= MaxLectures.MAX_LECTURES) {
+                throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
             }
         }
+
+
+
 
         Lecture lecture = Lecture.builder()
                 .title(request.getTitle())
