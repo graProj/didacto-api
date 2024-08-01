@@ -1,15 +1,9 @@
 package com.didacto.service.payment;
 
-import com.didacto.common.ErrorDefineCode;
-import com.didacto.common.ExpirationPeriod;
-import com.didacto.common.response.CommonResponse;
-import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
-import com.didacto.domain.Lecture;
+import com.didacto.common.MemberGradeConstant;
 import com.didacto.domain.Member;
 import com.didacto.domain.Order;
 import com.didacto.domain.PaymentStatus;
-import com.didacto.dto.lecture.LectureResponse;
-import com.didacto.dto.order.OrderResponse;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.member.MemberRepository;
@@ -23,7 +17,6 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +137,7 @@ public class PaymentService {
         order.getPayment().changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
 
         Member member = order.getMember();
-        member.premium(ExpirationPeriod.PREMIUM_EXPIRATION_DATE);
+        member.premium(OffsetDateTime.now().plusYears(MemberGradeConstant.PREMIUM_EXPIRATION_DATE));
         memberRepository.save(member);
     }
 }
