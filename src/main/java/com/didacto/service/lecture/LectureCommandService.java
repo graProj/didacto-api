@@ -1,6 +1,7 @@
 package com.didacto.service.lecture;
 
 import com.didacto.common.ErrorDefineCode;
+import com.didacto.common.MaxLectures;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.domain.Grade;
@@ -32,7 +33,7 @@ public class LectureCommandService {
         Member member = memberQueryService.query(createdBy);
 
         long lectureCount = lectureRepository.countByOwner(member);
-        if (member.getGrade() == Grade.Freeteer && lectureCount >= 3) {
+        if (member.getGrade() == Grade.Freeteer && lectureCount >= MaxLectures.MAX_LECTURES) {
             throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
         }
 

@@ -1,6 +1,7 @@
 package com.didacto.service.payment;
 
 import com.didacto.common.ErrorDefineCode;
+import com.didacto.common.ExpirationPeriod;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Lecture;
@@ -143,7 +144,7 @@ public class PaymentService {
         order.getPayment().changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
 
         Member member = order.getMember();
-        member.premium(OffsetDateTime.now().plusYears(1));
+        member.premium(ExpirationPeriod.PREMIUM_EXPIRATION_DATE);
         memberRepository.save(member);
     }
 }
