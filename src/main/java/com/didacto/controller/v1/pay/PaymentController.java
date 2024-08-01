@@ -73,7 +73,7 @@ public class PaymentController {
 
 
 
-//    @PreAuthorize(AuthConstant.AUTH_ADMIN)
+    @PreAuthorize(AuthConstant.AUTH_ADMIN)
     @Operation(summary = "PAYMENT_02 : 결제 API", description = "결제를 진행한다.")
     @PostMapping("/payment")
     public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequest request) {
@@ -83,6 +83,7 @@ public class PaymentController {
     }
 
 
+    @Operation(summary = "PAYMENT_03 : 웹훅 API", description = "웹훅을 통해 결제를 진행한다.")
     @PostMapping("/webhook")
     public ResponseEntity<IamportResponse<Payment>> handleWebhook(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
