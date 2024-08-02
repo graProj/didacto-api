@@ -61,7 +61,6 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .setSubject(dto.getEmail())
-                .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
@@ -72,7 +71,6 @@ public class TokenProvider {
                 .refreshToken(refreshToken)
                 .build();
     }
-
 
 
 

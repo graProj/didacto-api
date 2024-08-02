@@ -23,7 +23,7 @@
           IMP.init("imp51203488"); // PG사 사업자 IMP번호 (Secret으로 관리되어야 함)
 
           //임시로 넣어놓은 데이터
-          var orderuid = "b720ff5e-81ad-4c5b-a4e3-bc3b1014f2ab"
+          var orderuid = "da359da5-7a1d-41c9-8517-cc0fa785681f"
           var item_name = "premium"
           var buyer_email = "asdf1234@naver.com"
           var buyer_name = "홍길동"
@@ -34,11 +34,11 @@
             {
               pg: "html5_inicis", // PG사
               pay_method: "card", // 결제방식
-              merchant_uid: orderuid, // 주문번호-상품ID, 생략시 자동생성
+              merchant_uid: orderuid, // 주문번호-상품ID
               name: item_name, // 상품이름
               amount: amount, // 가격
               buyer_email: buyer_email,
-              buyer_name: buyer_name,
+              buyer_name: buyer_name
             },
             function(rsp) {
                      // callback
@@ -46,7 +46,7 @@
                     if (rsp.success) {
                         // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
                         alert('call back!!: ' + JSON.stringify(rsp));
-                        axios.post("/payment", {
+                        axios.post("/api/v1/payment", {
                             payment_uid: rsp.imp_uid, // 결제 고유번호
                             order_uid: rsp.merchant_uid // 주문번호
                             //item_name: rsp.name // 주문아이템 이름
@@ -57,7 +57,7 @@
                             console.log(response.data);
                             // 가맹점 서버 결제 API 성공시 로직
                             alert('결제 완료!' + JSON.stringify(rsp));
-                            window.location.href = "/success-payment.html";
+
                         })
                         .catch(function (error) {
                             console.error('결제 실패: ', error);
@@ -66,7 +66,7 @@
                     } else {
                         // 결제 실패 시 처리 로직
                         alert("결제 실패");
-                        window.location.href = "/fail-payment.html";
+
                     }
                 }
             );

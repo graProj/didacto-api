@@ -24,6 +24,14 @@ spring:
 jwt:
   secret1: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
 
+imp:
+  api:
+    key: 6213286820175160
+    secretkey: jFHaAVeJAK12x2K7yhdKEbxm5KKGK03Is5PdWNMuaxuwZSH9MG4abidehgwdAd3c2WzgpbrR51KYpSb7
+
+payment:
+  test-mode : true
+
 # Swagger
 springdoc:
   swagger-ui:
