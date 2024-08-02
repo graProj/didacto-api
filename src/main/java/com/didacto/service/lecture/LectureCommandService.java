@@ -26,8 +26,6 @@ import java.time.OffsetDateTime;
 @Transactional(readOnly = true)
 public class LectureCommandService {
     private final LectureRepository lectureRepository;
-    private final MemberQueryService memberQueryService;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public Lecture create(LectureCreationRequest request, LectureQueryFilter filter) {
