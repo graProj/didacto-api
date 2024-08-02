@@ -59,12 +59,8 @@ public class LectureServiceTest {
                 .title("강의 제목")
                 .build();
 
-        LectureQueryFilter filter = LectureQueryFilter.builder()
-                .owner(1L)
-                .build();
-
         // when
-        Lecture lecture = lectureCommandService.create(request, filter);
+        Lecture lecture = lectureCommandService.create(request, tutorId);
 
         // then
         assertThat(lecture).isNotNull();

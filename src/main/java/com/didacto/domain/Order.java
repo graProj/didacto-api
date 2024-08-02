@@ -1,8 +1,6 @@
 package com.didacto.domain;
 
 
-import com.didacto.common.BaseEntity;
-import com.didacto.dto.pay.WebhookPayloadRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "orders") // Mariadb에서 order가 예약어로 되어있기 때문에 @Table은 필수로 작성
-public class Order extends BaseEntity {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +23,6 @@ public class Order extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
-    private String merchantUid;
 
     @Builder
     public Order(Long price, Grade itemName, String orderUid, Member member, Payment payment) {
@@ -34,12 +31,5 @@ public class Order extends BaseEntity {
         this.orderUid = orderUid;
         this.member = member;
         this.payment = payment;
-    }
-
-    public void setOrder(WebhookPayloadRequest payload) {
-        this.merchantUid = payload.getMerchantUid();
-        this.orderUid = payload.getMerchantUid();
-        this.merchantUid = payload.getMerchantUid();
-        this.merchantUid = payload.getMerchantUid();
     }
 }

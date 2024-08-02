@@ -50,6 +50,7 @@ public class AuthService {
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
         }
+
     }
 
 
@@ -107,6 +108,7 @@ public class AuthService {
             throw new AuthCredientialException401(ErrorDefineCode.AUTH_NMATCH_PWD);
         }
     }
+
 
 
     private TokenDto generateToken(Member member){

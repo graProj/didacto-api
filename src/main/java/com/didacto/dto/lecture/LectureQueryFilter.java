@@ -1,6 +1,5 @@
 package com.didacto.dto.lecture;
 
-import com.didacto.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class LectureQueryFilter {
     private String titleKeyword;
     private Boolean deleted;
-    private Member owner;
 }
 
