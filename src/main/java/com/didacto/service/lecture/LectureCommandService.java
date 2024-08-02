@@ -10,6 +10,7 @@ import com.didacto.domain.LectureState;
 import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
+import com.didacto.dto.lecture.LectureQueryFilter;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberQueryService;
@@ -29,22 +30,14 @@ public class LectureCommandService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Lecture create(LectureCreationRequest request, Long createdBy) {
-        Member member = memberQueryService.query(createdBy);
+    public Lecture create(LectureCreationRequest request, LectureQueryFilter filter) {
+        Member member = filter.getOwner();
 
-        long lectureCount = lectureRepository.countByOwner(member);
+
+        long lectureCount = lectureRepository.countLectures(filter);
         if (member.getGrade() == Grade.Freeteer && lectureCount >= MemberGradeConstant.MAX_LECTURES) {
             throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
         }
-
-        if (member.getGrade() == Grade.Premium && member.getGradeExpiration().isBefore(OffsetDateTime.now())) {
-            downgradeMemberToFreeTier(member);
-            if (member.getGrade() == Grade.Freeteer && lectureCount >= MemberGradeConstant.MAX_LECTURES) {
-                throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
-            }
-        }
-
-
 
 
         Lecture lecture = Lecture.builder()
@@ -76,9 +69,4 @@ public class LectureCommandService {
         return lectureRepository.save(lecture);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void downgradeMemberToFreeTier(Member member) {
-        member.downgradeToFreeTeer();
-        memberRepository.save(member);
-    }
 }

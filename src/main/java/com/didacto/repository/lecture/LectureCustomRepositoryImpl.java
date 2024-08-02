@@ -47,20 +47,12 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
         return query.fetchCount();
     }
 
-    @Override
-    public long countByOwner(Member member) {
-        return queryFactory
-                .selectFrom(lecture)
-                .where(lecture.owner.eq(member),
-                        lecture.deleted .eq(false))
-                .fetchCount();
-    }
-
     private JPAQuery<Lecture> queryWithFilter(LectureQueryFilter filter) {
         JPAQuery<Lecture> query = queryFactory.select(lecture)
                 .from(lecture)
                 .where(
                         filter.getTitleKeyword() != null ? lecture.title.like("%" + filter.getTitleKeyword() +"%") : null,
+                        filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
                         filter.getDeleted() != null ? lecture.deleted.eq(filter.getDeleted()) : null
                 );
         return query;

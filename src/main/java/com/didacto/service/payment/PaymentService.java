@@ -137,7 +137,7 @@ public class PaymentService {
         order.getPayment().changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
 
         Member member = order.getMember();
-        member.premium(OffsetDateTime.now().plusYears(MemberGradeConstant.PREMIUM_EXPIRATION_DATE));
+        member.premium();
         memberRepository.save(member);
     }
 }

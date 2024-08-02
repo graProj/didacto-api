@@ -11,6 +11,4 @@ public interface LectureCustomRepository {
     List<Lecture> findLecturePage(Pageable pageable, LectureQueryFilter request);
     Long countLectures(LectureQueryFilter request);
 
-    long countByOwner(Member owner);
-
 }
