@@ -70,8 +70,6 @@ public class LectureServiceTest {
         //프리티어와 프리미엄을 나눠서 강의 생성 테스트가 필요합니다.
         tutor.premium();
 
-        System.out.println(tutor.getGrade());
-
 
         LectureQueryFilter filter = LectureQueryFilter.builder()
                 .owner(tutor)
