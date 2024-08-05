@@ -10,3 +10,8 @@ services:
       - 4001:3306
     volumes:
       - .\volumes\mariadb:/var/lib/mysql
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
