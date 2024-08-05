@@ -25,12 +25,12 @@ import java.time.OffsetDateTime;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class LectureCommandService {
+
     private final LectureRepository lectureRepository;
 
     @Transactional
     public Lecture create(LectureCreationRequest request, LectureQueryFilter filter) {
         Member member = filter.getOwner();
-
 
         long lectureCount = lectureRepository.countLectures(filter);
         if (member.getGrade() == Grade.Freeteer && lectureCount >= MemberGradeConstant.MAX_LECTURES) {
