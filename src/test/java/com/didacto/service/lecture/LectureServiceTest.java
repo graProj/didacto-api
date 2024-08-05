@@ -1,18 +1,18 @@
 package com.didacto.service.lecture;
 
-import com.didacto.domain.Authority;
-import com.didacto.domain.Lecture;
-import com.didacto.domain.LectureState;
-import com.didacto.domain.Member;
+import com.didacto.domain.*;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
 import com.didacto.dto.lecture.LecturePageResponse;
 import com.didacto.dto.lecture.LectureQueryFilter;
+import com.didacto.repository.lecture.LectureRepository;
+import com.didacto.repository.member.MemberRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,9 +21,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
+import static com.didacto.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
@@ -43,9 +47,11 @@ public class LectureServiceTest {
     private Long tutorId;
     private Long lecturId;
 
+
     @BeforeEach
     public void before(){
         this.initializeData();
+
     }
 
     @AfterEach
@@ -59,12 +65,21 @@ public class LectureServiceTest {
                 .title("강의 제목")
                 .build();
 
+        Member tutor = em.find(Member.class, tutorId);
+        //initializeDate()에 Lecture가 3개가 이미 있어 Premium으로 변환하기 위해 사용했습니다.
+        //프리티어와 프리미엄을 나눠서 강의 생성 테스트가 필요합니다.
+        tutor.premium();
+
+
         LectureQueryFilter filter = LectureQueryFilter.builder()
-                .owner(1L)
+                .owner(tutor)
                 .build();
 
         // when
+
         Lecture lecture = lectureCommandService.create(request, filter);
+
+
 
         // then
         assertThat(lecture).isNotNull();

@@ -3,8 +3,10 @@ package com.didacto.dto.lecture;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class LectureModificationRequest {
     @Schema(example = "1")
     private Long lectureId;

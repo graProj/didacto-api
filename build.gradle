@@ -59,8 +59,14 @@ dependencies {
 	//iamport
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
+	// Reactor
+	implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.0'
 
+	// WebFlux
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.3'
 
+	//RabbiMq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 tasks.named('test') {

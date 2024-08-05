@@ -19,16 +19,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@Tag(name = "MEMBER API", description = "회원과 관련된 API") // Swagger Docs : API 이름
+@Tag(name = "MEMBER API", description = "회원 관련 API") // Swagger Docs : API 이름
 @RestController
 @RequiredArgsConstructor
-
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
     @Operation(summary = "MEMBER_01 : 회원 전체 조회 API", description = "전체 회원을 조회한다. (관리자용)")
-    @GetMapping("/members")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public CommonResponse findAllMembers(){
         List<MemberResponse> result =  memberService.queryAll();
@@ -36,7 +35,7 @@ public class MemberController {
     }
 
     @Operation(summary = "MEMBER_02 : 회원 개별 조회 API", description = "개별 회원을 조회한다. (관리자용)")
-    @GetMapping("/members/{id}")
+    @GetMapping("/{id}")
     public CommonResponse findMember(@PathVariable("id") Long id) {
         MemberResponse result= memberService.query(id);
         return new CommonResponse<>(true, HttpStatus.OK, "회원 조회에 성공했습니다.", result);
@@ -49,7 +48,7 @@ public class MemberController {
 
     @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "MEMBER_03 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
-    @PutMapping("/members")
+    @PutMapping("")
     public CommonResponse editMemberInfo(@RequestBody MemberModificationRequest memberEditRequest){
         Long userId = SecurityUtil.getCurrentMemberId();
         memberService.modifyInfo(userId, memberEditRequest);
@@ -63,7 +62,7 @@ public class MemberController {
 
     @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "MEMBER_04 : 회원 탈퇴 API", description = "회원을 탈퇴시킨다.")
-    @DeleteMapping("/members")
+    @DeleteMapping("")
     public CommonResponse deleteMemberInfo() {
         Long userId = SecurityUtil.getCurrentMemberId();
         memberService.delete(userId);
