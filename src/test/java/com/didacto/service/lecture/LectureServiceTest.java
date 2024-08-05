@@ -65,6 +65,7 @@ public class LectureServiceTest {
                 .title("강의 제목")
                 .build();
 
+
         Member tutor = em.find(Member.class, tutorId);
         //initializeDate()에 Lecture가 3개가 이미 있어 Premium으로 변환하기 위해 사용했습니다.
         //프리티어와 프리미엄을 나눠서 강의 생성 테스트가 필요합니다.

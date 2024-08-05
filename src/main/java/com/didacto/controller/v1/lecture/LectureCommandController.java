@@ -4,13 +4,9 @@ import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Lecture;
-import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureModificationRequest;
-import com.didacto.dto.lecture.LectureQueryFilter;
-import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.lecture.LectureCommandService;
-import com.didacto.service.member.MemberQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "LECTURE COMMAND API", description = "강의 생성 및 수정 API")
 public class LectureCommandController {
     private final LectureCommandService lectureCommandService;
-    private final MemberRepository memberRepository;
-    private final MemberQueryService memberQueryService;
 
     @PostMapping
     @PreAuthorize(AuthConstant.AUTH_ADMIN)
@@ -34,15 +28,7 @@ public class LectureCommandController {
     public CommonResponse<Long> create(
             @RequestBody LectureCreationRequest request
     ){
-
-        long member_id = SecurityUtil.getCurrentMemberId();
-        Member member = memberQueryService.query(member_id);
-
-        LectureQueryFilter filter = LectureQueryFilter.builder()
-                .owner(member)
-                .build();
-
-        Lecture lecture = lectureCommandService.create(request, filter);
+        Lecture lecture = lectureCommandService.create(request, SecurityUtil.getCurrentMemberId());
         return new CommonResponse(
                 true, HttpStatus.OK, null, lecture.getId()
         );

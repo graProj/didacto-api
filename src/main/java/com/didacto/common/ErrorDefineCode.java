@@ -29,12 +29,9 @@ public enum ErrorDefineCode {
     CONFIRM_FAIL_USER_DELETED("ENROLL_6", "등록 요청을 한 사용자가 탈퇴하였습니다. 해당 요청은 취소 처리됩니다."),
     LECTURE_MEMBER_NOT_FOUND("LMB_01", "강의 참여자를 찾을 수 없습니다."),
     LECTURE_MEMBER_ALREADY_EXISTENCE("LMB_02", "이미 강의에 등록된 사용자입니다."),
-    LECTURE_MEMBER_FREETEER_OVERCOUNT_3("LMB_03", "FREETEER의 최대 생성 강의  갯수는 3개 입니다."),
-    LECTURE_MEMBER_PREMIUM_OVER("LMB_04", "PREMIUM 구독기간이 만료되었습니다."),
     DELETED_LECTURE("LECTURE_01", "삭제된 강의입니다."),
     ORDER_GRADE_FAIL("ORDER_01","주문된 상품이 프리미엄이 아닙니다."),
-    ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다."),
-    PAYMENT_NOT_FOUND("PAYMENT_01", "결제 완료된 상품이 없습니다.")
+    ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다.")
     ;
 
     private final String code;

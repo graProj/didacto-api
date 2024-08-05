@@ -29,6 +29,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+
     @Column
     private OffsetDateTime birth;
 
@@ -39,7 +41,6 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Grade grade;
-
 
     /**
      * 연관관계 세팅
@@ -76,11 +77,5 @@ public class Member extends BaseEntity {
         this.deleted = true;
     }
 
-    public void premium() {
-        this.grade = Grade.Premium;
-    }
-
-
-
-
+    public void premium() {this.grade = Grade.Premium;}
 }

@@ -4,7 +4,10 @@ import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.*;
+import com.didacto.dto.auth.SignUpRequest;
 import com.didacto.dto.order.OrderRequest;
+import com.didacto.repository.member.MemberRepository;
+import com.didacto.repository.order.OrderCustomRepository;
 import com.didacto.repository.order.OrderRepository;
 import com.didacto.repository.pament.PaymentRepository;
 import com.didacto.service.member.MemberQueryService;
@@ -17,7 +20,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderCommandService {
+public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberQueryService memberQueryService;
     private final PaymentRepository paymentRepository;

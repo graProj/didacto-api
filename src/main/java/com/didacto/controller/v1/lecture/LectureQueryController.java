@@ -47,7 +47,6 @@ public class LectureQueryController {
                 .titleKeyword(request.getTitleKeyword())
                 .deleted(request.getDeleted())
                 .build();
-
         LecturePageResponse lecturePageResponse = lectureQueryService.queryPage(request.getPageable(), filter);
 
         return new CommonResponse(
