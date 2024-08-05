@@ -35,6 +35,7 @@ public class LectureCommandService {
 
 
         long lectureCount = lectureRepository.countLectures(filter);
+        // Freetier고, 최대 강의 개수를 초과하면 예외 반환
         if (member.getGrade() == Grade.Freeteer && lectureCount >= MemberGradeConstant.MAX_LECTURES) {
             throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
         }
