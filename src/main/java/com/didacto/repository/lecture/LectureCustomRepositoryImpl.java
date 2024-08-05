@@ -2,6 +2,7 @@ package com.didacto.repository.lecture;
 
 
 import com.didacto.domain.Lecture;
+import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -51,6 +52,7 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
                 .from(lecture)
                 .where(
                         filter.getTitleKeyword() != null ? lecture.title.like("%" + filter.getTitleKeyword() +"%") : null,
+                        filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
                         filter.getDeleted() != null ? lecture.deleted.eq(filter.getDeleted()) : null
                 );
         return query;

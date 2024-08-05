@@ -73,6 +73,7 @@ public class AuthController {
             @ApiResponse(responseCode = "403", description = "Refresh Token이 없거나 유효하지 않음",
                     content = {@Content(schema = @Schema(implementation = SwaggerErrorResponseType.class))})
     })
+
     public CommonResponse<TokenResponse> reissue() {
         Long id = SecurityUtil.getCurrentMemberId();
         TokenResponse token = authService.reissueAccessToken(id);

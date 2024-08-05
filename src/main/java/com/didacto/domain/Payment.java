@@ -1,9 +1,8 @@
 package com.didacto.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.didacto.common.BaseEntity;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +10,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long price;
+
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
     private String paymentUid;
 
