@@ -1,6 +1,7 @@
 package com.didacto.service.member;
 
 import com.didacto.domain.Authority;
+import com.didacto.domain.Grade;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.dto.member.MemberResponse;
@@ -45,8 +46,8 @@ class MemberServiceTest {
     @Test
     void queryAll() {
         // given
-        Member member1 = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
-        Member member2 = createMember(2L,"gilsam456@naver.com","홍길삼","gilsam123456!@","19960130", Authority.ROLE_USER);
+        Member member1 = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER, Grade.Premium);
+        Member member2 = createMember(2L,"gilsam456@naver.com","홍길삼","gilsam123456!@","19960130", Authority.ROLE_USER,Grade.Premium);
         List<Member> list = new LinkedList<>();
         list.add(member1);
         list.add(member2);
@@ -63,7 +64,7 @@ class MemberServiceTest {
     @Test
     void query() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER, Grade.Premium);
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         // when
@@ -76,7 +77,7 @@ class MemberServiceTest {
     @Test
     void modifyInfo() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER,Grade.Premium);
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         MemberModificationRequest req = new MemberModificationRequest("dkfwhiba1230!@", "홍길자", "19990513");
@@ -96,7 +97,7 @@ class MemberServiceTest {
     @Test
     void delete() {
         //given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER, Grade.Premium);
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         //when

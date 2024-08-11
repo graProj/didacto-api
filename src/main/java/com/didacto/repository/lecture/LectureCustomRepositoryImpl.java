@@ -47,6 +47,26 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
         return query.fetchCount();
     }
 
+    @Override
+    public Long countLecturesExceptdeleted(LectureQueryFilter request) {
+        JPAQuery<Lecture> query = queryWithFilterExceptdeleted(request);
+        return query.fetchCount();
+    }
+
+    private JPAQuery<Lecture> queryWithFilterExceptdeleted(LectureQueryFilter filter) {
+        JPAQuery<Lecture> query = queryFactory.select(lecture)
+                .from(lecture)
+                .where(
+                        filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
+                        filter.getDeleted() != null ? lecture.deleted.eq(false) : null
+
+                );
+        return query;
+    }
+
+
+
+
     private JPAQuery<Lecture> queryWithFilter(LectureQueryFilter filter) {
         JPAQuery<Lecture> query = queryFactory.select(lecture)
                 .from(lecture)
@@ -54,6 +74,7 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
                         filter.getTitleKeyword() != null ? lecture.title.like("%" + filter.getTitleKeyword() +"%") : null,
                         filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
                         filter.getDeleted() != null ? lecture.deleted.eq(filter.getDeleted()) : null
+
                 );
         return query;
     }

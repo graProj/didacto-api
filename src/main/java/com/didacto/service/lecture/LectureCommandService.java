@@ -15,6 +15,7 @@ import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.service.member.MemberQueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +30,12 @@ public class LectureCommandService {
     private final MemberQueryService memberQueryService;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public Lecture create(LectureCreationRequest request, LectureQueryFilter filter) {
+    public synchronized Lecture create(LectureCreationRequest request, LectureQueryFilter filter) {
         Member member = filter.getOwner();
 
 
-        long lectureCount = lectureRepository.countLectures(filter);
+        long lectureCount = lectureRepository.countLecturesExceptdeleted(filter);
+        System.out.println(lectureCount);
         // Freetier고, 최대 강의 개수를 초과하면 예외 반환
         if (member.getGrade() == Grade.Freeteer && lectureCount >= MemberGradeConstant.MAX_LECTURES) {
             throw new PreconditionFailException412(ErrorDefineCode.LECTURE_MEMBER_FREETEER_OVERCOUNT_3);
