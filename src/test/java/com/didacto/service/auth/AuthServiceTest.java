@@ -7,6 +7,7 @@ import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
+import com.didacto.infra.redis.AuthRedisRepository;
 import com.didacto.repository.member.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,11 +45,15 @@ public class AuthServiceTest {
     @Mock
     TokenProvider tokenProvider;
 
+    @Mock
+    AuthRedisRepository authRedisRepository;
+
 
 
     @BeforeEach
     void beforeEach() {
-        authService = new AuthService(memberRepository, passwordEncoder, tokenProvider);
+        authService = new AuthService(memberRepository, passwordEncoder, tokenProvider, authRedisRepository);
+
     }
 
 
@@ -60,9 +65,9 @@ public class AuthServiceTest {
         Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
-            // when, then
-            assertThatThrownBy(() -> authService.signIn(new LoginRequest("email", "password")))
-                    .isInstanceOf(AuthCredientialException401.class);
+        // when, then
+        assertThatThrownBy(() -> authService.signIn(new LoginRequest("email", "password")))
+                .isInstanceOf(AuthCredientialException401.class);
         }
 
     @Test
