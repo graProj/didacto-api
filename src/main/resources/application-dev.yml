@@ -25,8 +25,9 @@ redis:
   port: 6393
 
 jwt:
-  secret1: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
-
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+  access_token_expired_at: 1800000  # 1000 * 60 * 30
+  refresh_token_expired_at: 604800000  # 1000 * 60 * 60 * 24 * 7
 
 imp:
   api:
