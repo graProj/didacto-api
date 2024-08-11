@@ -90,7 +90,7 @@ public class TokenProvider {
 
 
         // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
+        UserDetails principal = customUserDetailsService.loadUserDetailsByClaim(claims);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
