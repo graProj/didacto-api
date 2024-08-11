@@ -27,7 +27,7 @@ redis:
 jwt:
   secret: UGxlYXNlIGRvIG5vdCBkZWNyeXB0IHRoaXMuIEl0J3MgY29uZmlkZW50aWFsLCBpdCdzIG91ciBzZWNyZXQuIGl0IGlzIG11c3QgYmUgNjQgYnl0ZXMuIHNvIHNhZC4gaG93IGFyZSB5b3UgaSdtIG5vdCBmaW5lIHRoYW5rIHlvdSBhbmQgeW91PyBpIHdhbnQgZ28gaG9tZSBmZg==
   refreshSecret: UnJycmluZyBkaW5nIGRvZyByaW5nIGRpbmcgZG9uZyByaW5nIGRpZ2lkaWdpZGluZyBkaW5nIGRpbmcuIGJ1dHRlcmZseSBubyBydWwgbWFuIG5hbiBjaG90IHN1biBnYW4gbW9tIGUgcHBhIHp6ZXIgYmVyIHJ1aXQgc28gbmUgbWF1bWRvIG11bHJ1aXRzbyBuYW4gbWFsIHlhIG11dCB6aW4gbm9tIGNoYWsgaGFuIG5vbSBncm9uIG5vbWRvIGFuaXppbWFu
-  access_token_expired_at: 1800000  # 1000 * 60 * 30
+  access_token_expired_at: 60000  # 1000 * 60 * 30
   refresh_token_expired_at: 604800000  # 1000 * 60 * 60 * 24 * 7
 
 imp:
