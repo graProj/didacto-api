@@ -4,6 +4,7 @@ import com.didacto.config.security.custom.CustomUser;
 import com.didacto.config.security.custom.CustomUserDetailsService;
 import com.didacto.domain.Authority;
 import com.didacto.dto.auth.TokenDto;
+import com.didacto.infra.redis.AuthRedisRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,22 +30,30 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "Bearer";
 
     private String host;
+    private final AuthRedisRepository authRedisRepository;
 
 
     @Value("${jwt.access_token_expired_at}")
-    private static long ACCESS_TOKEN_EXPIRE_TIME;
+    private Long ACCESS_TOKEN_EXPIRE_TIME;
 
     @Value("${jwt.refresh_token_expired_at}")
-    private static long REFRESH_TOKEN_EXPIRE_TIME;
+    private Long REFRESH_TOKEN_EXPIRE_TIME;
 
     private final Key key;
+    private final Key refreshKey;
 
     private final CustomUserDetailsService customUserDetailsService;
     
-    public TokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService){
+    public TokenProvider(@Value("${jwt.secret}") String secretKey,
+                         @Value("${jwt.refreshSecret}") String refreshSecretKey,
+                         CustomUserDetailsService customUserDetailsService,
+                         AuthRedisRepository authRedisRepository){
         this.customUserDetailsService = customUserDetailsService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] refKeyBytes = Decoders.BASE64.decode(refreshSecretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.refreshKey = Keys.hmacShaKeyFor(refKeyBytes);
+        this.authRedisRepository = authRedisRepository;
     }
 
 
@@ -69,7 +78,8 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY, "ROLE_REFRESH")
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .setSubject(dto.getEmail())
-                .signWith(key, SignatureAlgorithm.HS512)
+                .claim("Id", dto.getId())
+                .signWith(refreshKey, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()
@@ -82,9 +92,16 @@ public class TokenProvider {
 
 
 
-    public Authentication getAuthentication(String accessToken) {
+    public Authentication getAuthentication(String accessToken, boolean isAccessToken) {
         // 토큰 복호화
-        Claims claims = parseClaims(accessToken);
+        Claims claims;
+        if(isAccessToken){
+            claims = parseClaims(accessToken, key);
+        }
+        else{
+            claims = parseClaims(accessToken, refreshKey);
+        }
+
 
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -121,7 +138,11 @@ public class TokenProvider {
 
     public boolean validateRefreshToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            Long id = claimsJws.getBody().get("Id", Long.class);
+            if(!authRedisRepository.validateRefreshToken(id, token)){
+                throw new IllegalArgumentException("JWT가 잘못되었습니다.");
+            }
             return true;
         }
         catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
@@ -141,13 +162,15 @@ public class TokenProvider {
 
     }
 
-    public Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken, Key key) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
+
+
 
 
 }
