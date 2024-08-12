@@ -22,6 +22,6 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     container_name: didacto-redis
     volumes: # 마운트할 볼륨 설정
-      - ./volumes/redis/data:/data
-      - ./volumes/redis/conf:/usr/local/etc/redis/redis.conf
+      - .\volumes\redis\data:/data
+      - .\volumes\redis\conf:/usr/local/etc/redis/redis.conf
     restart: always
