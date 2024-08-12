@@ -19,11 +19,4 @@ public interface LectureCustomRepository {
 
 
 
-
-    //@Lock(LockModeType.PESSIMISTIC_WRITE)
-    //@Query("select count(s) from Lecture s where s.lecture = :lecture")
-    //Long countLecturesByOwner(Lecture lecture);
-
-
-
 }
