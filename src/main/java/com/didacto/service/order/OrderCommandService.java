@@ -5,8 +5,9 @@ import com.didacto.config.exception.custom.exception.PreconditionFailException41
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.*;
 import com.didacto.dto.order.OrderRequest;
+import com.didacto.repository.member.MemberRepository;
 import com.didacto.repository.order.OrderRepository;
-import com.didacto.repository.pament.PaymentRepository;
+import com.didacto.repository.payment.PaymentRepository;
 import com.didacto.service.member.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,13 @@ public class OrderCommandService {
     private final PaymentRepository paymentRepository;
 
     public Long create(OrderRequest req) {
+
+        Member member = memberQueryService.query(SecurityUtil.getCurrentMemberId());
+
+        if(member.getGrade() == Grade.Premium){
+            throw new PreconditionFailException412(ErrorDefineCode.PAYMENT_ALREAY_PREMIUM);
+        }
+
         Order order = createFormOfOrder(req);
         Order result = orderRepository.save(order);
         return result.getId();

@@ -15,3 +15,13 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  didacto-redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - 6393:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: didacto-redis
+    volumes: # 마운트할 볼륨 설정
+      - .\volumes\redis\data:/data
+      - .\volumes\redis\conf:/usr/local/etc/redis/redis.conf
+    restart: always

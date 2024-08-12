@@ -36,6 +36,11 @@ class LectureCommandServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+
+
+    @Autowired
+    private RedissonLockStockFacade redissonLockStockFacade;
+
     @BeforeEach
     public void before() {
         lectureRepository.deleteAll();
@@ -69,7 +74,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    lectureCommandService.create(request, member1.getId());
+                    redissonLockStockFacade.create(request, member1.getId());
 
                 } finally {
                     latch.countDown();
@@ -78,7 +83,6 @@ class LectureCommandServiceTest {
         }
         System.out.println(member1.getGrade());
         latch.await(); // 다른 쓰레드에서 수행중인 작업이 완료될때까지 기다려줌
-        executorService.shutdown();
 
         Long countLectures = lectureRepository.countLectures(filter);
 
@@ -113,7 +117,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    lectureCommandService.create(request, member1.getId());
+                    redissonLockStockFacade.create(request, member1.getId());
                 } finally {
                     latch.countDown();
                 }

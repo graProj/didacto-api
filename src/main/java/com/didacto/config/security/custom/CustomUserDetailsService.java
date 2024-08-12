@@ -2,8 +2,10 @@ package com.didacto.config.security.custom;
 
 import com.didacto.common.ErrorDefineCode;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
+import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.repository.member.MemberRepository;
+import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,9 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new AuthCredientialException401(ErrorDefineCode.AUTH_NOT_FOUND_EMAIL));
     }
 
+    public UserDetails loadUserDetailsByClaim(Claims claim) throws UsernameNotFoundException {
+        CustomUser dto = new CustomUser(claim.get("Id", Long.class), claim.getSubject(), null, null,null);
+        return new CustomUserDetails(dto);
+    }
+
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
     private CustomUserDetails createUserDetails(Member member) {
-        CustomUser dto =  new CustomUser(member.getId(), member.getPassword(), member.getEmail(), member.getRole());
+        CustomUser dto = new CustomUser(member.getId(), member.getPassword(), member.getEmail(), member.getRole(), member.getGrade());
         return new CustomUserDetails(dto);
     }
 }

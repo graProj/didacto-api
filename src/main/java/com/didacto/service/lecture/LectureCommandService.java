@@ -14,6 +14,7 @@ import com.didacto.dto.lecture.LectureModificationRequest;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.member.MemberRepository;
+import com.didacto.repository.redis.RedisLockRepository;
 import com.didacto.service.member.MemberQueryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class LectureCommandService {
     private final LectureRepository lectureRepository;
     private final MemberRepository memberRepository;
     private final MemberQueryService memberQueryService;
+    private final RedisLockRepository redisLockRepository;
 
     @Transactional
     public Lecture create(LectureCreationRequest request, Long memberId) {

@@ -67,6 +67,12 @@ dependencies {
 
 	//RabbiMq
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// redisson 의존성 추가
+	implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.19.0'
+
 }
 
 tasks.named('test') {

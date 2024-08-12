@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 public class MonitoringImageEventService {
     private final MonitoringImageEventHandler monitoringImageEventHandler;
 

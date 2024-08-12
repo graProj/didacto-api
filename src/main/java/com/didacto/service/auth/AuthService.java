@@ -9,6 +9,7 @@ import com.didacto.config.security.custom.CustomUser;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Member;
 import com.didacto.dto.auth.*;
+import com.didacto.infra.redis.AuthRedisRepository;
 import com.didacto.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +28,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final AuthRedisRepository authRedisRepository;
 
     @Transactional
     public Long signup(SignUpRequest req) {
@@ -45,6 +47,7 @@ public class AuthService {
         if(!member.getDeleted()){
             validatePassword(req, member);
             TokenDto token = generateToken(member);
+            authRedisRepository.setRefreshAuthenticationInfo(member.getId(), token.getRefreshToken());
             return new TokenResponse(token.getAccessToken(), token.getRefreshToken());
 
         }else{
@@ -110,7 +113,7 @@ public class AuthService {
 
 
     private TokenDto generateToken(Member member){
-        CustomUser customUser = new CustomUser(member.getId(), member.getEmail(), member.getPassword(), member.getRole());
+        CustomUser customUser = new CustomUser(member.getId(), member.getEmail(), member.getPassword(), member.getRole(), member.getGrade());
         TokenDto token = tokenProvider.generateTokenDto(customUser);
         return token;
     }

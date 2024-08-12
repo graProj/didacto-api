@@ -1,6 +1,5 @@
 package com.didacto.service.payment;
 
-import com.didacto.common.MemberGradeConstant;
 import com.didacto.domain.Member;
 import com.didacto.domain.Order;
 import com.didacto.domain.PaymentStatus;
@@ -8,7 +7,7 @@ import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.dto.pay.WebhookPayloadRequest;
 import com.didacto.repository.member.MemberRepository;
 import com.didacto.repository.order.OrderRepository;
-import com.didacto.repository.pament.PaymentRepository;
+import com.didacto.repository.payment.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
