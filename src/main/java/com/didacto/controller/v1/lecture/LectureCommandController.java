@@ -34,17 +34,9 @@ public class LectureCommandController {
     public CommonResponse<Long> create(
             @RequestBody LectureCreationRequest request
     ){
-
         long member_id = SecurityUtil.getCurrentMemberId();
-        Member member = memberQueryService.query(member_id);
 
-
-        LectureQueryFilter filter = LectureQueryFilter.builder()
-                .owner(member)
-                .deleted(false)
-                .build();
-
-        Lecture lecture = lectureCommandService.create(request, filter);
+        Lecture lecture = lectureCommandService.create(request, member_id);
         return new CommonResponse(
                 true, HttpStatus.OK, null, lecture.getId()
         );

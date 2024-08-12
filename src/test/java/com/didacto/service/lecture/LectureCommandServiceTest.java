@@ -7,11 +7,14 @@ import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureCreationRequest;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.didacto.repository.lecture.LectureRepository;
+import com.didacto.repository.member.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +33,9 @@ class LectureCommandServiceTest {
     @Autowired
     private LectureCommandService lectureCommandService;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @BeforeEach
     public void before() {
         lectureRepository.deleteAll();
@@ -43,8 +49,10 @@ class LectureCommandServiceTest {
                 .title("강의 제목")
                 .build();
 
-        Member member1 = createMember(1L, "gildong456@naver.com", "홍길동", "gildong123456!@", "19960129", Authority.ROLE_USER, Grade.Premium);
+        Member member1 = createMember(1L, "gildong456@naver.com", "홍길동", "gildong123456!@", "19960129", Authority.ROLE_ADMIN, Grade.Premium);
         member1.premium();
+        memberRepository.saveAndFlush(member1);
+
 
         LectureQueryFilter filter = LectureQueryFilter.builder()
                 .owner(member1)
@@ -61,7 +69,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    lectureCommandService.create(request, filter);
+                    lectureCommandService.create(request, member1.getId());
 
                 } finally {
                     latch.countDown();
@@ -70,6 +78,7 @@ class LectureCommandServiceTest {
         }
         System.out.println(member1.getGrade());
         latch.await(); // 다른 쓰레드에서 수행중인 작업이 완료될때까지 기다려줌
+        executorService.shutdown();
 
         Long countLectures = lectureRepository.countLectures(filter);
 
@@ -86,8 +95,8 @@ class LectureCommandServiceTest {
                 .title("강의 제목")
                 .build();
 
-        Member member1 = createMember(1L, "gildong456@naver.com", "홍길동", "gildong123456!@", "19960129", Authority.ROLE_USER,Grade.Freeteer);
-
+        Member member1 = createMember(1L, "gildong456@naver.com", "홍길동", "gildong123456!@", "19960129", Authority.ROLE_ADMIN, Grade.Freeteer);
+        memberRepository.saveAndFlush(member1);
 
         LectureQueryFilter filter = LectureQueryFilter.builder()
                 .owner(member1)
@@ -104,7 +113,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    lectureCommandService.create(request, filter);
+                    lectureCommandService.create(request, member1.getId());
                 } finally {
                     latch.countDown();
                 }

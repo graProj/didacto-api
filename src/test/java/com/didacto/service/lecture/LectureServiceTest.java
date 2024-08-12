@@ -77,7 +77,7 @@ public class LectureServiceTest {
 
         // when
 
-        Lecture lecture = lectureCommandService.create(request, filter);
+        Lecture lecture = lectureCommandService.create(request, tutorId);
 
 
 

@@ -17,7 +17,8 @@ public interface LectureCustomRepository {
 
     Long countLectures(LectureQueryFilter request);
 
-    Long countLecturesExceptdeleted(LectureQueryFilter request);
+
+
 
     //@Lock(LockModeType.PESSIMISTIC_WRITE)
     //@Query("select count(s) from Lecture s where s.lecture = :lecture")

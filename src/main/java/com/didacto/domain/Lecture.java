@@ -35,6 +35,9 @@ public class Lecture extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean deleted;
+//
+//    @Version
+//    private Long version;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)

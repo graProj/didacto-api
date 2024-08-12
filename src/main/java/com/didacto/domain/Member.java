@@ -41,6 +41,8 @@ public class Member extends BaseEntity {
     private Grade grade;
 
 
+
+
     /**
      * 연관관계 세팅
      */

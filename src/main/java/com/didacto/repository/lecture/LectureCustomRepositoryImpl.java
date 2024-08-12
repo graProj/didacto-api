@@ -2,7 +2,6 @@ package com.didacto.repository.lecture;
 
 
 import com.didacto.domain.Lecture;
-import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -46,24 +45,6 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
         JPAQuery<Lecture> query = queryWithFilter(request);
         return query.fetchCount();
     }
-
-    @Override
-    public Long countLecturesExceptdeleted(LectureQueryFilter request) {
-        JPAQuery<Lecture> query = queryWithFilterExceptdeleted(request);
-        return query.fetchCount();
-    }
-
-    private JPAQuery<Lecture> queryWithFilterExceptdeleted(LectureQueryFilter filter) {
-        JPAQuery<Lecture> query = queryFactory.select(lecture)
-                .from(lecture)
-                .where(
-                        filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
-                        filter.getDeleted() != null ? lecture.deleted.eq(false) : null
-
-                );
-        return query;
-    }
-
 
 
 
