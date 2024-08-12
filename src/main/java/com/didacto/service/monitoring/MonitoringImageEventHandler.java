@@ -50,7 +50,7 @@ public class MonitoringImageEventHandler {
     /**
      * 스트림 반환
      */
-    public Flux<MonitoringImageEvent> getStream() {
+    public Flux<MonitoringImageEvent> stream() {
         return sink.asFlux();
     }
 }
