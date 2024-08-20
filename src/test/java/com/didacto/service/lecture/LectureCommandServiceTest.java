@@ -37,10 +37,6 @@ class LectureCommandServiceTest {
     private MemberRepository memberRepository;
 
 
-
-    @Autowired
-    private RedissonLockStockFacade redissonLockStockFacade;
-
     @BeforeEach
     public void before() {
         lectureRepository.deleteAll();
@@ -74,7 +70,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    redissonLockStockFacade.create(request, member1.getId());
+                    lectureCommandService.create(request, member1.getId());
 
                 } finally {
                     latch.countDown();
@@ -117,7 +113,7 @@ class LectureCommandServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    redissonLockStockFacade.create(request, member1.getId());
+                    lectureCommandService.create(request, member1.getId());
                 } finally {
                     latch.countDown();
                 }

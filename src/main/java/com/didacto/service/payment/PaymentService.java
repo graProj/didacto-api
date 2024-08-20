@@ -1,5 +1,10 @@
 package com.didacto.service.payment;
 
+import com.didacto.common.ErrorDefineCode;
+import com.didacto.config.exception.custom.exception.NetworkException503;
+import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
+import com.didacto.config.exception.custom.exception.PreconditionFailException412;
+import com.didacto.config.exception.custom.exception.TimeOutException408;
 import com.didacto.domain.Member;
 import com.didacto.domain.Order;
 import com.didacto.domain.PaymentStatus;
@@ -54,11 +59,11 @@ public class PaymentService {
             // 결제 단건 조회(아임포트)
             IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPayment_uid());
             if (iamportResponse == null) {
-                throw new IllegalArgumentException("결제 내역이 없습니다.");
+                throw new NoSuchElementFoundException404(ErrorDefineCode.PAYMENT_NOT_FOUND_HISTORY);
             }
             // 주문내역 조회
             Order order = orderRepository.findOrderAndPayment(request.getOrder_uid())
-                    .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+                    .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
 
             // 결제 상태 검증 및 처리
             validateAndProcessPayment(iamportResponse, order);
@@ -66,11 +71,9 @@ public class PaymentService {
             return iamportResponse;
 
         } catch (IamportResponseException e) {
-            log.error("IamportResponseException 발생", e);
-            throw new RuntimeException(e);
+            throw new NetworkException503(ErrorDefineCode.IAMPORT_NOT_FOUND_RESPONSE);
         } catch (IOException e) {
-            log.error("IOException 발생", e);
-            throw new RuntimeException(e);
+            throw new NetworkException503(ErrorDefineCode.IAMPORT_NETWORT_ERROR);
         }
     }
 
@@ -86,15 +89,16 @@ public class PaymentService {
                 order = createTestOrder(payload);
             } else {
                 order = orderRepository.findOrderAndPayment(payload.getMerchantUid())
-                        .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+                        .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
             }
 
             // 결제 상태 검증 및 처리
             validateAndProcessPayment(iamportResponse, order);
 
-        } catch (IamportResponseException | IOException e) {
-            log.error("IamportResponseException 또는 IOException 발생", e);
-            throw new RuntimeException(e);
+        } catch (IamportResponseException e) {
+            throw new NetworkException503(ErrorDefineCode.IAMPORT_NOT_FOUND_RESPONSE);
+        } catch (IOException e) {
+            throw new NetworkException503(ErrorDefineCode.IAMPORT_NETWORT_ERROR);
         }
     }
 
@@ -111,7 +115,7 @@ public class PaymentService {
             // 주문, 결제 삭제
             orderRepository.delete(order);
             paymentRepository.delete(order.getPayment());
-            throw new RuntimeException("결제 미완료");
+            throw new PreconditionFailException412(ErrorDefineCode.PAYMENT_NOT_COMPLETE);
         }
 
         // DB에 저장된 결제 금액
@@ -128,7 +132,7 @@ public class PaymentService {
             // 결제금액 위변조로 의심되는 결제금액을 취소(아임포트)
             iamportClient.cancelPaymentByImpUid(new CancelData(iamportResponse.getResponse().getImpUid(), true, new BigDecimal(iamportPrice)));
 
-            throw new RuntimeException("결제금액 위변조 의심");
+            throw new PreconditionFailException412(ErrorDefineCode.PAYMENT_DIFFERENT_AMOUNT);
         }
 
         // 결제 상태 변경
