@@ -59,6 +59,8 @@ class EnrollmentRepositorylTest {
         // then
         assertThat(foundedEnrollment).isNotNull();
         assertThat(foundedEnrollment.get().getMember().getId()).isEqualTo(student.getId());
+        assertThat(foundedEnrollment.get().getMember().getName()).isEqualTo("S1");
+        assertThat(foundedEnrollment.get().getLecture().getTitle()).isEqualTo("L1");
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
     }
 
@@ -92,8 +94,7 @@ class EnrollmentRepositorylTest {
         // given
         Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
         Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
-        student = memberRepository.save(student);
-        tutor = memberRepository.save(tutor);
+        memberRepository.saveAll(List.of(student, tutor));
 
         Lecture lecture1 = createLecture("L1", tutor);
         Lecture lecture2 = createLecture("L2", tutor);
@@ -104,15 +105,16 @@ class EnrollmentRepositorylTest {
         Enrollment enrollment = createEnrollment(lecture2, student, EnrollmentStatus.WAITING, tutor);
         enrollmentRepository.saveAll(List.of(enrollmentTarget, enrollment));
 
-        EnrollmentQueryFilter filter = createQueryFilter(lecture1.getId(), student.getId(), null, null, null);
+        EnrollmentQueryFilter filter = createQueryFilter(lecture1.getId(), null, null, null, null);
 
         // when
         Optional<Enrollment> foundedEnrollment = enrollmentRepository.findEnrollment(filter);
 
         // then
         assertThat(foundedEnrollment).isNotNull();
-        assertThat(foundedEnrollment.get().getMember().getId()).isEqualTo(student.getId());
+        assertThat(foundedEnrollment.get().getMember().getName()).isEqualTo("S1");
         assertThat(foundedEnrollment.get().getLecture().getId()).isEqualTo(lecture1.getId());
+        assertThat(foundedEnrollment.get().getLecture().getTitle()).isEqualTo("L1");
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
     }
 
@@ -129,8 +131,7 @@ class EnrollmentRepositorylTest {
 
         Lecture lecture1 = createLecture("L1", tutor);
         Lecture lecture2 = createLecture("L2", tutor2);
-        lecture1 = lectureRepository.save(lecture1);
-        lecture2 = lectureRepository.save(lecture2);
+        lectureRepository.saveAll(List.of(lecture1, lecture2));
 
         Enrollment enrollmentTarget = createEnrollment(lecture1, student, EnrollmentStatus.REJECTED, tutor);
         Enrollment enrollment = createEnrollment(lecture2, student, EnrollmentStatus.WAITING, tutor2);
@@ -144,7 +145,8 @@ class EnrollmentRepositorylTest {
         // then
         assertThat(foundedEnrollment).isNotNull();
         assertThat(foundedEnrollment.get().getMember().getId()).isEqualTo(student.getId());
-        assertThat(foundedEnrollment.get().getLecture().getId()).isEqualTo(lecture1.getId());
+        assertThat(foundedEnrollment.get().getMember().getName()).isEqualTo("S1");
+        assertThat(foundedEnrollment.get().getLecture().getTitle()).isEqualTo("L1");
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
     }
 
@@ -154,8 +156,7 @@ class EnrollmentRepositorylTest {
         // given
         Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
         Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
-        student = memberRepository.save(student);
-        tutor = memberRepository.save(tutor);
+        memberRepository.saveAll(List.of(student, tutor));
 
         Lecture lecture1 = createLecture("L1", tutor);
         lecture1 = lectureRepository.save(lecture1);
@@ -171,6 +172,7 @@ class EnrollmentRepositorylTest {
 
         // then
         assertThat(foundedEnrollment).isNotNull();
+        assertThat(foundedEnrollment.get().getMember().getName()).isEqualTo("S1");
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
     }
 
@@ -180,8 +182,7 @@ class EnrollmentRepositorylTest {
         // given
         Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
         Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
-        student = memberRepository.save(student);
-        tutor = memberRepository.save(tutor);
+        memberRepository.saveAll(List.of(student, tutor));
 
         Lecture lecture1 = createLecture("L1", tutor);
         lecture1 = lectureRepository.save(lecture1);
@@ -198,6 +199,7 @@ class EnrollmentRepositorylTest {
 
         // then
         assertThat(foundedEnrollment).isNotNull();
+        assertThat(foundedEnrollment.get().getMember().getName()).isEqualTo("S1");
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.REJECTED);
     }
 
@@ -241,17 +243,16 @@ class EnrollmentRepositorylTest {
         assertThat(foundedEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.WAITING);
     }
 
-    @DisplayName("초대 단건 검색 시 인덱스를 통해 초대를 정확히 한 개 조회할 수 있다.")
+    @DisplayName("초대 단건 검색 시 ID를 통해 초대를 정확히 한 개 조회할 수 있다.")
     @Test
-    void findEnrollmentByIndex(){
+    void findEnrollmentByID(){
         // given
         Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
         Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
-        student = memberRepository.save(student);
-        tutor = memberRepository.save(tutor);
+        memberRepository.saveAll(List.of(student, tutor));
 
         Lecture lecture1 = createLecture("L1", tutor);
-        lecture1 = lectureRepository.save(lecture1);
+        lectureRepository.save(lecture1);
 
         Enrollment enrollmentTarget = createEnrollment(lecture1, student, EnrollmentStatus.REJECTED, tutor);
         Enrollment enrollment = createEnrollment(lecture1, student, EnrollmentStatus.WAITING, tutor);
