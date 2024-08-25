@@ -9,6 +9,7 @@ import com.didacto.domain.EnrollmentStatus;
 import com.didacto.domain.Lecture;
 import com.didacto.domain.Member;
 import com.didacto.repository.enrollment.EnrollmentRepository;
+import com.didacto.service.enrollment.transaction.EnrollmentTransactionService;
 import com.didacto.service.lecture.LectureQueryService;
 import com.didacto.service.lecturemember.LectureMemberCommandService;
 import com.didacto.service.lecturemember.LectureMemberQueryService;
@@ -16,7 +17,6 @@ import com.didacto.service.member.MemberQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 
 @Service
@@ -25,11 +25,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class EnrollmentCommandService {
     private final EnrollmentRepository enrollmentRepository;
     private final EnrollmentQueryService enrollmentQueryService;
+    private final EnrollmentTransactionService enrollmentTransactionService;
     private final LectureQueryService lectureQueryService;
     private final MemberQueryService memberQueryService;
     private final LectureMemberQueryService lectureMemberQueryService;
     private final LectureMemberCommandService lectureMemberCommandService;
-    private final TransactionTemplate transactionTemplate;
 
     /**
      * [학생 : 강의 등록 요청]
@@ -39,7 +39,7 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment requestEnrollment(Long lectureId, Long memberId) {
+    public Long requestEnrollment(Long lectureId, Long memberId) {
 
         Lecture lecture = lectureQueryService.queryOne(lectureId);
         Member member = memberQueryService.query(memberId);
@@ -65,7 +65,7 @@ public class EnrollmentCommandService {
         enrollment = enrollmentRepository.save(enrollment);
 
         // Out
-        return enrollment;
+        return enrollment.getId();
     }
 
     /**
@@ -77,7 +77,7 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment cancelEnrollment(Long enrollId, Long memberId) {
+    public Long cancelEnrollment(Long enrollId, Long memberId) {
 
         Member member = memberQueryService.query(memberId);
 
@@ -90,7 +90,7 @@ public class EnrollmentCommandService {
         enrollment.updateModifiedMember(member);
         enrollment = enrollmentRepository.save(enrollment);
 
-        return enrollment;
+        return enrollment.getId();
     }
 
 
@@ -104,7 +104,7 @@ public class EnrollmentCommandService {
      * @return Long - 초대 PK
      */
     @Transactional
-    public Enrollment confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action) {
+    public Long confirmEnrollment(Long enrollId, Long tutorId, EnrollmentStatus action) {
 
         Member tutor = memberQueryService.query(tutorId);
 
@@ -115,10 +115,8 @@ public class EnrollmentCommandService {
 
         // Validate : 강의등록요청을 한 회원이 탈퇴상태일 시 상태 Cancel 처리
         if (enrollment.getMember() == null || enrollment.getMember().getDeleted()) {
-            enrollment.updateStatus(EnrollmentStatus.CANCELLED);
-            enrollment.updateModifiedMember(tutor);
-            enrollmentRepository.save(enrollment);
-            return enrollment;
+            enrollmentTransactionService.updateCancelStatusBeforeException(enrollment, tutor); //트랜잭션 롤백 이전에 데이터베이스에 CANCELED 상태로 변화시킨 내용을 반영한다.
+            throw new NoSuchElementFoundException404(ErrorDefineCode.CONFIRM_FAIL_USER_DELETED);
         }
 
         // Update : Status 변경, 수정자 변경
@@ -137,7 +135,7 @@ public class EnrollmentCommandService {
             lectureMemberCommandService.createLectureMember(enrollment);
         }
 
-        return enrollment;
+        return enrollment.getId();
     }
 
 
@@ -164,4 +162,6 @@ public class EnrollmentCommandService {
             throw new AlreadyExistElementException409(ErrorDefineCode.ALREADY_JOIN);
         }
     }
+
+
 }
