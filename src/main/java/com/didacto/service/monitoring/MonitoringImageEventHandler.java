@@ -27,7 +27,7 @@ public class MonitoringImageEventHandler {
      */
     @PostConstruct
     private void init() {
-        this.sink = Sinks.many().multicast().onBackpressureBuffer();
+        this.sink = Sinks.many().replay().all();
     }
 
     /**
