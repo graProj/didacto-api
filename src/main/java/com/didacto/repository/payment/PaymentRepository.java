@@ -1,4 +1,4 @@
-package com.didacto.repository.pament;
+package com.didacto.repository.payment;
 
 import com.didacto.domain.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;

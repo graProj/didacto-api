@@ -113,7 +113,7 @@ public class AuthService {
 
 
     private TokenDto generateToken(Member member){
-        CustomUser customUser = new CustomUser(member.getId(), member.getEmail(), member.getPassword(), member.getRole());
+        CustomUser customUser = new CustomUser(member.getId(), member.getEmail(), member.getPassword(), member.getRole(), member.getGrade());
         TokenDto token = tokenProvider.generateTokenDto(customUser);
         return token;
     }

@@ -70,6 +70,8 @@ dependencies {
 
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.19.0'
+
 }
 
 tasks.named('test') {

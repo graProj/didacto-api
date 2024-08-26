@@ -32,9 +32,17 @@ public enum ErrorDefineCode {
     LECTURE_MEMBER_FREETEER_OVERCOUNT_3("LMB_03", "FREETEER의 최대 생성 강의  갯수는 3개 입니다."),
     LECTURE_MEMBER_PREMIUM_OVER("LMB_04", "PREMIUM 구독기간이 만료되었습니다."),
     DELETED_LECTURE("LECTURE_01", "삭제된 강의입니다."),
+    LECTURE_CONCURRENCY_FAIL_GET_LOCK("LECTURE_02","동시성 제어를 위한 락 흭득에 실패했습니다."),
+    LECTURE_CONCURRENCY_INTERRUPT("LECTURE_03", "락 흭득을 시도하던 중 인터럽트가 발생했습니다."),
     ORDER_GRADE_FAIL("ORDER_01","주문된 상품이 프리미엄이 아닙니다."),
     ORDER_NOT_FOUND("ORDER_02", "주문을 찾을 수 없습니다."),
-    PAYMENT_NOT_FOUND("PAYMENT_01", "결제 완료된 상품이 없습니다."),
+    PAYMENT_ALREAY_PREMIUM("PAYMENT_02", "이미 PREMIUM 등급입니다."),
+    PAYMENT_NOT_FOUND_HISTORY("PAYMENT_03","결제내역을 찾을 수 없습니다."),
+    PAYMENT_DIFFERENT_AMOUNT("PAYMENT_04","결제금액이 위변조 되었을 수 있습니다."),
+    PAYMENT_NOT_COMPLETE("PAYMENT_05","결제상태가 PAID가 아님으로 결제가 완료되지 않았습니다."),
+
+    IAMPORT_NOT_FOUND_RESPONSE("IAMPORT_01","포트원 서비스가 정상 작동되고 있지 않습니다."),
+    IAMPORT_NETWORT_ERROR("IAMPORT_02","포트원 서비스 처리 중 네트워크에 오류가 발생했습니다."),
 
     REDIS_COMMAND_FAIL("FATAL_REDIS_01", "Redis Command에 실패하였습니다.")
     ;

@@ -4,6 +4,7 @@ import com.didacto.config.exception.custom.exception.AuthCredientialException401
 import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.config.security.jwt.TokenProvider;
 import com.didacto.domain.Authority;
+import com.didacto.domain.Grade;
 import com.didacto.domain.Member;
 import com.didacto.dto.auth.LoginRequest;
 import com.didacto.dto.auth.SignUpRequest;
@@ -62,7 +63,7 @@ public class AuthServiceTest {
     void 로그인실패_테스트() {
 
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER, Grade.Premium);
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when, then
@@ -83,7 +84,7 @@ public class AuthServiceTest {
     @Test
     void 비밀번호_검증_테스트() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
+        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER, Grade.Premium);
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
 
