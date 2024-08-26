@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @ConfigurationPropertiesScan
-@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
 @SpringBootApplication
 public class DidactoApplication {
 	public static void main(String[] args) {
