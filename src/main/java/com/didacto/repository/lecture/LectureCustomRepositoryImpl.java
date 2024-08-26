@@ -55,7 +55,6 @@ public class LectureCustomRepositoryImpl implements LectureCustomRepository {
                         filter.getTitleKeyword() != null ? lecture.title.like("%" + filter.getTitleKeyword() +"%") : null,
                         filter.getOwner() != null ? lecture.owner.eq(filter.getOwner()) : null,
                         filter.getDeleted() != null ? lecture.deleted.eq(filter.getDeleted()) : null
-
                 );
         return query;
     }

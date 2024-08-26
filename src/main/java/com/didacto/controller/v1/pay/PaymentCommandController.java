@@ -2,7 +2,6 @@ package com.didacto.controller.v1.pay;
 
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
-import com.didacto.domain.QMember;
 import com.didacto.dto.pay.PaymentCallbackRequest;
 import com.didacto.service.order.OrderQueryService;
 import com.didacto.service.payment.PaymentService;

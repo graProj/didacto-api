@@ -17,6 +17,4 @@ public interface LectureCustomRepository {
 
     Long countLectures(LectureQueryFilter request);
 
-
-
 }
