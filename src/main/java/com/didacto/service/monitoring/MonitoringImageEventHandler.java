@@ -27,7 +27,7 @@ public class MonitoringImageEventHandler {
      */
     @PostConstruct
     private void init() {
-        this.sink = Sinks.many().replay().all();
+        this.sink = Sinks.many().multicast().onBackpressureBuffer();
     }
 
     /**
@@ -51,6 +51,12 @@ public class MonitoringImageEventHandler {
      * 스트림 반환
      */
     public Flux<MonitoringImageEvent> stream() {
-        return sink.asFlux();
+        return sink.asFlux()
+                .doOnError(e -> {
+                    log.error("error on stream", e);
+                })
+                .doOnCancel(() -> {
+                    log.info("stream cancelled");
+                });
     }
 }
