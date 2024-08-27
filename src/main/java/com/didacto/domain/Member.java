@@ -62,7 +62,7 @@ public class Member extends BaseEntity {
         this.name = name;
         this.role = role;
         this.birth = birth;
-        this.deleted = false;
+        this.deleted = deleted;
         this.grade = Grade.Freeteer;
     }
 
