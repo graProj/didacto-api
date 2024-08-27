@@ -34,7 +34,7 @@ public class RedisConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        String address = String.format("redis://localhost:%d", port);
+        String address = String.format("redis://%s:%d", host, port);
         config.useSingleServer().setAddress(address);
         return Redisson.create(config);
     }

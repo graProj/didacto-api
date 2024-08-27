@@ -60,13 +60,14 @@ public class MemberService {
                     passwordEncoder.encode(memberEditRequest.getPassword()),
                     memberEditRequest.getName(),
                     parseBirth(memberEditRequest.getBirth()));
+            memberRepository.save(member);
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
         }
 
     }
 
-    private OffsetDateTime parseBirth(String birth) {
+    public OffsetDateTime parseBirth(String birth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate birthDate = LocalDate.parse(birth, formatter);
         return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
