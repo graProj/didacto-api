@@ -31,13 +31,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserDetailsByClaim(Claims claim) throws UsernameNotFoundException {
-        CustomUser dto = new CustomUser(claim.get("Id", Long.class), claim.getSubject(), null, null);
+        CustomUser dto = new CustomUser(claim.get("Id", Long.class), claim.getSubject(), null, null,null);
         return new CustomUserDetails(dto);
     }
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
     private CustomUserDetails createUserDetails(Member member) {
-        CustomUser dto = new CustomUser(member.getId(), member.getPassword(), member.getEmail(), member.getRole());
+        CustomUser dto = new CustomUser(member.getId(), member.getPassword(), member.getEmail(), member.getRole(), member.getGrade());
         return new CustomUserDetails(dto);
     }
 }

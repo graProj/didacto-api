@@ -5,6 +5,7 @@ import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.dto.monitoring.MonitoringImageEvent;
 import com.didacto.dto.monitoring.MonitoringImageUploadRequest;
+import com.didacto.dto.monitoring.SSEType;
 import com.didacto.service.monitoring.MonitoringImageEventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +34,7 @@ public class MonitoringController {
             @RequestBody MonitoringImageUploadRequest request
     ) {
         monitoringService.pushEvent(MonitoringImageEvent.builder()
+                .type(SSEType.DATA)
                 .tutorId(SecurityUtil.getCurrentMemberId())
                 .lectureId(request.getLectureId())
                 .encodedImageBase64(request.getEncodedImageBase64())
@@ -48,8 +50,13 @@ public class MonitoringController {
     public Flux<MonitoringImageEvent> imageStream(
             @RequestParam("lectureId") Long lectureId
     ) {
-        return monitoringService.getStream()
-                .filter(event -> event.getLectureId().equals(lectureId))
+        // 초기 연결 신호
+        Flux<MonitoringImageEvent> initEvent = Flux.just(MonitoringImageEvent.createInitEvent());
+
+        // 실제 데이터
+        Flux<MonitoringImageEvent> monitoringStream = monitoringService.stream(lectureId);
+
+        return Flux.concat(initEvent, monitoringStream)
                 .doOnSubscribe(subscription -> logger.info("Stream subscribed for lectureId: " + lectureId))
                 .doOnCancel(() -> logger.info("Stream cancelled for lectureId: " + lectureId));
     }

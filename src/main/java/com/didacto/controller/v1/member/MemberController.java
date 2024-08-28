@@ -49,6 +49,7 @@ public class MemberController {
     @PreAuthorize(AuthConstant.AUTH_ALL)
     @Operation(summary = "MEMBER_03 : 회원 정보 수정 API", description = "회원 정보를 수정한다.")
     @PutMapping("")
+    @ResponseStatus(HttpStatus.OK)
     public CommonResponse editMemberInfo(@RequestBody MemberModificationRequest memberEditRequest){
         Long userId = SecurityUtil.getCurrentMemberId();
         memberService.modifyInfo(userId, memberEditRequest);
@@ -61,6 +62,7 @@ public class MemberController {
 
 
     @PreAuthorize(AuthConstant.AUTH_ALL)
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "MEMBER_04 : 회원 탈퇴 API", description = "회원을 탈퇴시킨다.")
     @DeleteMapping("")
     public CommonResponse deleteMemberInfo() {

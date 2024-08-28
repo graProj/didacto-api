@@ -35,7 +35,7 @@ public class MonitoringImageEventHandler {
      */
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void handleEvent(MonitoringImageEvent event) {
-        log.info("received event : {}", event.toString());
+        log.debug("push event: lecture{} tutor{}", event.getLectureId(), event.getTutorId());
         sink.tryEmitNext(event);
     }
 
@@ -43,14 +43,20 @@ public class MonitoringImageEventHandler {
      * 큐에 이벤트 추가
      */
     public void pushEvent(MonitoringImageEvent event) {
-        log.info("push event: {}", event.toString());
+        log.debug("push event: lecture{} tutor{}", event.getLectureId(), event.getTutorId());
         this.rabbitTemplate.convertAndSend(exchangeName, routingKey, event);
     }
 
     /**
      * 스트림 반환
      */
-    public Flux<MonitoringImageEvent> getStream() {
-        return sink.asFlux();
+    public Flux<MonitoringImageEvent> stream() {
+        return sink.asFlux()
+                .doOnError(e -> {
+                    log.error("error on stream", e);
+                })
+                .doOnCancel(() -> {
+                    log.info("stream cancelled");
+                });
     }
 }

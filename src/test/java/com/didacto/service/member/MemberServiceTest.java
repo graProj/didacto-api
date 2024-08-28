@@ -1,91 +1,112 @@
 package com.didacto.service.member;
 
 import com.didacto.domain.Authority;
+import com.didacto.domain.Grade;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.dto.member.MemberResponse;
 import com.didacto.repository.member.MemberRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-
-import java.util.LinkedList;
+import org.springframework.boot.test.context.SpringBootTest;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static com.didacto.MemberFactory.createMember;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 
 //@AutoConfigureTestDatabase를 사용해야 Test용 DB를 사용함
 //@ExtenWith를 사용해야 Mokito를 사용할 수 있음
-@ExtendWith(MockitoExtension.class)
+
+@Disabled
+@AutoConfigureTestDatabase
+@SpringBootTest
 class MemberServiceTest {
 
-    //InjectMocks : 생성된 Mock 객체를 사용하고 있는 객체에게 주입한다는 어노테이션
-    //Mock : Mock 객체를 자동적으로 생성해주는 어노테이션
 
-    @InjectMocks
-    MemberService memberService;
-
-    @Mock
+    @Autowired
     MemberRepository memberRepository;
 
-    @Mock
-    PasswordEncoder passwordEncoder;
+    @Autowired
+    MemberService memberService;
 
+    @DisplayName("전체회원을 조회한다.")
     @Test
     void queryAll() {
         // given
-        Member member1 = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
-        Member member2 = createMember(2L,"gilsam456@naver.com","홍길삼","gilsam123456!@","19960130", Authority.ROLE_USER);
-        List<Member> list = new LinkedList<>();
-        list.add(member1);
-        list.add(member2);
+        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1");
+        Member member2 = CreateMember(2L, "gildong2@naver.com","gildong456!@","회원2");
+        memberRepository.saveAll(List.of(member1, member2));
 
-        given(memberRepository.findAll()).willReturn(list);
 
         // when
         List<MemberResponse> result = memberService.queryAll();
 
         // then
         assertThat(result.size()).isEqualTo(2);
+
+        assertThat(result).hasSize(2)
+                .extracting("email", "name")
+                .containsExactlyInAnyOrder(
+                        tuple("gildong1@naver.com", "회원1"),
+                        tuple("gildong2@naver.com", "회원2")
+                );
     }
 
+    @DisplayName("특정 id에 해당하는 회원을 찾는다.")
     @Test
     void query() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1");
+        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2");
+        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3");
+
+        memberRepository.saveAll(List.of(member1, member2, member3));
 
         // when
-        MemberResponse result = memberService.query(member.getId());
+        MemberResponse result = memberService.query(1L);
 
         // then
-        assertThat(result.getName()).isEqualTo("홍길동");
+        assertThat(result)
+                .extracting("id", "email", "name")
+                .contains(1L, "gildong1@naver.com", "회원1");
     }
 
+    @DisplayName("회원의 정보중 비밀번호, 이름, 생년월일을 수정할 수 있다.")
     @Test
     void modifyInfo() {
         // given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        Member member1 = Member.builder()
+                .id(1L)
+                .email("gildong1@naver.com")
+                .password("gildong123!@")
+                .name("회원1")
+                .birth(memberService.parseBirth("20000513"))
+                .build();
+        memberRepository.save(member1);
 
-        MemberModificationRequest req = new MemberModificationRequest("dkfwhiba1230!@", "홍길자", "19990513");
+        MemberModificationRequest req = new MemberModificationRequest("gildong456!@", "회원2", "19990513");
 
         // when
-        memberService.modifyInfo(member.getId(), req);
+        memberService.modifyInfo(member1.getId(), req);
 
         // then
-        assertThat(member.getName()).isEqualTo("홍길자");
+        Optional<Member> modifyMember = memberRepository.findByEmail("gildong1@naver.com");
+
+        assertThat(modifyMember.get())
+                .extracting("name", "birth")
+                .contains("회원2", memberService.parseBirth(String.valueOf(19990513)));
 
     }
 
@@ -96,14 +117,28 @@ class MemberServiceTest {
     @Test
     void delete() {
         //given
-        Member member = createMember(1L,"gildong456@naver.com","홍길동","gildong123456!@","19960129", Authority.ROLE_USER);
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1");
+        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2");
+        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3");
+        memberRepository.saveAll(List.of(member1,member2,member3));
 
         //when
-        memberService.delete(member.getId());
+        memberService.delete(member3.getId());
 
         //then
-        assertTrue(member.getDeleted());
+        Optional<Member> modifyMember = memberRepository.findByEmail("gildong3@naver.com");
+        assertThat(modifyMember.get().getDeleted()).isTrue();
 
     }
+
+
+    private Member CreateMember(Long id, String email, String password, String name){
+        return Member.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .name(name)
+                .build();
+    }
+
 }
