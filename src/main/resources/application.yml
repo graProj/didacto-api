@@ -11,8 +11,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true #To beautify or pretty print the SQL
-        show_sql: true #show sql
+        format_sql: true
         default_batch_fetch_size: 100
   rabbitmq:
     host: localhost
