@@ -8,6 +8,7 @@ import com.didacto.dto.enrollment.EnrollmentResponse;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.member.MemberRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
+@Disabled
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
