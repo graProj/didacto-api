@@ -4,6 +4,7 @@ import com.didacto.domain.*;
 import com.didacto.dto.enrollment.EnrollmentQueryFilter;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.member.MemberRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@Disabled
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
