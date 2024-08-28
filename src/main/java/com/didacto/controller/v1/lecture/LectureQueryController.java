@@ -1,8 +1,9 @@
 package com.didacto.controller.v1.lecture;
 
 import com.didacto.common.response.CommonResponse;
+import com.didacto.config.security.SecurityUtil;
 import com.didacto.domain.Lecture;
-import com.didacto.dto.PageQueryRequest;
+import com.didacto.domain.Member;
 import com.didacto.dto.lecture.LecturePageResponse;
 import com.didacto.dto.lecture.LectureQueryFilter;
 import com.didacto.dto.lecture.LectureQueryRequest;
@@ -46,6 +47,29 @@ public class LectureQueryController {
         LectureQueryFilter filter = LectureQueryFilter.builder()
                 .titleKeyword(request.getTitleKeyword())
                 .deleted(request.getDeleted())
+                .build();
+
+        LecturePageResponse lecturePageResponse = lectureQueryService.queryPage(request.getPageable(), filter);
+
+        return new CommonResponse(
+                true,
+                HttpStatus.OK,
+                "강의 목록을 조회하였습니다.",
+                lecturePageResponse
+        );
+    }
+
+    @GetMapping("list/owner")
+    @Operation(summary = "LECTURE_QUERY_03 : 개설한 강의 목록 조회")
+    public CommonResponse<LecturePageResponse> queryTutorPage(
+            @ParameterObject LectureQueryRequest request
+    ){
+        Long ownerId = SecurityUtil.getCurrentMemberId();
+
+        LectureQueryFilter filter = LectureQueryFilter.builder()
+                .titleKeyword(request.getTitleKeyword())
+                .deleted(request.getDeleted())
+                .owner(Member.builder().id(ownerId).build())
                 .build();
 
         LecturePageResponse lecturePageResponse = lectureQueryService.queryPage(request.getPageable(), filter);
