@@ -37,7 +37,7 @@ public class EnrollmentCommandController {
     ){
         Long studentId = SecurityUtil.getCurrentMemberId();
 
-        Long enroll = enrollmentService.requestEnrollment(request.getLectureId(), studentId).getId();
+        Long enroll = enrollmentService.requestEnrollment(request.getLectureId(), studentId);
         return new CommonResponse(
                 true, HttpStatus.OK, "교수자에게 강의 등록 요청을 보냈습니다.", enroll
         );
@@ -51,7 +51,7 @@ public class EnrollmentCommandController {
     ){
         Long studentId = SecurityUtil.getCurrentMemberId();
 
-        Long enroll = enrollmentService.cancelEnrollment(enrollmentId, studentId).getId();
+        Long enroll = enrollmentService.cancelEnrollment(enrollmentId, studentId);
         return new CommonResponse(
                 true, HttpStatus.OK, "등록 요청이 취소되었습니다.", enroll
         );
@@ -65,21 +65,12 @@ public class EnrollmentCommandController {
     ){
         Long tutorId = SecurityUtil.getCurrentMemberId();
 
-        Enrollment enroll = enrollmentService.confirmEnrollment(
+        Long result = enrollmentService.confirmEnrollment(
                 request.getEnrollmentId(), tutorId, EnrollmentStatus.valueOf(request.getAction()));
 
-        Long result = enroll.getId();
-
-        //탈퇴된 User의 요청일 시 CANCEL로 상태 변경 및 예외 반환
-        if(enroll.getStatus().equals(EnrollmentStatus.CANCELLED)){
-            throw new NoSuchElementFoundException404(ErrorDefineCode.CONFIRM_FAIL_USER_DELETED);
-        }
-
-        else{
-            return new CommonResponse(
-                    true, HttpStatus.OK, "등록 요청 처리가 완료되었습니다.", result
-            );
-        }
+        return new CommonResponse(
+                true, HttpStatus.OK, "등록 요청 처리가 완료되었습니다.", result
+        );
 
     }
 
