@@ -31,29 +31,10 @@ class MemberRepositoryTest {
     @Test
     void findByEmail() {
         // given
-        Member member1 = Member.builder()
-                .email("member10@naver.com")
-                .password("member10!!")
-                .name("멤버10")
-                .grade(Grade.Freeteer)
-                .role(Authority.ROLE_USER)
-                .build();
+        Member member1 = CreateMember(1L,"member10@naver.com", "member10!!", "멤버10", false);
+        Member member2 = CreateMember(2L,"member20@naver.com", "member20!!", "멤버20", false);
+        Member member3 = CreateMember(3L,"member30@naver.com", "member30!!", "멤버30", false);
 
-        Member member2 = Member.builder()
-                .email("member20@naver.com")
-                .password("member20!!")
-                .name("멤버20")
-                .grade(Grade.Freeteer)
-                .role(Authority.ROLE_USER)
-                .build();
-
-        Member member3 = Member.builder()
-                .email("member30@naver.com")
-                .password("member30!!")
-                .name("멤버30")
-                .grade(Grade.Freeteer)
-                .role(Authority.ROLE_USER)
-                .build();
 
         memberRepository.saveAll(List.of(member1, member2, member3));
 
@@ -76,21 +57,9 @@ class MemberRepositoryTest {
     @Test
     void existsByEmail() {
         // given
-        Member member1 = Member.builder()
-                .email("member10@naver.com")
-                .password("member10!!")
-                .name("멤버10")
-                .grade(Grade.Freeteer)
-                .role(Authority.ROLE_USER)
-                .build();
+        Member member1 = CreateMember(1L,"member10@naver.com", "member10!!", "멤버10", false);
+        Member member2 = CreateMember(2L,"member20@naver.com", "member20!!", "멤버20", false);
 
-        Member member2 = Member.builder()
-                .email("member20@naver.com")
-                .password("member20!!")
-                .name("멤버20")
-                .grade(Grade.Freeteer)
-                .role(Authority.ROLE_USER)
-                .build();
 
         memberRepository.saveAll(List.of(member1, member2));
 
@@ -101,5 +70,16 @@ class MemberRepositoryTest {
         // then
         assertThat(existMember1).isTrue();
         assertThat(existMember2).isFalse();
+    }
+
+
+    private Member CreateMember(Long id, String email, String password, String name, Boolean deleted){
+        return Member.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .name(name)
+                .deleted(deleted)
+                .build();
     }
 }

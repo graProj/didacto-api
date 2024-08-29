@@ -30,6 +30,8 @@ import static org.mockito.BDDMockito.given;
 //@AutoConfigureTestDatabase를 사용해야 Test용 DB를 사용함
 //@ExtenWith를 사용해야 Mokito를 사용할 수 있음
 
+
+//TODO 현재 memberService에 있는 parseBirth를 그대로 가져다 쓰고 있는데 이 방법은 옳지 않으므로 다른 방법을 생각해보기
 @AutoConfigureTestDatabase
 @SpringBootTest
 class MemberServiceTest {
