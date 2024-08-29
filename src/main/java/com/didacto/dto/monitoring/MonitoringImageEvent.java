@@ -10,7 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonitoringImageEvent {
+    private SSEType type;
     private Long tutorId;
     private Long lectureId;
     private String encodedImageBase64;
+
+    static public MonitoringImageEvent createInitEvent() {
+        return MonitoringImageEvent.builder()
+                .type(SSEType.INIT)
+                .build();
+    }
 }

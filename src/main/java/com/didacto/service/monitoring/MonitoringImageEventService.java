@@ -3,7 +3,6 @@ package com.didacto.service.monitoring;
 import com.didacto.dto.monitoring.MonitoringImageEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 @Service
@@ -15,8 +14,9 @@ public class MonitoringImageEventService {
     /**
      * 모니터링 이미지 스트림 연결
      */
-    public Flux<MonitoringImageEvent> getStream() {
-        return monitoringImageEventHandler.getStream();
+    public Flux<MonitoringImageEvent> stream(Long lectureId) {
+        return monitoringImageEventHandler.stream()
+                .filter(event -> event.getLectureId().equals(lectureId));
     }
 
     /**
