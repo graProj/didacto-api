@@ -8,12 +8,14 @@ import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.dto.member.MemberResponse;
 import com.didacto.repository.member.MemberRepository;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -26,14 +28,11 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-
-//@AutoConfigureTestDatabase를 사용해야 Test용 DB를 사용함
-//@ExtenWith를 사용해야 Mokito를 사용할 수 있음
-
-
 //TODO 현재 memberService에 있는 parseBirth를 그대로 가져다 쓰고 있는데 이 방법은 옳지 않으므로 다른 방법을 생각해보기
-@AutoConfigureTestDatabase
+
+@Transactional
 @SpringBootTest
+@ActiveProfiles("test")
 class MemberServiceTest {
 
 
@@ -43,12 +42,14 @@ class MemberServiceTest {
     @Autowired
     MemberService memberService;
 
+
+
     @DisplayName("전체회원을 조회한다.")
     @Test
     void queryAll() {
         // given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1", false);
-        Member member2 = CreateMember(2L, "gildong2@naver.com","gildong456!@","회원2", false);
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1", false);
+        Member member2 = CreateMember( "gildong2@naver.com","gildong456!@","회원2", false);
         memberRepository.saveAll(List.of(member1, member2));
 
 
@@ -70,9 +71,9 @@ class MemberServiceTest {
     @Test
     void queryAllExcept_Deleted() {
         // given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1", false);
-        Member member2 = CreateMember(2L, "gildong2@naver.com","gildong456!@","회원2", false);
-        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3", true);
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1", false);
+        Member member2 = CreateMember( "gildong2@naver.com","gildong456!@","회원2", false);
+        Member member3 = CreateMember( "gildong3@naver.com","gildong789!@","회원3", true);
         memberRepository.saveAll(List.of(member1, member2, member3));
 
 
@@ -95,33 +96,34 @@ class MemberServiceTest {
     @Test
     void query() {
         // given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1", false);
-        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2", false);
-        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3", false);
-
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1", false);
+        Member member2 = CreateMember("gildong2@naver.com","gildong456!@","회원2", false);
+        Member member3 = CreateMember( "gildong3@naver.com","gildong789!@","회원3", false);
         memberRepository.saveAll(List.of(member1, member2, member3));
 
         // when
-        MemberResponse result = memberService.query(1L);
+        MemberResponse result = memberService.query(member1.getId());
 
         // then
         assertThat(result)
-                .extracting("id", "email", "name")
-                .contains(1L, "gildong1@naver.com", "회원1");
+                .extracting("email", "name")
+                .contains("gildong1@naver.com", "회원1");
     }
 
     @DisplayName("특정 id에 해당하는 회원을 조회할 때 회원이 없다면 예외를 터뜨린다.")
     @Test
     void queryNotFound() {
         // given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1",false);
-        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2", false);
-        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3", false);
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1",false);
+        Member member2 = CreateMember("gildong2@naver.com","gildong456!@","회원2", false);
+        Member member3 = CreateMember( "gildong3@naver.com","gildong789!@","회원3", false);
 
-        memberRepository.saveAll(List.of(member1, member2, member3));
+        memberRepository.saveAll(List.of(member1, member2));
+
+        Long nonExistentId = -1L;
 
         // when then
-        assertThatThrownBy(() -> memberService.query(4L))
+        assertThatThrownBy(() -> memberService.query(nonExistentId))
                 .isInstanceOf(NoSuchElementFoundException404.class)
                 .hasMessage("회원을 찾을 수 없습니다.");
     }
@@ -131,7 +133,6 @@ class MemberServiceTest {
     void queryMember_Deleted() {
         // given
         Member member1 = Member.builder()
-                .id(1L)
                 .email("gildong@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
@@ -140,7 +141,7 @@ class MemberServiceTest {
         memberRepository.save(member1);
 
         // when then
-        assertThatThrownBy(() -> memberService.query(1L))
+        assertThatThrownBy(() -> memberService.query(member1.getId()))
                 .isInstanceOf(AuthCredientialException401.class)
                 .hasMessage("탈퇴된 회원입니다.");
     }
@@ -150,7 +151,6 @@ class MemberServiceTest {
     void modifyInfo() {
         // given
         Member member1 = Member.builder()
-                .id(1L)
                 .email("gildong1@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
@@ -177,18 +177,25 @@ class MemberServiceTest {
     void modifyInfoNotFound() {
         // given
         Member member1 = Member.builder()
-                .id(1L)
                 .email("gildong@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
                 .birth(memberService.parseBirth("20000513"))
                 .build();
+        Member member2 = Member.builder()
+                .email("gildong2@naver.com")
+                .password("gildong456!@")
+                .name("회원2")
+                .birth(memberService.parseBirth("20000520"))
+                .build();
+
         memberRepository.save(member1);
 
         MemberModificationRequest req = new MemberModificationRequest("gildong456!@", "회원2", "19990513");
-
+        Long nonExistentId = -1L;
         // when, then
-        assertThatThrownBy(() -> memberService.modifyInfo(2L, req))
+
+        assertThatThrownBy(() -> memberService.modifyInfo(nonExistentId, req))
                 .isInstanceOf(NoSuchElementFoundException404.class)
                 .hasMessage("회원을 찾을 수 없습니다.");
 
@@ -200,7 +207,6 @@ class MemberServiceTest {
     void modifyInfo_deleted() {
         // given
         Member member1 = Member.builder()
-                .id(1L)
                 .email("gildong@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
@@ -212,7 +218,7 @@ class MemberServiceTest {
         MemberModificationRequest req = new MemberModificationRequest("gildong456!@", "회원2", "19990513");
 
         // when, then
-        assertThatThrownBy(() -> memberService.modifyInfo(1L, req))
+        assertThatThrownBy(() -> memberService.modifyInfo(member1.getId(), req))
                 .isInstanceOf(AuthCredientialException401.class)
                 .hasMessage("탈퇴된 회원입니다.");
 
@@ -224,14 +230,13 @@ class MemberServiceTest {
     @Test
     void delete() {
         //given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1",false);
-        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2", false);
-        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3", false);
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1",false);
+        Member member2 = CreateMember("gildong2@naver.com","gildong456!@","회원2", false);
+        Member member3 = CreateMember( "gildong3@naver.com","gildong789!@","회원3", false);
         memberRepository.saveAll(List.of(member1,member2,member3));
 
         //when
-        memberService.delete(3L);
-
+        memberService.delete(member3.getId());
         //then
         Optional<Member> modifyMember = memberRepository.findByEmail("gildong3@naver.com");
         assertThat(modifyMember.get().getDeleted()).isTrue();
@@ -242,22 +247,22 @@ class MemberServiceTest {
     @Test
     void deleteNotFound() {
         //given
-        Member member1 = CreateMember(1L,"gildong1@naver.com","gildong123!@","회원1",false);
-        Member member2 = CreateMember(2L,"gildong2@naver.com","gildong456!@","회원2", false);
-        Member member3 = CreateMember(3L, "gildong3@naver.com","gildong789!@","회원3", false);
-        memberRepository.saveAll(List.of(member1,member2,member3));
+        Member member1 = CreateMember("gildong1@naver.com","gildong123!@","회원1",false);
+        Member member2 = CreateMember("gildong2@naver.com","gildong456!@","회원2", false);
+        Member member3 = CreateMember("gildong3@naver.com","gildong789!@","회원3", false);
+        memberRepository.saveAll(List.of(member1,member2));
 
+        Long nonExistentId = -1L;
         //when, then
-        assertThatThrownBy(() -> memberService.delete(4L))
+        assertThatThrownBy(() -> memberService.delete(nonExistentId))
                 .isInstanceOf(NoSuchElementFoundException404.class)
                 .hasMessage("회원을 찾을 수 없습니다.");
 
     }
 
 
-    private Member CreateMember(Long id, String email, String password, String name, Boolean deleted){
+    private Member CreateMember(String email, String password, String name, Boolean deleted){
         return Member.builder()
-                .id(id)
                 .email(email)
                 .password(password)
                 .name(name)

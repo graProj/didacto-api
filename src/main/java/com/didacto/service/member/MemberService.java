@@ -16,14 +16,19 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberQueryService memberQueryService;
 
     @Transactional(readOnly = true)
     public List<MemberResponse> queryAll() {
@@ -45,11 +50,13 @@ public class MemberService {
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
         }
-
-
     }
 
-    @Transactional
+
+
+
+
+
     public void modifyInfo(Long userId, MemberModificationRequest memberEditRequest) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
@@ -74,7 +81,6 @@ public class MemberService {
     }
 
 
-    @Transactional
     public void delete(Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);

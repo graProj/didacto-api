@@ -113,11 +113,6 @@ public class MemberControllerTest {
                 .birth(memberService.parseBirth("20000513"))
                 .build();
 
-        CustomUser customUser = new CustomUser(member1);
-        CustomUserDetails userDetails = new CustomUserDetails(customUser);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         MemberModificationRequest req = new MemberModificationRequest("gildong456!@", "회원2", "19990513");
 
 
