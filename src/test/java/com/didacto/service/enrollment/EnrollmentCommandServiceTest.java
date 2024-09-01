@@ -4,6 +4,7 @@ import com.didacto.config.exception.custom.exception.AlreadyExistElementExceptio
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.*;
 import com.didacto.dto.enrollment.EnrollmentQueryFilter;
+import com.didacto.dto.lecturemember.LectureMemberQueryFilter;
 import com.didacto.repository.enrollment.EnrollmentRepository;
 import com.didacto.repository.lecture.LectureRepository;
 import com.didacto.repository.lecturemember.LectureMemberRepository;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -330,6 +332,118 @@ class EnrollmentCommandServiceTest {
 
     }
 
+    @DisplayName("요청자가 초대를 요청한 학생과 일치하지 않으면 취소할 수 없다.")
+    @Test
+    void requestCancelWhenNotEqualRequestStudent(){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member student2 = createMember("S2@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        student2 = memberRepository.saveAndFlush(student2);
+        tutor = memberRepository.saveAndFlush(tutor);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment enrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(enrollment);
+
+        // when, then
+        final Long enrollmentId = enrollment.getId();
+        final Long anotherStudentId = student2.getId();
+        assertThatThrownBy(() -> enrollmentCommandService.cancelEnrollment(enrollmentId, anotherStudentId))
+                .isInstanceOf(NoSuchElementFoundException404.class)
+                .hasMessage("등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다.");
+
+
+    }
+
+    @DisplayName("해당 초대 강의의 소유 교수자는 초대 요청를 수락 혹은 거절(ACCEPTED, REJECTED)할 수 있다.")
+    @ParameterizedTest
+    @EnumSource(value = EnrollmentStatus.class, names = {"ACCEPTED", "REJECTED"})
+    void applyEnrollment(EnrollmentStatus status){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        tutor = memberRepository.saveAndFlush(tutor);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment enrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(enrollment);
+
+        // when
+        Long requestEnrollmentId = enrollmentCommandService.confirmEnrollment(enrollment.getId(), tutor.getId(), status);
+
+        // then
+        Optional<Enrollment> requestEnrollment = enrollmentRepository.findEnrollment(createQueryFilter(
+                null, null, null, null, List.of(requestEnrollmentId)));
+
+        assertThat(requestEnrollment).isNotNull();
+        assertThat(requestEnrollment.get().getMember().getName()).isEqualTo("S1");
+        assertThat(requestEnrollment.get().getLecture().getTitle()).isEqualTo("L1");
+        assertThat(requestEnrollment.get().getStatus()).isEqualTo(status);
+
+    }
+
+    @DisplayName("해당 초대 강의의 소유 교수자가 아니면 초대 요청을 변경할 수 없다.")
+    @ParameterizedTest
+    @EnumSource(value = EnrollmentStatus.class, names = {"ACCEPTED", "REJECTED"})
+    void applyEnrollmentWhenNotEqualOwner(EnrollmentStatus status){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        Member tutor2 = createMember("T2@email.com", "T2", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        tutor = memberRepository.saveAndFlush(tutor);
+        tutor2 = memberRepository.saveAndFlush(tutor2);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment enrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(enrollment);
+
+        // when, then
+        final Long enrollmentId = enrollment.getId();
+        final Long notOwerTutorId = tutor2.getId();
+        assertThatThrownBy(() -> enrollmentCommandService.confirmEnrollment(enrollmentId, notOwerTutorId, status))
+                .isInstanceOf(NoSuchElementFoundException404.class)
+                .hasMessage("등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다.");
+
+    }
+
+    @DisplayName("초대 요청이 수락(ACCEPTED)되면 해당 학생은 강의의 구성원으로 추가된다.")
+    @Test
+    void joinStudentInLectureWhenAcceptEnrollment(){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        tutor = memberRepository.saveAndFlush(tutor);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment enrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(enrollment);
+
+        // when
+        Long requestEnrollmentId = enrollmentCommandService.confirmEnrollment(enrollment.getId(), tutor.getId(), EnrollmentStatus.ACCEPTED);
+
+        // then
+        Optional<LectureMember> relation = lectureMemberRepository.findLectureMember(createLecutreMemberQueryFilter(lecture.getId(), student.getId(), null));
+        assertThat(relation).isNotNull();
+        assertThat(relation.get().getMember().getName()).isEqualTo("S1");
+        assertThat(relation.get().getLecture().getTitle()).isEqualTo("L1");
+    }
+
+
+
+
 
 
 
@@ -352,6 +466,7 @@ class EnrollmentCommandServiceTest {
                 .title(title)
                 .owner(owner)
                 .state(LectureState.WAITING)
+                .lectureMembers(new ArrayList())
                 .startTime(getDummyDateTime())
                 .endTime(getDummyDateTime())
                 .build();
@@ -375,6 +490,15 @@ class EnrollmentCommandServiceTest {
                 .tutorId(tutorId)
                 .statuses(status)
                 .ids(ids).build();
+    }
+
+    private LectureMemberQueryFilter createLecutreMemberQueryFilter(
+            Long lectureId, Long memberId, List<Long> ids){
+
+        return LectureMemberQueryFilter.builder()
+                .lectureId(lectureId)
+                .memberId(memberId)
+                .memberIds(ids).build();
     }
 
     private Pageable createPagable(){
