@@ -1,6 +1,7 @@
 package com.didacto.service.member;
 
 import com.didacto.common.ErrorDefineCode;
+import com.didacto.common.util.DateUtil;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Member;
@@ -29,6 +30,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberQueryService memberQueryService;
+    private final DateUtil dateUtil;
 
     @Transactional(readOnly = true)
     public List<MemberResponse> queryAll() {
@@ -66,7 +68,7 @@ public class MemberService {
             member.modify(
                     passwordEncoder.encode(memberEditRequest.getPassword()),
                     memberEditRequest.getName(),
-                    parseBirth(memberEditRequest.getBirth()));
+                    dateUtil.parseBirth(memberEditRequest.getBirth()));
             memberRepository.save(member);
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
@@ -74,11 +76,6 @@ public class MemberService {
 
     }
 
-    public OffsetDateTime parseBirth(String birth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate birthDate = LocalDate.parse(birth, formatter);
-        return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
-    }
 
 
     public void delete(Long userId) {

@@ -1,5 +1,6 @@
 package com.didacto.service.member;
 
+import com.didacto.common.util.DateUtil;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Authority;
@@ -41,6 +42,9 @@ class MemberServiceTest {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    DateUtil dateUtil;
 
 
 
@@ -155,7 +159,7 @@ class MemberServiceTest {
                 .password("gildong123!@")
                 .name("회원1")
                 .deleted(false)
-                .birth(memberService.parseBirth("20000513"))
+                .birth(OffsetDateTime.of(2000, 5, 13, 0, 0, 0, 0, ZoneOffset.UTC))
                 .build();
         memberRepository.save(member1);
 
@@ -169,7 +173,7 @@ class MemberServiceTest {
 
         assertThat(modifyMember.get())
                 .extracting("name", "birth")
-                .contains("회원2", memberService.parseBirth(String.valueOf(19990513)));
+                .contains("회원2", dateUtil.parseBirth(String.valueOf(19990513)));
 
     }
     @DisplayName("회원의 정보를 수정하려고 할 때 회원을 찾을 수 없다면 예외를 터뜨린다.")
@@ -180,13 +184,13 @@ class MemberServiceTest {
                 .email("gildong@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
-                .birth(memberService.parseBirth("20000513"))
+                .birth(dateUtil.parseBirth("20000513"))
                 .build();
         Member member2 = Member.builder()
                 .email("gildong2@naver.com")
                 .password("gildong456!@")
                 .name("회원2")
-                .birth(memberService.parseBirth("20000520"))
+                .birth(dateUtil.parseBirth("20000520"))
                 .build();
 
         memberRepository.save(member1);
@@ -210,7 +214,7 @@ class MemberServiceTest {
                 .email("gildong@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
-                .birth(memberService.parseBirth("20000513"))
+                .birth(dateUtil.parseBirth("20000513"))
                 .deleted(true)
                 .build();
         memberRepository.save(member1);
