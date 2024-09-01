@@ -271,6 +271,35 @@ class EnrollmentCommandServiceTest {
     }
 
 
+    @DisplayName("특정 학생은 대기중(WAITING)인 초대 상태를 취소할 수 있다.")
+    @Test
+    void requestCancel(){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        tutor = memberRepository.saveAndFlush(tutor);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment waitingEnrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(waitingEnrollment);
+
+        // when
+        Long requestEnrollmentId = enrollmentCommandService.cancelEnrollment(waitingEnrollment.getId(), student.getId());
+
+        // when, then
+        Optional<Enrollment> requestEnrollment = enrollmentRepository.findEnrollment(createQueryFilter(
+                null, null, null, null, List.of(requestEnrollmentId)));
+
+        assertThat(requestEnrollment).isNotNull();
+        assertThat(requestEnrollment.get().getMember().getName()).isEqualTo("S1");
+        assertThat(requestEnrollment.get().getLecture().getTitle()).isEqualTo("L1");
+        assertThat(requestEnrollment.get().getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
+
+    }
+
 
 
 
