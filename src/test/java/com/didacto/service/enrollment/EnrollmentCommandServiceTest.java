@@ -11,6 +11,9 @@ import com.didacto.repository.member.MemberRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -271,6 +274,33 @@ class EnrollmentCommandServiceTest {
     }
 
 
+    @DisplayName("특정 학생은 대기중이 아닌(CANCELED, REJECT, ACCEPT) 초대 상태를 취소할 수 없다.")
+    @ParameterizedTest
+    @EnumSource(value = EnrollmentStatus.class, names = {"ACCEPTED", "REJECTED", "CANCELLED"})
+    void requestCancelWhenNotWaiting(EnrollmentStatus status){
+        // given
+        Member student = createMember("S1@email.com", "S1", Grade.Freeteer, Authority.ROLE_USER, false);
+        Member tutor = createMember("T1@email.com", "T1", Grade.Freeteer, Authority.ROLE_ADMIN, false);
+        student = memberRepository.saveAndFlush(student);
+        tutor = memberRepository.saveAndFlush(tutor);
+
+        Lecture lecture = createLecture("L1", tutor);
+        lecture = lectureRepository.saveAndFlush(lecture);
+
+        Enrollment enrollment = createEnrollment(lecture, student, status, student);
+        enrollmentRepository.saveAndFlush(enrollment);
+
+
+        // when, then
+        final Long enrollmentId = enrollment.getId();
+        final Long studentId = student.getId();
+        assertThatThrownBy(() -> enrollmentCommandService.cancelEnrollment(enrollmentId, studentId))
+                .isInstanceOf(NoSuchElementFoundException404.class)
+                .hasMessage("등록 요청에 대한 처리가 이미 완료되었습니다. 혹은 해당 등록 처리에 대한 사용자의 권한이 없습니다.");
+
+
+    }
+
     @DisplayName("특정 학생은 대기중(WAITING)인 초대 상태를 취소할 수 있다.")
     @Test
     void requestCancel(){
@@ -283,13 +313,13 @@ class EnrollmentCommandServiceTest {
         Lecture lecture = createLecture("L1", tutor);
         lecture = lectureRepository.saveAndFlush(lecture);
 
-        Enrollment waitingEnrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
-        enrollmentRepository.saveAndFlush(waitingEnrollment);
+        Enrollment enrollment = createEnrollment(lecture, student, EnrollmentStatus.WAITING, student);
+        enrollmentRepository.saveAndFlush(enrollment);
 
         // when
-        Long requestEnrollmentId = enrollmentCommandService.cancelEnrollment(waitingEnrollment.getId(), student.getId());
+        Long requestEnrollmentId = enrollmentCommandService.cancelEnrollment(enrollment.getId(), student.getId());
 
-        // when, then
+        // then
         Optional<Enrollment> requestEnrollment = enrollmentRepository.findEnrollment(createQueryFilter(
                 null, null, null, null, List.of(requestEnrollmentId)));
 
