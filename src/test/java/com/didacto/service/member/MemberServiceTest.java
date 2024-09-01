@@ -3,33 +3,22 @@ package com.didacto.service.member;
 import com.didacto.common.util.DateUtil;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
-import com.didacto.domain.Authority;
-import com.didacto.domain.Grade;
 import com.didacto.domain.Member;
 import com.didacto.dto.member.MemberModificationRequest;
 import com.didacto.dto.member.MemberResponse;
 import com.didacto.repository.member.MemberRepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-
-//TODO 현재 memberService에 있는 parseBirth를 그대로 가져다 쓰고 있는데 이 방법은 옳지 않으므로 다른 방법을 생각해보기
 
 @Transactional
 @SpringBootTest
