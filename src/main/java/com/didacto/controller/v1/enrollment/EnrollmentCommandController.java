@@ -47,7 +47,8 @@ public class EnrollmentCommandController {
     @PreAuthorize(AuthConstant.AUTH_USER)
     @Operation(summary = "ENROLL_COMMAND_02 : 강의 등록 요청 취소 (학생)", description = "요청한 등록을 취소합니다.")
     public CommonResponse<Long> cancelRequest(
-            @Parameter(example = "1") @RequestParam("enrollmentId") Long enrollmentId
+            @Parameter(example = "1") @RequestParam(value = "enrollmentId", required = true)
+            Long enrollmentId
     ){
         Long studentId = SecurityUtil.getCurrentMemberId();
 
