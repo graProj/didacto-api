@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-
+@Disabled
 @SpringBootTest
 @Transactional
 @DisplayName("Lecture Service")

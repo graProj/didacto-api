@@ -67,6 +67,7 @@ public class MemberControllerTest {
 
     @DisplayName("특정 id로 한명의 회원을 조회한다.")
     @Test
+    @WithMockUser(username = "user", roles = {AuthConstant.AUTH_ALL})
     void findMember() throws Exception {
         //given
         MemberResponse result = new MemberResponse();
