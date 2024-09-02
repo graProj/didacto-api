@@ -47,6 +47,7 @@ public class MemberControllerTest {
 
     @DisplayName("전체회원을 조회한다.")
     @Test
+    @WithMockUser(username = "user", roles = {AuthConstant.AUTH_ALL})
     void findAllMembers() throws Exception {
         //given
         List<MemberResponse> result = List.of();

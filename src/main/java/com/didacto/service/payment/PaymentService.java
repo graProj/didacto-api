@@ -57,12 +57,12 @@ public class PaymentService {
     public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
         try {
             // 결제 단건 조회(아임포트)
-            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPayment_uid());
+            IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getImp_uid());
             if (iamportResponse == null) {
                 throw new NoSuchElementFoundException404(ErrorDefineCode.PAYMENT_NOT_FOUND_HISTORY);
             }
             // 주문내역 조회
-            Order order = orderRepository.findOrderAndPayment(request.getOrder_uid())
+            Order order = orderRepository.findOrderAndPayment(request.getMerchant_uid())
                     .orElseThrow(() -> new NoSuchElementFoundException404(ErrorDefineCode.ORDER_NOT_FOUND));
 
             // 결제 상태 검증 및 처리
