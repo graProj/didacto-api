@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
+import java.io.IOException;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +54,8 @@ public class MonitoringImageEventHandler {
      */
     public Flux<MonitoringImageEvent> stream() {
         return sink.asFlux()
+                .onErrorResume(IOException.class, e ->
+                        Flux.empty())
                 .doOnError(e -> {
                     log.error("error on stream", e);
                 })
