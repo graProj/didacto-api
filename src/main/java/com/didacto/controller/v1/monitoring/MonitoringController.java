@@ -3,6 +3,7 @@ package com.didacto.controller.v1.monitoring;
 import com.didacto.common.response.CommonResponse;
 import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
+import com.didacto.dto.monitoring.MonitoringImage;
 import com.didacto.dto.monitoring.MonitoringImageEvent;
 import com.didacto.dto.monitoring.MonitoringImageUploadRequest;
 import com.didacto.dto.monitoring.SSEType;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -46,6 +49,7 @@ public class MonitoringController {
         );
     }
 
+    @Deprecated
     @GetMapping(value = "image-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MonitoringImageEvent> imageStream(
             @RequestParam("lectureId") Long lectureId
@@ -60,4 +64,23 @@ public class MonitoringController {
                 .doOnSubscribe(subscription -> logger.info("Stream subscribed for lectureId: " + lectureId))
                 .doOnCancel(() -> logger.info("Stream cancelled for lectureId: " + lectureId));
     }
+
+    @GetMapping("images")
+    public CommonResponse<List<MonitoringImage>> getMonitoringImage(
+            @RequestParam("lectureId") Long lectureId
+    ) {
+        MonitoringImage image1 = new MonitoringImage(
+                109L, 13L, "encodedImageBase64"
+        );
+        MonitoringImage image2 = new MonitoringImage(
+                109L, 16L, "encodedImageBase64"
+        );
+        MonitoringImage image3 = new MonitoringImage(
+                109L, 21L, "encodedImageBase64"
+        );
+        return new CommonResponse<>(
+                true, HttpStatus.OK, null, List.of(image1, image2, image3)
+        );
+    }
+
 }
