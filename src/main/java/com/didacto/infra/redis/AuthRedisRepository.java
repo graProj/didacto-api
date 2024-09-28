@@ -25,7 +25,7 @@ public class AuthRedisRepository {
     public void setRefreshAuthenticationInfo (Long memberId, String token) {
         try{
             String key = String.format("auth/refresh/%d", memberId);
-            redisTemplate.opsForValue().set(key, token, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(key, token, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
         }
         catch(Exception e){
             throw new BasicCustomException500(ErrorDefineCode.REDIS_COMMAND_FAIL);
