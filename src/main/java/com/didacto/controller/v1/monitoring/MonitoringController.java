@@ -59,6 +59,7 @@ public class MonitoringController {
     }
 
     @GetMapping("images")
+    @Operation(summary = "MONITORING_02 : 모니터링(사용자 화면) 이미지 리스트 폴링")
     public CommonResponse<List<MonitoringImage>> getMonitoringImage(
             @RequestParam("lectureId") Long lectureId
     ) {
