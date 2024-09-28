@@ -1,13 +1,12 @@
 package com.didacto.controller.v1.monitoring;
 
 import com.didacto.common.response.CommonResponse;
-import com.didacto.config.security.AuthConstant;
 import com.didacto.config.security.SecurityUtil;
 import com.didacto.dto.monitoring.MonitoringImage;
 import com.didacto.dto.monitoring.MonitoringImageEvent;
 import com.didacto.dto.monitoring.MonitoringImageUploadRequest;
-import com.didacto.dto.monitoring.SSEType;
 import com.didacto.service.monitoring.MonitoringImageEventService;
+import com.didacto.service.monitoring.MonitoringImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -28,21 +26,16 @@ import java.util.List;
 @Tag(name = "MONITORING API", description = "모니터링 관련 API")
 public class MonitoringController {
     private final MonitoringImageEventService monitoringService;
+    private final MonitoringImageService monitoringImageService;
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @PostMapping("image/upload")
     @Operation(summary = "MONITORING_01 : 모니터링(사용자 화면) 이미지 업로드")
-    @PreAuthorize(AuthConstant.AUTH_USER)
     public CommonResponse uploadImage(
             @RequestBody MonitoringImageUploadRequest request
     ) {
-        monitoringService.pushEvent(MonitoringImageEvent.builder()
-                .type(SSEType.DATA)
-                .tutorId(SecurityUtil.getCurrentMemberId())
-                .lectureId(request.getLectureId())
-                .encodedImageBase64(request.getEncodedImageBase64())
-                .build()
-        );
+        monitoringImageService.upload(request.getLectureId(),
+                SecurityUtil.getCurrentMemberId(), request.getEncodedImageBase64());
 
         return new CommonResponse(
                 true, HttpStatus.OK, null, null
@@ -69,17 +62,9 @@ public class MonitoringController {
     public CommonResponse<List<MonitoringImage>> getMonitoringImage(
             @RequestParam("lectureId") Long lectureId
     ) {
-        MonitoringImage image1 = new MonitoringImage(
-                109L, 13L, "encodedImageBase64"
-        );
-        MonitoringImage image2 = new MonitoringImage(
-                109L, 16L, "encodedImageBase64"
-        );
-        MonitoringImage image3 = new MonitoringImage(
-                109L, 21L, "encodedImageBase64"
-        );
+        List<MonitoringImage> images = monitoringImageService.getImages(lectureId);
         return new CommonResponse<>(
-                true, HttpStatus.OK, null, List.of(image1, image2, image3)
+                true, HttpStatus.OK, null, images
         );
     }
 
