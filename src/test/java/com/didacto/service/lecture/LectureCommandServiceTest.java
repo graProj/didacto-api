@@ -1,5 +1,6 @@
 package com.didacto.service.lecture;
 
+import com.didacto.common.util.DateUtil;
 import com.didacto.config.exception.custom.exception.PreconditionFailException412;
 import com.didacto.domain.Authority;
 import com.didacto.domain.Grade;
@@ -36,6 +37,9 @@ class LectureCommandServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private DateUtil dateUtil;
+
 
     @BeforeEach
     public void before() {
@@ -55,7 +59,7 @@ class LectureCommandServiceTest {
                 .email("gildong1@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
-                .birth(memberService.parseBirth("20000513"))
+                .birth(dateUtil.parseBirth("20000513"))
                 .build();
 
         member1.premium();
@@ -107,7 +111,7 @@ class LectureCommandServiceTest {
                 .email("gildong1@naver.com")
                 .password("gildong123!@")
                 .name("회원1")
-                .birth(memberService.parseBirth("20000513"))
+                .birth(dateUtil.parseBirth("20000513"))
                 .build();
         memberRepository.saveAndFlush(member1);
 

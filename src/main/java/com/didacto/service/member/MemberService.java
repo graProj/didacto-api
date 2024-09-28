@@ -1,6 +1,7 @@
 package com.didacto.service.member;
 
 import com.didacto.common.ErrorDefineCode;
+import com.didacto.common.util.DateUtil;
 import com.didacto.config.exception.custom.exception.AuthCredientialException401;
 import com.didacto.config.exception.custom.exception.NoSuchElementFoundException404;
 import com.didacto.domain.Member;
@@ -16,14 +17,20 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberQueryService memberQueryService;
+    private final DateUtil dateUtil;
 
     @Transactional(readOnly = true)
     public List<MemberResponse> queryAll() {
@@ -45,11 +52,13 @@ public class MemberService {
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
         }
-
-
     }
 
-    @Transactional
+
+
+
+
+
     public void modifyInfo(Long userId, MemberModificationRequest memberEditRequest) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);
@@ -59,7 +68,7 @@ public class MemberService {
             member.modify(
                     passwordEncoder.encode(memberEditRequest.getPassword()),
                     memberEditRequest.getName(),
-                    parseBirth(memberEditRequest.getBirth()));
+                    dateUtil.parseBirth(memberEditRequest.getBirth()));
             memberRepository.save(member);
         }else{
             throw new AuthCredientialException401(ErrorDefineCode.MEMBER_UNRESISTER);
@@ -67,14 +76,8 @@ public class MemberService {
 
     }
 
-    public OffsetDateTime parseBirth(String birth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate birthDate = LocalDate.parse(birth, formatter);
-        return birthDate.atStartOfDay().atOffset(ZoneOffset.UTC);
-    }
 
 
-    @Transactional
     public void delete(Long userId) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> {
             throw new NoSuchElementFoundException404(ErrorDefineCode.MEMBER_NOT_FOUND);

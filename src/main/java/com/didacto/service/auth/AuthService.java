@@ -86,6 +86,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(req.getPassword()))
                 .name(req.getName())
                 .birth(parseBirth(req.getBirth()))
+                .deleted(false)
                 .role(role)
                 .build();
         return member;
