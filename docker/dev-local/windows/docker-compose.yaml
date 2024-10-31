@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  didacto-database:
+#    platform: linux/x86_64 #Mac M1칩 사용 제외하고는 주석처리
+    image: mariadb:10.11.2
+    environment:
+      MYSQL_DATABASE: "didacto-db"
+      MYSQL_ROOT_PASSWORD: "1111"
+    ports:
+      - 4001:3306
+    volumes:
+      - .\volumes\mariadb:/var/lib/mysql
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  didacto-redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - 6393:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: didacto-redis
+    volumes: # 마운트할 볼륨 설정
+      - .\volumes\redis\data:/data
+      - .\volumes\redis\conf:/usr/local/etc/redis/redis.conf
+    restart: always

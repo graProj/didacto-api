@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: didacto
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:4001/didacto-db?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 1111
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+redis:
+  host: localhost
+  port: 6393
+
+jwt:
+  secret: UGxlYXNlIGRvIG5vdCBkZWNyeXB0IHRoaXMuIEl0J3MgY29uZmlkZW50aWFsLCBpdCdzIG91ciBzZWNyZXQuIGl0IGlzIG11c3QgYmUgNjQgYnl0ZXMuIHNvIHNhZC4gaG93IGFyZSB5b3UgaSdtIG5vdCBmaW5lIHRoYW5rIHlvdSBhbmQgeW91PyBpIHdhbnQgZ28gaG9tZSBmZg==
+  refreshSecret: UnJycmluZyBkaW5nIGRvZyByaW5nIGRpbmcgZG9uZyByaW5nIGRpZ2lkaWdpZGluZyBkaW5nIGRpbmcuIGJ1dHRlcmZseSBubyBydWwgbWFuIG5hbiBjaG90IHN1biBnYW4gbW9tIGUgcHBhIHp6ZXIgYmVyIHJ1aXQgc28gbmUgbWF1bWRvIG11bHJ1aXRzbyBuYW4gbWFsIHlhIG11dCB6aW4gbm9tIGNoYWsgaGFuIG5vbSBncm9uIG5vbWRvIGFuaXppbWFu
+  access_token_expired_at: 604800000 # 600000  # 1000 * 60 * 3
+  refresh_token_expired_at: 604800000  # 1000 * 60 * 60 * 24 * 7
+
+imp:
+  api:
+    key: 6213286820175160
+    secretkey: jFHaAVeJAK12x2K7yhdKEbxm5KKGK03Is5PdWNMuaxuwZSH9MG4abidehgwdAd3c2WzgpbrR51KYpSb7
+
+
+# Swagger
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    defaultModelsExpandDepth: 2
+    defaultModelExpandDepth: 2
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/**
+    - /login
+
+# Exception handler
+error:
+  printStackTrace: true # Stack trace 출력 여부
+  printStackTraceLine: 10 # Stack trace 출력 줄 수
+
+rabbitmq:
+  queue:
+    name: monitoring-image-queue
+  exchange:
+    name: monitoring-image-exchange
+  routing:
+    key : monitoring-image-key

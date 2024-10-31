@@ -1,0 +1,45 @@
+package com.didacto.domain;
+
+
+import com.didacto.common.BaseEntity;
+import com.didacto.dto.pay.WebhookPayloadRequest;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@Table(name = "orders") // Mariadb에서 order가 예약어로 되어있기 때문에 @Table은 필수로 작성
+public class Order extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long price;
+    private Grade itemName; // 프리미엄, 프리티어
+    private String orderUid; //주문번호
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+    private String merchantUid;
+
+    @Builder
+    public Order(Long price, Grade itemName, String orderUid, Member member, Payment payment) {
+        this.price = price;
+        this.itemName = itemName;
+        this.orderUid = orderUid;
+        this.member = member;
+        this.payment = payment;
+    }
+
+    public void setOrder(WebhookPayloadRequest payload) {
+        this.merchantUid = payload.getMerchantUid();
+        this.orderUid = payload.getMerchantUid();
+        this.merchantUid = payload.getMerchantUid();
+        this.merchantUid = payload.getMerchantUid();
+    }
+}
