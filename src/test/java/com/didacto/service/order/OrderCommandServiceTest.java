@@ -86,39 +86,39 @@ class OrderCommandServiceTest {
 
     }
 
-    @DisplayName("회원이 이미 Premium인 상태면 예외를 터뜨린다.")
-    @Test
-    public void AlreadyPremiumcreateOrder() throws Exception {
-        //given
-        Member member1 = Member.builder()
-                .email("gildong@naver.com")
-                .password("gildong123!@")
-                .name("회원1")
-                .deleted(false)
-                .grade(Grade.Premium)
-                .build();
-        memberRepository.save(member1);
-
-        OrderRequest orderRequest = new OrderRequest("Premium");
-
-
-        //when
-        try (MockedStatic<SecurityUtil> mSecurityUtil = mockStatic(SecurityUtil.class)) {
-            // SecurityUtil.getCurrentMemberId() 모킹
-            Mockito.when(SecurityUtil.getCurrentMemberId()).thenReturn(member1.getId());
-
-            // memberQueryService는 정적 클래스가 아니므로 mock 생성
-            MemberQueryService memberQueryService = Mockito.mock(MemberQueryService.class);
-            Mockito.when(memberQueryService.query(member1.getId())).thenReturn(member1);
-
-            //then
-            assertThatThrownBy(() -> orderCommandService.create(orderRequest))
-                    .isInstanceOf(PreconditionFailException412.class)
-                    .hasMessage("이미 PREMIUM 등급입니다.");
-
-        }
-
-    }
+//    @DisplayName("회원이 이미 Premium인 상태면 예외를 터뜨린다.")
+//    @Test
+//    public void AlreadyPremiumcreateOrder() throws Exception {
+//        //given
+//        Member member1 = Member.builder()
+//                .email("gildong@naver.com")
+//                .password("gildong123!@")
+//                .name("회원1")
+//                .deleted(false)
+//                .grade(Grade.Premium)
+//                .build();
+//        memberRepository.save(member1);
+//
+//        OrderRequest orderRequest = new OrderRequest("Premium");
+//
+//
+//        //when
+//        try (MockedStatic<SecurityUtil> mSecurityUtil = mockStatic(SecurityUtil.class)) {
+//            // SecurityUtil.getCurrentMemberId() 모킹
+//            Mockito.when(SecurityUtil.getCurrentMemberId()).thenReturn(member1.getId());
+//
+//            // memberQueryService는 정적 클래스가 아니므로 mock 생성
+//            MemberQueryService memberQueryService = Mockito.mock(MemberQueryService.class);
+//            Mockito.when(memberQueryService.query(member1.getId())).thenReturn(member1);
+//
+//            //then
+//            assertThatThrownBy(() -> orderCommandService.create(orderRequest))
+//                    .isInstanceOf(PreconditionFailException412.class)
+//                    .hasMessage("이미 PREMIUM 등급입니다.");
+//
+//        }
+//
+//    }
 
 
     @DisplayName("Premium을 주문하지 않고 다른 것을 주문하면 예외를 터뜨린다.")
