@@ -12,7 +12,7 @@ import java.util.Objects;
 
 
 @Data
-@Schema(title = "Common response : Error 필드.")
+@Schema(title = "Common response : Error 필드")
 @RequiredArgsConstructor
 public class CommonError {
 
