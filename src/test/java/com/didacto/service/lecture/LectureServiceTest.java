@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @Disabled
 @SpringBootTest
 @Transactional
-@DisplayName("Lecture Service.")
+@DisplayName("Lecture Service")
 @AutoConfigureTestDatabase
 public class LectureServiceTest {
 
