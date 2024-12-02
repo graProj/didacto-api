@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -31,7 +32,12 @@ import static org.mockito.BDDMockito.given;
 @Transactional
 @DisplayName("Lecture Service")
 @AutoConfigureTestDatabase
+@TestPropertySource(properties = {
+        "spring.redis.host=localhost",
+        "spring.redis.port=6379"
+})
 public class LectureServiceTest {
+
 
     @Autowired
     private LectureQueryService lectureQueryService;
