@@ -13,6 +13,7 @@ import com.didacto.service.member.MemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
@@ -21,8 +22,9 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Disabled
 @SpringBootTest
+@Transactional
+@ActiveProfiles("test")
 class LectureCommandServiceTest {
 
     @Autowired
@@ -47,6 +49,7 @@ class LectureCommandServiceTest {
     }
 
     @DisplayName("등급이 Premium이고 강의 생성시에 동시의 100개의 요청이 들어오는 경우")
+    @Disabled
     @Test
     public void Premium_request_100_lectureCreate() throws Exception {
         // given
@@ -99,6 +102,7 @@ class LectureCommandServiceTest {
 
 
     @DisplayName("등급이 Freeteer이고 강의 생성시에 동시의 100개의 요청이 들어오는 경우")
+    @Disabled
     @Test
     public void Freeteer_request_100_lectureCreate() throws Exception {
         // given
